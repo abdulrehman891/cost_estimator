@@ -65,17 +65,16 @@
                         <div class="row">
                             <div class="col-md-6 mb-4">
                                 <label for="description" class="required fw-semibold fs-6 mb-2">Category</label>
-                                <select class="form-select" wire:model="selectedCategory" name="category_name" id="category_name" data-placeholder="Select an option">
+                                <select class="form-select" name="category_name" wire:model.defer="category_name" id="category_name" data-control="select2" data-dropdown-parent="#kt_modal_add_product" data-placeholder="Select an option">
                                     <option></option>
                                     @foreach($categories as $category)
                                         <option value="{{$category->id}}">{{$category->name}}</option>
                                     @endforeach
-
                                 </select>
                             </div>
                             <div class="col-md-6 mb-4">
                                 <label for="created_by" class="required fw-semibold fs-6 mb-2">Sub-Category</label>
-                                <select class="form-select" wire:model.defer="sub_category" name="sub_category" id="sub_category" data-placeholder="Select an option">
+                                <select class="form-select" wire:model.defer="sub_category" name="sub_category" data-control="select2" id="sub_category" data-dropdown-parent="#kt_modal_add_product" data-placeholder="Select an option">
                                     <option></option>
                                     @foreach ($subcategories as $subcategory)
                                         <option value="{{ $subcategory->id }}">{{ $subcategory->name }}</option>
@@ -140,4 +139,19 @@
         </div>
         <!--end::Modal content-->
     </div>
+        <script>
+            document.addEventListener('livewire:load', function () {
+                $('#category_name').select2();
+                $('#category_name').on('change', function(e) {
+                    let id = $(this).val();
+                    @this.set('category_name',id);
+                    Livewire.emit('category_value_change',id);
+                });
+                window.livewire.on('data-change-event', () =>{
+                    $('#category_name').select2({
+                        closeOnSelect: true
+                    });
+                });
+            })
+        </script>
 </div>

@@ -28,13 +28,16 @@ class AddProductModal extends Component
 
     public $subcategories;
     public $selectedCategory;
+    public $categories;
     public $product_id;
+    public $category_id;
     public $edit_mode;
 
     //delete_product
     protected $listeners = [
         'delete_product' => 'deleteProduct',
         'update_product' => 'updateProduct',
+        'category_value_change' => 'changeCategory'
     ];
 
     protected $rules = [
@@ -45,21 +48,33 @@ class AddProductModal extends Component
     ];
     public function render()
     {
-        return view('livewire.product.add-product-modal',['categories' => ProductCategory::all()]);
+        return view('livewire.product.add-product-modal');
     }
     public function mount()
     {
         $this->subcategories = collect();
+        $this->categories = ProductCategory::all();
     }
 
-    public function updatedSelectedCategory($value)
+    public function hydrate()
     {
-        $this->subcategories = ProductSubCategory::where('product_category_id', $value)->get();
+//        dump("hyderated");
+        $this->emit('data-change-event');
+    }
+
+    public function changeCategory($value)
+    {
+        $sub_category = ProductSubCategory::where('product_category_id', $value)->get();
+        if($sub_category)
+        {
+            $this->subcategories = $sub_category;
+        }else{
+
+        }
     }
 
     public function submit()
     {
-
         DB::transaction(function () {
             // Prepare the data for creating a new user
             $data['product_name'] = $this->product_name;
@@ -74,7 +89,7 @@ class AddProductModal extends Component
             $data['material'] = $this->material;
             $data['color'] = $this->color;
             $data['stock_quantity'] = $this->stock_quantity;
-            $data['product_category_id'] = $this->selectedCategory;
+            $data['product_category_id'] = $this->category_id;
             $data['product_subcategory_id'] = $this->sub_category;
             // Create a new user record in the database
             if($this->product_id){
@@ -84,7 +99,6 @@ class AddProductModal extends Component
                 Product::create($data);
             }
 
-
             if ($this->edit_mode) {
                 // Assign selected role for user
                 $this->emit('success', __('User updated'));
@@ -92,11 +106,11 @@ class AddProductModal extends Component
                 // Emit a success event with a message
                 $this->emit('success', __('New product created'));
             }
-//            $this->reset();
+            $this->reset();
         });
 
         // Reset the form fields after successful submission
-//        $this->reset();
+        $this->reset();
     }
     public function updateProduct($id){
         $this->edit_mode = true;

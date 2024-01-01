@@ -31,12 +31,12 @@
                             <input type="text" wire:model.defer="sub_category_name" name="sub_category_name" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Sub-Category Name"/>
                             <!--end::Input-->
                         </div>
-                        <div class="fv-row mb-7" wire:ignore>
+                        <div class="fv-row mb-7">
                             <!--begin::Label-->
                             <label class="required fw-semibold fs-6 mb-2">Category Name</label>
                             <!--end::Label-->
                             <!--begin::Input-->
-                            <select class="form-select" name="category_name" id="category_name" data-control="select2" data-placeholder="Select an option">
+                            <select class="form-select" name="category_name" id="category_name" data-control="select2" data-placeholder="Select a Category" data-dropdown-parent="#kt_modal_add_subcategory">
                                 <option></option>
                                 @foreach($categories as $category)
                                     <option value="{{$category->id}}"  {{ $product_category_id == $category->id ? 'selected' : '' }}>{{$category->name}}</option>
@@ -77,10 +77,10 @@
 
     @push('scripts')
         <script>
-            $('#category_name').select2();
+            // $('#category_name').select2();
             $('#category_name').on('change',function (e){
                 var data = $('#category_name').select2('val')
-            @this.set('product_category_id',data)
+                @this.set('product_category_id',data)
             });
         </script>
     @endpush

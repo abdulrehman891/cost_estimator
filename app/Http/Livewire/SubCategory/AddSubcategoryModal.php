@@ -33,7 +33,6 @@ class AddSubcategoryModal extends Component
         // Emit a success event with a message
         $this->emit('success', 'Sub Category successfully deleted');
     }
-
     public function updateSubCategory($id)
     {
         $this->edit_mode = true;
@@ -42,7 +41,6 @@ class AddSubcategoryModal extends Component
         $this->sub_category_name = $productSubCategory->name;
         $this->description = $productSubCategory->description;
     }
-
     public function hydrate()
     {
         $this->emit('select2');
@@ -79,14 +77,11 @@ class AddSubcategoryModal extends Component
                 // Assign selected role for user
                 $this->emit('success', __('User updated'));
             } else {
-//
-//
-//                // Emit a success event with a message
+                // Emit a success event with a message
                 $this->emit('success', __('New Sub-Category created'));
             }
         });
-
         // Reset the form fields after successful submission
-//        $this->reset();
+        $this->reset();
     }
 }
