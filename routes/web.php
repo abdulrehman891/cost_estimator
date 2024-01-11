@@ -11,6 +11,7 @@ use App\Http\Controllers\ProjectController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\QuotationController;
+use App\Http\Controllers\CompanyProfileController;
 
 /*
 |--------------------------------------------------------------------------
@@ -48,6 +49,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     //Sub-Category Routes
     Route::get('/sub-category/list', [ProductSubCategoryController::class, 'index'])->name('sub-category.list');
     Route::get('/sub-category/show/{id}', [ProductSubCategoryController::class, 'show'])->name('sub-category.show');
+
+    //Company Profile
+    Route::get('/company-profile/show', [CompanyProfileController::class, 'show'])->name('company-profile.show');
 
     // Quotation Routes
     Route::get('/quotation/list', [QuotationController::class, 'index'])->name('quotation.list');

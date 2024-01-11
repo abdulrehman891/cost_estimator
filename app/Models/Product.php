@@ -59,4 +59,9 @@ class Product extends Model
     {
         return $this->belongsTo(ProductSubCategory::class);
     }
+
+    public function quoteLineItem()
+    {
+        return $this->hasMany(QuoteLineItem::class);
+    }
 }

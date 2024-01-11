@@ -66,13 +66,20 @@
                     window.LaravelDataTables['users-table'].ajax.reload();
                 });
             });
+            //prepared_date
 
+            $("#prepared_date").flatpickr({
+                onReady: function () {
+                },
+                dateFormat: "Y-m-d",
+            });
 
             $("#expected_start_date").flatpickr({
                 onReady: function () {
                 },
                 dateFormat: "Y-m-d",
             });
+
             $("#expected_end_date").flatpickr({
                 onReady: function () {
                 },

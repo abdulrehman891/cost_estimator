@@ -17,15 +17,23 @@ class AddQuotationModal extends Component
 //    public $name, $amount, $description, $status = 1, $stock;
 //    public $successMessage = '';
 
+    //List for Project Module
     public $project_name;
     public $description;
     public $expected_start_date;
     public $expected_end_date;
-    public $quoteItems = [];
-    public $project_manager = null;
     public $project_size;
+    public $project_manager = null;
     public $project_type;
+    //End of Project module fields
+    public $quoteItems = [];
 
+    //Project Milestone
+    public $milestone_name;
+    public $milestone_description;
+
+
+    //List for Quotation Module
     public $prepared_date;
     public $assembly_type;
     public $manufacturer;
@@ -43,6 +51,8 @@ class AddQuotationModal extends Component
     public $compliance;
     public $timelines;
     public $warranty_clause;
+    //End of Quotation Module Fields
+
 
 
     public $quote_line_items;

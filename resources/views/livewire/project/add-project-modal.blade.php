@@ -83,7 +83,7 @@
                             <!--begin::Label-->
                             <label class="required fw-semibold fs-6 mb-2">Project Manager</label>
                             <!--end::Label-->
-                            <select class="form-select" name="project_manager" id="project_manager" data-control="select2" data-placeholder="Select an option">
+                            <select class="form-select" name="project_manager" id="project_manager" data-control="select2" data-dropdown-parent="#kt_modal_add_project" data-placeholder="Select an option">
                                 <option></option>
                                 @foreach($users as $user)
                                     <option value="{{$user->id}}">{{$user->name}}</option>

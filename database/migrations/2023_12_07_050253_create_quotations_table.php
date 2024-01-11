@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('quotations', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->timestamps();
             $table->foreignUuid('project_id')->nullable();
             $table->foreignUuid('created_by');
@@ -25,6 +25,15 @@ return new class extends Migration
             $table->text('sq_walls');
             $table->text('building_height');
             $table->text('deck_type');
+            $table->text('inclusions');
+            $table->text('exclusions');
+            $table->text('payment_schedule');
+            $table->text('price_escalation_clause');
+            $table->text('alterations');
+            $table->text('compliance');
+            $table->text('timelines');
+            $table->text('warranty_clause');
+
         });
     }
 

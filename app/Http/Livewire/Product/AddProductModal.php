@@ -25,12 +25,12 @@ class AddProductModal extends Component
     public $material;
     public $category_name;
     public $sub_category;
-
-    public $subcategories;
+    public $sub_category_id;
+    public $subcategories = array();
+    public $categories = array();
     public $selectedCategory;
-    public $categories;
     public $product_id;
-    public $category_id;
+    public $product_category_id=null;
     public $edit_mode;
 
     //delete_product
@@ -58,23 +58,18 @@ class AddProductModal extends Component
 
     public function hydrate()
     {
-//        dump("hyderated");
         $this->emit('data-change-event');
     }
 
     public function changeCategory($value)
     {
         $sub_category = ProductSubCategory::where('product_category_id', $value)->get();
-        if($sub_category)
-        {
-            $this->subcategories = $sub_category;
-        }else{
-
-        }
+        $this->subcategories = $sub_category;
     }
 
     public function submit()
     {
+        $this->validate();
         DB::transaction(function () {
             // Prepare the data for creating a new user
             $data['product_name'] = $this->product_name;
@@ -89,8 +84,8 @@ class AddProductModal extends Component
             $data['material'] = $this->material;
             $data['color'] = $this->color;
             $data['stock_quantity'] = $this->stock_quantity;
-            $data['product_category_id'] = $this->category_id;
-            $data['product_subcategory_id'] = $this->sub_category;
+            $data['product_category_id'] = $this->product_category_id;
+            $data['product_subcategory_id'] = $this->sub_category_id;
             // Create a new user record in the database
             if($this->product_id){
                 $product = Product::where('id', $this->product_id)->first();
@@ -106,9 +101,7 @@ class AddProductModal extends Component
                 // Emit a success event with a message
                 $this->emit('success', __('New product created'));
             }
-            $this->reset();
         });
-
         // Reset the form fields after successful submission
         $this->reset();
     }
@@ -127,9 +120,11 @@ class AddProductModal extends Component
         $this->material = $product->material;
         $this->color = $product->material;
         $this->stock_quantity = $product->stock_quantity;
-//        $this->selectedCategory;
-//        $this->sub_category;
-
+        $this->product_category_id = $product->product_category_id;
+        $this->categories = ProductCategory::all();
+        $sub_category = ProductSubCategory::where('product_category_id', $product->product_category_id)->get();
+        $this->subcategories = $sub_category;
+        $this->sub_category_id = $product->product_subcategory_id;
     }
 
     public function deleteProduct($id){

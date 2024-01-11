@@ -65,19 +65,19 @@
                         <div class="row">
                             <div class="col-md-6 mb-4">
                                 <label for="description" class="required fw-semibold fs-6 mb-2">Category</label>
-                                <select class="form-select" name="category_name" wire:model.defer="category_name" id="category_name" data-control="select2" data-dropdown-parent="#kt_modal_add_product" data-placeholder="Select an option">
+                                <select class="form-select" name="category_name" id="category_name" data-control="select2" data-dropdown-parent="#kt_modal_add_product" data-placeholder="Select an option">
                                     <option></option>
                                     @foreach($categories as $category)
-                                        <option value="{{$category->id}}">{{$category->name}}</option>
+                                        <option value="{{$category->id}}"  {{ $product_category_id == $category->id ? 'selected' : '' }}>{{$category->name}}</option>
                                     @endforeach
                                 </select>
                             </div>
                             <div class="col-md-6 mb-4">
                                 <label for="created_by" class="required fw-semibold fs-6 mb-2">Sub-Category</label>
-                                <select class="form-select" wire:model.defer="sub_category" name="sub_category" data-control="select2" id="sub_category" data-dropdown-parent="#kt_modal_add_product" data-placeholder="Select an option">
+                                <select class="form-select" name="sub_category" data-control="select2" id="sub_category" data-dropdown-parent="#kt_modal_add_product" data-placeholder="Select an option">
                                     <option></option>
                                     @foreach ($subcategories as $subcategory)
-                                        <option value="{{ $subcategory->id }}">{{ $subcategory->name }}</option>
+                                            <option value="{{ $subcategory->id }}" {{$sub_category_id == $subcategory->id ? 'selected' : '' }}>{{ $subcategory->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -144,11 +144,18 @@
                 $('#category_name').select2();
                 $('#category_name').on('change', function(e) {
                     let id = $(this).val();
-                    @this.set('category_name',id);
+                    @this.set('product_category_id',id);
                     Livewire.emit('category_value_change',id);
+                });
+                $('#sub_category').on('change', function(e) {
+                    let id = $(this).val();
+                    @this.set('sub_category_id',id);
                 });
                 window.livewire.on('data-change-event', () =>{
                     $('#category_name').select2({
+                        closeOnSelect: true
+                    });
+                    $('#sub_category').select2({
                         closeOnSelect: true
                     });
                 });

@@ -73,7 +73,7 @@
                                         </h3>
 
                                         <div class="stepper-desc">
-                                            <h6>Quotation</h6>
+                                            <h6>Project Milestone</h6>
                                         </div>
                                     </div>
                                     <!--end::Label-->
@@ -85,6 +85,7 @@
                                 <!--end::Line-->
                             </div>
                             <!--end::Step 2-->
+
 
                             <!--begin::Step 3-->
                             <div class="stepper-item mx-8 my-4" data-kt-stepper-element="nav" data-kt-stepper-action="step">
@@ -104,7 +105,7 @@
                                         </h3>
 
                                         <div class="stepper-desc">
-                                            <h6>Quote Line Items</h6>
+                                            <h6>Quotation</h6>
                                         </div>
                                     </div>
                                     <!--end::Label-->
@@ -135,6 +136,37 @@
                                         </h3>
 
                                         <div class="stepper-desc">
+                                            <h6>Quote Line Items</h6>
+                                        </div>
+                                    </div>
+                                    <!--end::Label-->
+                                </div>
+                                <!--end::Wrapper-->
+
+                                <!--begin::Line-->
+                                <div class="stepper-line h-40px"></div>
+                                <!--end::Line-->
+                            </div>
+                            <!--end::Step 4-->
+
+                            <!--begin::Step 5-->
+                            <div class="stepper-item mx-8 my-4" data-kt-stepper-element="nav" data-kt-stepper-action="step">
+                                <!--begin::Wrapper-->
+                                <div class="stepper-wrapper d-flex align-items-center">
+                                    <!--begin::Icon-->
+                                    <div class="stepper-icon w-40px h-40px">
+                                        <i class="stepper-check fas fa-check"></i>
+                                        <span class="stepper-number">5</span>
+                                    </div>
+                                    <!--begin::Icon-->
+
+                                    <!--begin::Label-->
+                                    <div class="stepper-label">
+                                        <h3 class="stepper-title">
+                                            Step 5
+                                        </h3>
+
+                                        <div class="stepper-desc">
                                             <h6>Completion</h6>
                                         </div>
                                     </div>
@@ -142,7 +174,7 @@
                                 </div>
                                 <!--end::Wrapper-->
                             </div>
-                            <!--end::Step 4-->
+                            <!--end::Step 5-->
                         </div>
                         <!--end::Nav-->
 
@@ -213,10 +245,17 @@
                                     <!--end::Input group-->
 
                                 </div>
-                                <!--begin::Step 1-->
+                                <!--end::Step 1-->
 
-                                <!--begin::Step 1-->
-                                <!--begin::Step 1-->
+                                <!--begin::Step 2-->
+                                <div class="flex-column current" data-kt-stepper-element="content">
+
+
+
+                                </div>
+                                <!--end::Step 2-->
+
+                                <!--begin::Step 3-->
                                 <div class="flex-column" data-kt-stepper-element="content">
                                     <!--begin::Input group-->
 
@@ -276,31 +315,31 @@
                                     <div class="row">
                                         <div class="col-md-12 mb-4">
                                             <label class="required fw-semibold fs-6 mb-2">Inclusions</label>
-                                            <textarea wire:model.defer="inclusions" name="inclusions" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Inclusions"> </textarea>
+                                            <textarea name="inclusions" wire:model.defer="inclusions" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Inclusions"> </textarea>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-md-12 mb-4">
                                             <label class="required fw-semibold fs-6 mb-2">Exclusions</label>
-                                            <textarea wire:model.defer="exclusions" name="exclusions" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Exclusions"> </textarea>
+                                            <textarea name="exclusions" wire:model.defer="exclusions" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Exclusions"> </textarea>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-md-12 mb-4">
                                             <label class="required fw-semibold fs-6 mb-2">Payment Schedule</label>
-                                            <textarea wire:model.defer="payment_schedule" name="payment_schedule" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Payment Schedule"> </textarea>
+                                            <textarea name="payment_schedule" wire:model.defer="payment_schedule" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Payment Schedule"> </textarea>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-md-12 mb-4">
                                             <label class="required fw-semibold fs-6 mb-2">Price Escalation Clause</label>
-                                            <textarea wire:model.defer="price_escalation_clause" name="price_escalation_clause" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Price Escalation Clause"> </textarea>
+                                            <textarea name="price_escalation_clause" wire:model.defer="price_escalation_clause"  class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Price Escalation Clause"> </textarea>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-md-12 mb-4">
                                             <label class="required fw-semibold fs-6 mb-2">Alterations</label>
-                                            <textarea wire:model.defer="alterations" name="alterations" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Alterations"> </textarea>
+                                            <textarea name="alterations" wire:model.defer="alterations"  class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Alterations"> </textarea>
                                         </div>
                                     </div>
 
@@ -322,12 +361,9 @@
                                     </div>
 
                                 </div>
-                                <!--end::Input group-->
-                                <!--begin::Step 1-->
-                                    <!--end::Input group-->
-                                <!--begin::Step 1-->
+                                <!--end::Step 3-->
 
-                                <!--begin::Step 1-->
+                                <!--begin::Step 4-->
                                 <div class="flex-column" data-kt-stepper-element="content">
 
                                     <!--begin::Repeater-->
@@ -427,18 +463,15 @@
                                         </div>
                                     </div> --}}
                                 </div>
-                                <!--begin::Step 1-->
+                                <!--end::Step 4-->
 
-                                <!--begin::Step 1-->
+                                <!--begin::Step 5-->
                                     <div class="flex-column" data-kt-stepper-element="content">
-                                        <!--begin::Input group-->
                                         <div class="fv-row mb-10">
-                                            <!--begin::Label-->
                                             <a href="{{ asset('storage/app/public') }}" download="proposal.pdf">Download Proposal</a>
                                         </div>
                                     </div>
-                                <!--begin::Step 1-->
-                            <!--end::Group-->
+                                <!--end::Step 5-->
 
                             <!--begin::Actions-->
                                     <div class="d-flex flex-stack">
@@ -608,7 +641,7 @@
         });
 
         stepper.on("kt.stepper.changed", function (stepper) {
-            if (stepper.currentStepIndex === 3) {
+            if (stepper.currentStepIndex === 4) {
                 $("#continue_next").hide();
                 $("#continue_next_final").show();
             }else{

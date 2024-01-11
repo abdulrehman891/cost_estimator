@@ -14,12 +14,10 @@ class Quotation extends Model
     use HasFactory, HasUuids, SoftDeletes;
 
     protected $fillable = ['project_id','created_by','prepared_date','assembly_type','manufacturer','sq_field','parapet_length','warranty','sq_walls','building_height','deck_type'];
-
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class,'created_by');
     }
-
     public function project(): BelongsTo
     {
         return $this->belongsTo(Project::class, 'project_id');
@@ -34,13 +32,23 @@ class Quotation extends Model
 //    {
 //        return $this->hasMany(QuotationHistory::class);
 //    }
+    public function newUniqueId(): string
+    {
+        return (string) Uuid::uuid4();
+    }
 
+    /**
+     * Get the columns that should receive a unique identifier.
+     *
+     * @return array<int, string>
+     */
     public function uniqueIds(): array
     {
         return ['id'];
     }
-    public function quotation(): HasMany
+
+    public function quoteLineItem()
     {
-        return $this->hasMany(Quotation::class);
+        return $this->hasMany(QuoteLineItem::class);
     }
 }
