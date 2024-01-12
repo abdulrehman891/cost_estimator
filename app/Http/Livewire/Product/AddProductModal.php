@@ -69,7 +69,7 @@ class AddProductModal extends Component
 
     public function submit()
     {
-        $this->validate();
+//        $this->validate();
         DB::transaction(function () {
             // Prepare the data for creating a new user
             $data['product_name'] = $this->product_name;
