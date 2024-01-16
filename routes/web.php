@@ -8,7 +8,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProductCategoryController;
 use App\Http\Controllers\ProductSubCategoryController;
 use App\Http\Controllers\ProjectController;
-
+use App\Http\Controllers\TwoFactorController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\QuotationController;
@@ -27,11 +27,18 @@ use App\Http\Controllers\CompanyProfileController;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+Route::middleware(['auth', 'twofactor'])->group(function () {
+    Route::get('verify/resend', [TwoFactorController::class, 'resend'])->name('verify.resend');
+    Route::get('verify/check', [TwoFactorController::class, 'store'])->name('verify.check');
+    Route::resource('verify', TwoFactorController::class)->only(['index', 'store']);
+});
+
 Route::post('/stripre_hook_handler', [StripeResponseHookHandler::class, 'handleWebhook']);
 
 Route::middleware(['auth', 'verified'])->group(function () {
 
-    Route::get('/', [DashboardController::class, 'index']);
+    Route::get('/', [DashboardController::class, 'index'])->middleware(['auth', 'twofactor']);
     
     
     Route::get('/packages', [PaymentsContoller::class, 'Packages']);
@@ -40,7 +47,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/pruchase_failed', [PaymentsContoller::class, 'Pruchase_Failed'])->name('pruchase_failed');
 
 
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'twofactor'])->name('dashboard');
 
     Route::name('user-management.')->group(function () {
         Route::resource('/user-management/users', UserManagementController::class);
