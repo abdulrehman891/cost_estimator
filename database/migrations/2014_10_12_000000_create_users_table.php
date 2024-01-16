@@ -23,6 +23,9 @@ return new class extends Migration
             $table->string('avatar')->nullable();
             $table->rememberToken();
             $table->timestamps();
+            $table->timestamp('subscription_ends_at')->nullable();
+            $table->string('subscription_transaction_stripe_id')->nullable();
+            $table->string('subscription_latest_invoice_stripe_id')->nullable();
         });
     }
 

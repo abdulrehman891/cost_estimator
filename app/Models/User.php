@@ -9,11 +9,13 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
+use Laravel\Cashier\Billable;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
     use HasApiTokens, HasFactory, Notifiable;
     use HasRoles;
+    use Billable;
     /**
      * The attributes that are mass assignable.
      *
@@ -27,6 +29,9 @@ class User extends Authenticatable implements MustVerifyEmail
         'phone_number',
         'last_login_ip',
         'profile_photo_path',
+        'subscription_ends_at',
+        'subscription_transaction_stripe_id',
+        'subscription_latest_invoice_stripe_id',
     ];
     /**
      * The attributes that should be hidden for serialization.
@@ -85,9 +90,9 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->addresses?->first();
     }
+
     public function quoteLineItem()
     {
         return $this->hasMany(QuoteLineItem::class);
     }
-
 }
