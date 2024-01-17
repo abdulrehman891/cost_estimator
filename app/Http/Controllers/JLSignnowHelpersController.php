@@ -31,13 +31,13 @@ class JLSignnowHelpersController extends Controller
     private $from;
     private $subject;
     public function __construct(){
-        $this->host = 'https://api.signnow.com';
-        $this->basic_token = 'MTNhYzJlMjlhMzc1MmY1ZTAwNGE0YTc4OTE5NzNmOTI6MzZlMGU0YzEwNmJkM2Y0ZGVlZTJlYzk4MjE5M2MxNjU=';
-        $this->user = 'conston@zenproseo.com';
-        $this->password = 'xQ1k*(b42700';
-        $this->templateId = '6e3ecbf4e5b24fc1a67b51452dbfe0a479b7ac3c';
-        $this->from = 'conston@zenproseo.com';
-        $this->subject = 'CS Needs Your Signature';
+        $this->host = env('SIGNNOW_API_HOST');
+        $this->basic_token = env('SIGNNOW_API_BASIC_TOKEN');
+        $this->user = env('SIGNNOW_API_USER');
+        $this->password = env('SIGNNOW_API_PASSWORD');
+        $this->templateId = env('SIGNNOW_API_QUOTE_TEMPLATEID');
+        $this->from = env('SIGNNOW_API_FROM_EMAIL');
+        $this->subject = env('SIGNNOW_API_EMAIL_SUBJECT');
         $this->auth = new SignNowOAuth($this->host);
     }
 
