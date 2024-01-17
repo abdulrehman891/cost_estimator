@@ -35,7 +35,7 @@ class PaymentsContoller extends Controller
         return $request->user()->newSubscription('Subscription',$the_stripe_package_name)
         //->allowPromotionCodes()
         ->checkout([
-            'success_url' => route('pruchase_thankyou'),
+            'success_url' => route('quotation.list'),
             'cancel_url' => route('pruchase_failed'),
         ]);
     }
