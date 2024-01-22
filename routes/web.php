@@ -8,9 +8,13 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProductCategoryController;
 use App\Http\Controllers\ProductSubCategoryController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\TwoFactorController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\QuotationController;
+use App\Http\Middleware\Subscribed;
+use App\Http\Controllers\PaymentsContoller;
+use App\Http\Controllers\StripeResponseHookHandler;
 use App\Http\Controllers\CompanyProfileController;
 
 /*
@@ -24,11 +28,26 @@ use App\Http\Controllers\CompanyProfileController;
 |
 */
 
+Route::middleware(['auth', 'twofactor'])->group(function () {
+    Route::get('verify/resend', [TwoFactorController::class, 'resend'])->name('verify.resend');
+    Route::get('verify/check', [TwoFactorController::class, 'store'])->name('verify.check');
+    Route::resource('verify', TwoFactorController::class)->only(['index', 'store']);
+});
+
+Route::post('/stripre_hook_handler', [StripeResponseHookHandler::class, 'handleWebhook']);
+
 Route::middleware(['auth', 'verified'])->group(function () {
 
-    Route::get('/', [DashboardController::class, 'index']);
+    Route::get('/', [DashboardController::class, 'index'])->middleware(['auth', 'twofactor']);
+    
+    
+    Route::get('/packages', [PaymentsContoller::class, 'Packages']);
+    Route::get('/pruchase_package', [PaymentsContoller::class, 'doPackagePurchase'])->name('pruchase_package');
+    Route::get('/pruchase_thankyou', [PaymentsContoller::class, 'Pruchase_Thankyou'])->name('pruchase_thankyou');
+    Route::get('/pruchase_failed', [PaymentsContoller::class, 'Pruchase_Failed'])->name('pruchase_failed');
 
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+    Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'twofactor'])->name('dashboard');
 
     Route::name('user-management.')->group(function () {
         Route::resource('/user-management/users', UserManagementController::class);
@@ -54,7 +73,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/company-profile/show', [CompanyProfileController::class, 'show'])->name('company-profile.show');
 
     // Quotation Routes
-    Route::get('/quotation/list', [QuotationController::class, 'index'])->name('quotation.list');
+    Route::get('/quotation/list', [QuotationController::class, 'index'])->name('quotation.list')->middleware([Subscribed::class]);
 
 });
 
