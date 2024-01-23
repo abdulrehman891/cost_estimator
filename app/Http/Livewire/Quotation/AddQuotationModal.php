@@ -169,7 +169,7 @@ class AddQuotationModal extends Component
         $this->addProjectMilestone($project_id);
         $quotation_id = $this->addQuotation($project_id);
         $this->addQuoteLineItems($quotation_id);
-        $this->getProposalChatGPT();
+        $this->getProposalChatGPT($quotation_id);
 //        $this->increaseStep();
     }
     public function addQuoteLineItems($quotation_id)
@@ -292,7 +292,7 @@ class AddQuotationModal extends Component
 
         return $response;
     }
-    public function getProposalChatGPT()
+    public function getProposalChatGPT($quote_id)
     {
         $this->isLoading = true;
         $chat =new ChatGPTController();
@@ -317,32 +317,26 @@ moreover also mention risk factors for quote line items take below details and c
                         Create around 250 words";
 //        $this->res_chatGPT =$chat->createPurposalChatGPT($msg_data);
         //sleep(2);
-//        $this->generatePDF($this->res_chatGPT); // Generate PDF from the response
-        $this->generatePDF("abc"); // Generate PDF from the response
+        $this->res_chatGPT = "";
+        $this->generatePDF($this->res_chatGPT,$quote_id); // Generate PDF from the response
 //        $this->isLoading = false; // Stop loading
 //        $this->emit('dataUpdated');
     }
 
-    private function generatePDF($response)
+    private function generatePDF($response,$quote_id)
     {
-//        dd('abc');
 
-
-        if (Storage::disk('public')->exists('/uploads/docs_2.pdf')) {
-            $filePath = Storage::disk('public')->path('uploads/docs_2.pdf');
-            dd(response()->download($filePath, 'docs_2.pdf'));
-            return response()->download($filePath, 'asimocs_2.pdf');
-        } else {
-            abort(404, 'File not found');
-        }
-        dd('ok');
+//        if (Storage::disk('public')->exists('/uploads/docs_2.pdf')) {
+//            $filePath = Storage::disk('public')->path('uploads/docs_2.pdf');dd($filePath);
+//            return response()->download($filePath, 'asimocs_2.pdf');
+//        } else {
+//            abort(404, 'File not found');
+//        }
         try {
 //            $pdf = PDF::loadHTML("working is of HTML")->save('uploads/docs_2.pdf','public');
-            $pdf = PDF::loadView('pdf-template.proposal')->save('uploads/docs_2.pdf','public');
+            $pdf = PDF::loadView('pdf-template.proposal')->save("uploads/$quote_id.pdf",'public');
             if($pdf){
-                $filePath = asset('uploads/docs_2.pdf');
-//                dd($filePath);
-                return $pdf->download('uploads/docs_2.pdf');
+                return $pdf->download("uploads/$quote_id.pdf");
             }else{
                 return false;
             }
