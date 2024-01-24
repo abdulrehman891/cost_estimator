@@ -7,7 +7,11 @@
             <!--begin::Modal header-->
             <div class="modal-header" id="kt_modal_add_product_header">
                 <!--begin::Modal title-->
-                <h2 class="fw-bold">Add Customer</h2>
+                @if($edit_mode)
+                    <h2 class="fw-bold">Edit Customer</h2>
+                @else
+                    <h2 class="fw-bold">Add Customer</h2>
+                @endif
                 <!--end::Modal title-->
                 <!--begin::Close-->
                 <div class="btn btn-icon btn-sm btn-active-icon-primary" data-bs-dismiss="modal" aria-label="Close">
@@ -49,6 +53,50 @@
                             <!--end::Label-->
                             <!--begin::Input-->
                             <input type="text" wire:model.defer="phone_number" name="phone_number" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Phone Number"/>
+                            <!--end::Input-->
+                        </div>
+                        <!--end::Input group-->
+
+                        <!--begin::Input group-->
+                        <div class="fv-row mb-7">
+                            <!--begin::Label-->
+                            <label class="required fw-semibold fs-6 mb-2">Company Name</label>
+                            <!--end::Label-->
+                            <!--begin::Input-->
+                            <input type="text" wire:model.defer="company_name" name="company_name" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Company Name"/>
+                            <!--end::Input-->
+                        </div>
+                        <!--end::Input group-->
+
+                        <!--begin::Input group-->
+                        <div class="fv-row mb-7">
+                            <!--begin::Label-->
+                            <label class="required fw-semibold fs-6 mb-2">Company Phone</label>
+                            <!--end::Label-->
+                            <!--begin::Input-->
+                            <input type="text" wire:model.defer="company_phone" name="company_phone" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Company Phone"/>
+                            <!--end::Input-->
+                        </div>
+                        <!--end::Input group-->
+
+                        <!--begin::Input group-->
+                        <div class="fv-row mb-7">
+                            <!--begin::Label-->
+                            <label class="required fw-semibold fs-6 mb-2">Company Address</label>
+                            <!--end::Label-->
+                            <!--begin::Input-->
+                            <input type="text" wire:model.defer="company_address" name="company_address" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Company Address"/>
+                            <!--end::Input-->
+                        </div>
+                        <!--end::Input group-->
+
+                        <!--begin::Input group-->
+                        <div class="fv-row mb-7">
+                            <!--begin::Label-->
+                            <label class="required fw-semibold fs-6 mb-2">Company Email</label>
+                            <!--end::Label-->
+                            <!--begin::Input-->
+                            <input type="text" wire:model.defer="company_email" name="company_email" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Company Email"/>
                             <!--end::Input-->
                         </div>
                         <!--end::Input group-->

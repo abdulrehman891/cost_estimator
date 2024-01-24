@@ -33,6 +33,11 @@ class Quotation extends Model
 //    {
 //        return $this->hasMany(QuotationHistory::class);
 //    }
+
+    public function customer(): BelongsTo
+    {
+        return $this->belongsTo(Customer::class,'customer_id');
+    }
     public function newUniqueId(): string
     {
         return (string) Uuid::uuid4();

@@ -15,6 +15,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->timestamps();
             $table->foreignUuid('project_id')->nullable();
+            $table->foreignUuid('customer_id');
             $table->foreignUuid('created_by');
             $table->date('prepared_date');
             $table->text('assembly_type');

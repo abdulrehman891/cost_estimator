@@ -29,7 +29,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'phone_number',
         'last_login_ip',
         'profile_photo_path',
-        'two_factor_code', 
+        'two_factor_code',
         'two_factor_expires_at',
         'subscription_ends_at',
         'subscription_transaction_stripe_id',
@@ -56,6 +56,11 @@ class User extends Authenticatable implements MustVerifyEmail
     public function productCategory(): HasMany
     {
         return $this->hasMany(ProductCategory::class);
+    }
+
+    public function customer(): HasMany
+    {
+        return $this->hasMany(Customer::class);
     }
     public function productSubCategory(): HasMany
     {
