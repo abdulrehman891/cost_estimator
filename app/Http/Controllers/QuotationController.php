@@ -26,7 +26,6 @@ class QuotationController extends Controller
         } else {
             abort(404, 'File not found');
         }
-
     }
 
     public function sendProposal(Request $quotation_id)
