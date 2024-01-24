@@ -80,7 +80,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Quotation Routes
     Route::get('/quotation/list', [QuotationController::class, 'index'])->name('quotation.list')->middleware([Subscribed::class]);
-    Route::get('/quotation/download/{id}', [QuotationController::class, 'proposalDownload'])->name('qoutation.download');
+    Route::get('/quotation/download/{id}', [QuotationController::class, 'downloadProposal'])->name('qoutation.download');
+    Route::get('/quotation/send/{id}', [QuotationController::class, 'sendProposal'])->name('qoutation.send');
 
 });
 

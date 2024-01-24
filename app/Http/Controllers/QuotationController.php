@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\DataTables\QuotationsDataTable;
 use App\Models\Quotation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class QuotationController extends Controller
 {
@@ -17,6 +18,21 @@ class QuotationController extends Controller
         return $quotationDataTable->render('pages/apps.quotation.list');
     }
 
+    public function downloadProposal(Request $quoation_id)
+    {
+        if (Storage::disk('public')->exists("/uploads/$quoation_id->id.pdf")) {
+            $filePath = Storage::disk('public')->path("/uploads/$quoation_id->id.pdf");
+            return response()->download($filePath, 'construction_proposal.pdf');
+        } else {
+            abort(404, 'File not found');
+        }
+
+    }
+
+    public function sendProposal(Request $quotation_id)
+    {
+        dd($quotation_id);
+    }
     /**
      * Show the form for creating a new resource.
      */

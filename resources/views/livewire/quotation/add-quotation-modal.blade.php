@@ -1,4 +1,4 @@
-<div class="modal fade" wire:ignore.self id="kt_modal_add_quotation" tabindex="-1" aria-hidden="true">
+ <div class="modal fade" wire:ignore.self id="kt_modal_add_quotation" tabindex="-1" aria-hidden="true">
 
         <div class="modal-dialog modal-fullscreen p-9">
             <!--begin::Modal content-->
