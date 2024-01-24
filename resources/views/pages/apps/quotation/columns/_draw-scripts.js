@@ -18,7 +18,7 @@ document.querySelectorAll('[data-kt-action="delete_row"]').forEach(function (ele
             }
         }).then((result) => {
             if (result.isConfirmed) {
-                Livewire.emit('delete_sub_category', this.getAttribute('data-kt-sub-category-id'));
+                Livewire.emit('delete_quotation', this.getAttribute('data-kt-quotation-id'));
             }
         });
     });

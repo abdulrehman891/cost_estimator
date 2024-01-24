@@ -102,7 +102,15 @@ class AddQuotationModal extends Component
 
     protected $listeners = [
         'get_proposal' => 'getProposalChatGPT',
+        'delete_quotation' => 'deleteQuotation',
     ];
+
+    public function deleteQuotation($id)
+    {
+        Quotation::destroy($id);
+        // Emit a success event with a message
+        $this->emit('success', 'Quotation successfully deleted');
+    }
 
     public function increaseStep()
     {
