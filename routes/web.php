@@ -16,6 +16,7 @@ use App\Http\Middleware\Subscribed;
 use App\Http\Controllers\PaymentsContoller;
 use App\Http\Controllers\StripeResponseHookHandler;
 use App\Http\Controllers\CompanyProfileController;
+use App\Http\Controllers\CustomerController;
 
 /*
 |--------------------------------------------------------------------------
@@ -39,8 +40,8 @@ Route::post('/stripre_hook_handler', [StripeResponseHookHandler::class, 'handleW
 Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/', [DashboardController::class, 'index'])->middleware(['auth', 'twofactor']);
-    
-    
+
+
     Route::get('/packages', [PaymentsContoller::class, 'Packages']);
     Route::get('/pruchase_package', [PaymentsContoller::class, 'doPackagePurchase'])->name('pruchase_package');
     Route::get('/pruchase_thankyou', [PaymentsContoller::class, 'Pruchase_Thankyou'])->name('pruchase_thankyou');
@@ -65,6 +66,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Category Routes
     Route::get('/category/list', [ProductCategoryController::class, 'index'])->name('category.list');
     Route::get('/category/show/{id}', [ProductCategoryController::class, 'show'])->name('category.show');
+
+    // Customer Routes
+    Route::get('/customer/list', [CustomerController::class, 'index'])->name('customer.list');
+    Route::get('/customer/show/{id}', [CustomerController::class, 'show'])->name('customer.show');
+
     //Sub-Category Routes
     Route::get('/sub-category/list', [ProductSubCategoryController::class, 'index'])->name('sub-category.list');
     Route::get('/sub-category/show/{id}', [ProductSubCategoryController::class, 'show'])->name('sub-category.show');
@@ -74,6 +80,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Quotation Routes
     Route::get('/quotation/list', [QuotationController::class, 'index'])->name('quotation.list')->middleware([Subscribed::class]);
+    Route::get('/quotation/download/{id}', [QuotationController::class, 'proposalDownload'])->name('qoutation.download');
 
 });
 

@@ -33,6 +33,7 @@ return new class extends Migration
             $table->text('compliance');
             $table->text('timelines');
             $table->text('warranty_clause');
+            $table->softDeletes();
 
         });
     }
