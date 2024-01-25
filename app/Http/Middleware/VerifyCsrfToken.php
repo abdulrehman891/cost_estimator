@@ -13,6 +13,6 @@ class VerifyCsrfToken extends Middleware
      */
     protected $except = [
         //
-        'login','stripre_hook_handler','stripe/*'
+        'login','stripre_hook_handler','signnow_hook_handler','stripe/*'
         ];
 }

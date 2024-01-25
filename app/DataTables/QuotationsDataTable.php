@@ -11,6 +11,7 @@ use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Html\Editor\Editor;
 use Yajra\DataTables\Html\Editor\Fields;
 use Yajra\DataTables\Services\DataTable;
+use App\Http\Controllers\JLSignnowHelpersController;
 
 class QuotationsDataTable extends DataTable
 {
@@ -21,6 +22,7 @@ class QuotationsDataTable extends DataTable
      */
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
+        
         return (new EloquentDataTable($query))
             ->editColumn('created_at', function (Quotation $quotation) {
                 return $quotation->created_at->format('d M Y, h:i a');
@@ -29,7 +31,8 @@ class QuotationsDataTable extends DataTable
                 return $quotation->updated_at->format('d M Y, h:i a');
             })
             ->addColumn('action', function (Quotation $quotation) {
-                return view('pages/apps.quotation.columns._actions', compact('quotation'));
+                $signnow_helper_obj = new JLSignnowHelpersController();
+                return view('pages/apps.quotation.columns._actions', compact('quotation','signnow_helper_obj'));
             })
             ->setRowId('id');
     }
@@ -69,6 +72,8 @@ class QuotationsDataTable extends DataTable
             Column::make('manufacturer'),
             Column::make('created_at'),
             Column::make('updated_at'),
+            Column::make('status'),
+            Column::make('status_update_at'),
             Column::computed('action')
                 ->addClass('text-end text-nowrap')
                 ->exportable(false)

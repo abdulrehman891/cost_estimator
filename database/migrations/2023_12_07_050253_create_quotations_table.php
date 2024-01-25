@@ -15,7 +15,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->timestamps();
             $table->foreignUuid('project_id')->nullable();
-            $table->foreignUuid('customer_id');
+            $table->foreignUuid('customer_id')->nullable();
             $table->foreignUuid('created_by');
             $table->date('prepared_date');
             $table->text('assembly_type');
@@ -34,8 +34,10 @@ return new class extends Migration
             $table->text('compliance');
             $table->text('timelines');
             $table->text('warranty_clause');
+            $table->text('signnow_document_id')->nullable();
+            $table->text('status')->nullable();
+            $table->dateTime('status_update_at')->nullable();
             $table->softDeletes();
-
         });
     }
 

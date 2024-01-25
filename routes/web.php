@@ -17,7 +17,9 @@ use App\Http\Controllers\PaymentsContoller;
 use App\Http\Controllers\StripeResponseHookHandler;
 use App\Http\Controllers\CompanyProfileController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\JLSignnowHelpersController;
 use App\Http\Controllers\ProductPriceHistoryController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -37,6 +39,7 @@ Route::middleware(['auth', 'twofactor'])->group(function () {
 });
 
 Route::post('/stripre_hook_handler', [StripeResponseHookHandler::class, 'handleWebhook']);
+Route::post('/signnow_hook_handler', [JLSignnowHelpersController::class, 'handleWebhook']);
 
 Route::middleware(['auth', 'verified'])->group(function () {
 
@@ -86,6 +89,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Quotation Routes
     Route::get('/quotation/list', [QuotationController::class, 'index'])->name('quotation.list')->middleware([Subscribed::class]);
     Route::get('/quotation/download/{id}', [QuotationController::class, 'downloadProposal'])->name('qoutation.download');
+    Route::get('/quotation/preview_doc/{signnow_document_id}', [JLSignnowHelpersController::class, 'previewDoc'])->name('qoutation.preview_doc');
     Route::get('/quotation/send/{id}', [QuotationController::class, 'sendProposal'])->name('qoutation.send');
 
 });
