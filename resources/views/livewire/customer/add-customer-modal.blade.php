@@ -56,6 +56,16 @@
                             <!--end::Input-->
                         </div>
                         <!--end::Input group-->
+                        <!--begin::Input group-->
+                        <div class="fv-row mb-7">
+                            <!--begin::Label-->
+                            <label class="required fw-semibold fs-6 mb-2">Address</label>
+                            <!--end::Label-->
+                            <!--begin::Input-->
+                            <input type="text" wire:model.defer="address" name="address" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Address"/>
+                            <!--end::Input-->
+                        </div>
+                        <!--end::Input group-->
 
                         <!--begin::Input group-->
                         <div class="fv-row mb-7">
@@ -67,7 +77,6 @@
                             <!--end::Input-->
                         </div>
                         <!--end::Input group-->
-
                         <!--begin::Input group-->
                         <div class="fv-row mb-7">
                             <!--begin::Label-->
@@ -82,10 +91,10 @@
                         <!--begin::Input group-->
                         <div class="fv-row mb-7">
                             <!--begin::Label-->
-                            <label class="required fw-semibold fs-6 mb-2">Company Address</label>
+                            <label class="required fw-semibold fs-6 mb-2">Company Email</label>
                             <!--end::Label-->
                             <!--begin::Input-->
-                            <input type="text" wire:model.defer="company_address" name="company_address" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Company Address"/>
+                            <input type="text" wire:model.defer="company_email" name="company_email" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Company Email"/>
                             <!--end::Input-->
                         </div>
                         <!--end::Input group-->
@@ -93,10 +102,10 @@
                         <!--begin::Input group-->
                         <div class="fv-row mb-7">
                             <!--begin::Label-->
-                            <label class="required fw-semibold fs-6 mb-2">Company Email</label>
+                            <label class="required fw-semibold fs-6 mb-2">Company Address</label>
                             <!--end::Label-->
                             <!--begin::Input-->
-                            <input type="text" wire:model.defer="company_email" name="company_email" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Company Email"/>
+                            <input type="text" wire:model.defer="company_address" name="company_address" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Company Address"/>
                             <!--end::Input-->
                         </div>
                         <!--end::Input group-->

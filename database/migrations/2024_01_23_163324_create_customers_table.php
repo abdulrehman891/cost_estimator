@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignUuid('created_by');
             $table->string('name');
             $table->string('email');
+            $table->string('address');
             $table->string('phone_number');
             $table->string('company_name');
             $table->string('company_address');
