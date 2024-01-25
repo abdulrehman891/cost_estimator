@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\DataTables\ProjectsDataTable;
 use App\Models\Project;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
 
 class ProjectController extends Controller
 {
@@ -13,8 +14,12 @@ class ProjectController extends Controller
      */
     public function index(ProjectsDataTable $projectsDataTable)
     {
-        //
-        return $projectsDataTable->render('pages/apps.project.list');
+        $user = auth()->user();
+        if($user->can('view projects')){
+            return $projectsDataTable->render('pages/apps.project.list');
+        } else {
+            return Redirect::to('dashboard');
+        }
     }
 
     /**
@@ -38,8 +43,13 @@ class ProjectController extends Controller
      */
     public function show(Request $project)
     {
-        $project = Project::with('user')->find($project->id);
-        return view('pages/apps.project.show', compact('project'));
+        $user = auth()->user();
+        if($user->can('view projects')){
+            $project = Project::with('user')->find($project->id);
+            return view('pages/apps.project.show', compact('project'));
+        } else {
+            return Redirect::to('dashboard');
+        }
     }
 
     /**

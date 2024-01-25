@@ -59,6 +59,11 @@ Breadcrumbs::for('products.list', function (BreadcrumbTrail $trail) {
     $trail->push('Product List', route('product.list'));
 });
 
+// Home > Dashboard > product-price-history > List
+Breadcrumbs::for('product-price-history.list', function (BreadcrumbTrail $trail) {
+        $trail->push('Product Price History List', route('product-price-history.list'));
+    });
+
 // Home > Dashboard > project > List
 Breadcrumbs::for('project.list', function (BreadcrumbTrail $trail) {
 //    $trail->parent('product.list');

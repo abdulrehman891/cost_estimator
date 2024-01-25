@@ -17,6 +17,7 @@ use App\Http\Controllers\PaymentsContoller;
 use App\Http\Controllers\StripeResponseHookHandler;
 use App\Http\Controllers\CompanyProfileController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\ProductPriceHistoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -59,6 +60,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Product Routes
     Route::get('/product/list', [ProductController::class, 'index'])->name('product.list');
     Route::get('/product/show/{id}', [ProductController::class, 'show'])->name('product.show');
+
+    // Product Price History Routes
+    Route::get('/product-price-history/list', [ProductPriceHistoryController::class, 'index'])->name('product-price-history.list');
+    Route::get('/product-price-history/show/{id}', [ProductPriceHistoryController::class, 'show'])->name('product-price-history.show');
 
     // Product Routes
     Route::get('/project/list', [ProjectController::class, 'index'])->name('project.list');

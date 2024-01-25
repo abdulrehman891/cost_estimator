@@ -6,6 +6,7 @@ use App\DataTables\QuotationsDataTable;
 use App\Models\Quotation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Redirect;
 
 class QuotationController extends Controller
 {
@@ -15,7 +16,12 @@ class QuotationController extends Controller
     public function index(QuotationsDataTable $quotationDataTable)
     {
         //
-        return $quotationDataTable->render('pages/apps.quotation.list');
+        $user = auth()->user();
+        if($user->can('view quotations')){
+            return $quotationDataTable->render('pages/apps.quotation.list');
+        } else {
+            return Redirect::to('dashboard');
+        }
     }
 
     public function downloadProposal(Request $quoation_id)

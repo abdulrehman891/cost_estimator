@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\DataTables\ProductCategoriesDataTable;
 use App\Models\ProductCategory;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Redirect;
 class ProductCategoryController extends Controller
 {
     /**
@@ -39,8 +39,14 @@ class ProductCategoryController extends Controller
     public function show(Request $productCategory)
     {
         //
-        $productCategory = ProductCategory::with('user')->find($productCategory->id);
-        return view('pages/apps.category.show', compact('productCategory'));
+        $user = auth()->user();
+        if($user->can('view categories')){
+            $productCategory = ProductCategory::with('user')->find($productCategory->id);
+            return view('pages/apps.category.show', compact('productCategory'));
+        } else {
+            return Redirect::to('dashboard');
+        }
+
     }
 
     /**

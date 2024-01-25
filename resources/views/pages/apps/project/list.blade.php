@@ -22,6 +22,7 @@
             </div>
             <!--begin::Card title-->
 
+            @can("create projects")
             <!--begin::Card toolbar-->
             <div class="card-toolbar">
                 <!--begin::Toolbar-->
@@ -40,6 +41,7 @@
                 <!--end::Modal-->
             </div>
             <!--end::Card toolbar-->
+            @endcan
         </div>
         <!--end::Card header-->
 

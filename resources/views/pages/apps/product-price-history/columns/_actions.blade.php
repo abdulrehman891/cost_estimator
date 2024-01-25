@@ -5,9 +5,9 @@
 <!--begin::Menu-->
 <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-semibold fs-7 w-125px py-4" data-kt-menu="true">
     <!--begin::Menu item-->
-    @can("view projects")
+    @can("view products")
     <div class="menu-item px-3">
-        <a href="{{ route('project.show', $project) }}" class="menu-link px-3">
+        <a href="{{ route('product-price-history.show', $product_price_history) }}" class="menu-link px-3">
             View
         </a>
     </div>
@@ -15,19 +15,9 @@
     @endcan
 
     <!--begin::Menu item-->
-    @can("edit projects")
+    @can("delete products")
     <div class="menu-item px-3">
-        <a href="#" class="menu-link px-3" data-kt-project-id="{{ $project->id }}" data-bs-toggle="modal" data-bs-target="#kt_modal_add_project" data-kt-action="update_row">
-            Edit NOW
-        </a>
-    </div>
-    <!--end::Menu item-->
-    @endcan
-
-    <!--begin::Menu item-->
-    @can("delete projects")
-    <div class="menu-item px-3">
-        <a href="#" class="menu-link px-3" data-kt-project-id="{{ $project->id }}" data-kt-action="delete_row">
+        <a href="#" class="menu-link px-3" data-kt-product-price-history-id="{{ $product_price_history->id }}" data-kt-action="delete_row">
             Delete
         </a>
     </div>

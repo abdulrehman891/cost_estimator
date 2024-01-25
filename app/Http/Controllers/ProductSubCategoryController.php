@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\DataTables\ProductSubCategoriesDataTable;
 use App\Models\ProductSubCategory;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Redirect;
 class ProductSubCategoryController extends Controller
 {
     /**
@@ -39,8 +39,13 @@ class ProductSubCategoryController extends Controller
     public function show(Request $productSubCategory)
     {
         //
-        $productSubCategory = ProductSubCategory::with('user','product_category')->find($productSubCategory->id);
-        return view('pages/apps.sub-category.show', compact('productSubCategory'));
+        $user = auth()->user();
+        if($user->can('view subcategories')){
+            $productSubCategory = ProductSubCategory::with('user','product_category')->find($productSubCategory->id);
+            return view('pages/apps.sub-category.show', compact('productSubCategory'));
+        } else {
+            return Redirect::to('dashboard');
+        }
     }
 
     /**
