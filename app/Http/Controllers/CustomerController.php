@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\DataTables\CustomersDataTable;
 use App\Models\Customer;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
 
 class CustomerController extends Controller
 {
@@ -14,7 +15,13 @@ class CustomerController extends Controller
     public function index(CustomersDataTable $customersDataTable)
     {
         //
-        return $customersDataTable->render('pages/apps.customer.list');
+        $user = auth()->user();
+        if($user->can('view customers')){
+            return $customersDataTable->render('pages/apps.customer.list');
+        } else {
+            return Redirect::to('dashboard');
+        }
+
     }
 
     /**

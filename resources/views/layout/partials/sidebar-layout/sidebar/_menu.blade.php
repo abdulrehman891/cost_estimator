@@ -72,7 +72,7 @@
             @endcan
             {{-- Quotations End --}}
 
-            @can("view projects")
+            @can("view customers")
             <div data-kt-menu-trigger="click" class="menu-item menu-accordion {{ request()->routeIs('project.*') ? 'here show' : '' }}">
                 <!--begin:Menu link-->
                 <span class="menu-link">
