@@ -36,6 +36,17 @@
             </div>
             <div class="row">
                 <div class="col-md-6 mb-4">
+                    <label for="description" class="required fw-semibold fs-6 mb-2">Email</label>
+                    <input type="text" wire:model.defer="email" id="email" name="email" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Email"/>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <label for="created_by" class="required fw-semibold fs-6 mb-2">Established Year</label>
+                    <input class="form-control form-control-solid" wire:model.defer="established_date" placeholder="Pick a date" name="established_date" id="established_date"/>
+
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-4">
                     <label for="description" class="required fw-semibold fs-6 mb-2">Logo</label>
                     <input wire:model.defer="image" accept="image/png,image/jpeg" type="file" id="image" class="form-control mb-3 mb-lg-0">
                     @if($image)
@@ -49,11 +60,7 @@
                         @endif
                     @endif
                 </div>
-                <div class="col-md-6 mb-4">
-                    <label for="created_by" class="required fw-semibold fs-6 mb-2">Established Year</label>
-                    <input class="form-control form-control-solid" wire:model.defer="established_date" placeholder="Pick a date" name="established_date" id="established_date"/>
 
-                </div>
             </div>
             <!--end::Input group-->
             <!--begin::Input group-->

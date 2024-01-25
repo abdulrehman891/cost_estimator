@@ -16,6 +16,7 @@ class CompanyProfile extends Model
     protected $fillable = [
         'name',
         'slogan',
+        'email',
         'description',
         'address',
         'phone',

@@ -10,6 +10,7 @@ use App\Models\QuoteLineItem;
 use Livewire\Component;
 use App\Models\User;
 use App\Models\Project;
+use App\Models\Customer;
 use App;
 use PDF;
 use Illuminate\Support\Facades\Storage;
@@ -89,6 +90,10 @@ class AddQuotationModal extends Component
     //end of QuoteLine Module
     public $projectMilestoneArray = [];
     public $users_list;
+
+    public $customer_list;
+    public $customer_id;
+
     public $res_chatGPT="";
 
     protected $rules = [
@@ -131,6 +136,7 @@ class AddQuotationModal extends Component
         $this->currentStep = 1;
         $this->products_list =  Product::all();
         $this->users_list = User::all();
+        $this->customer_list = Customer::all();
     }
     public function addMilestone(){
         $this->milestone_list[] ='';
@@ -153,8 +159,13 @@ class AddQuotationModal extends Component
         addVendors(['formrepeater']);
         return view('livewire.quotation.add-quotation-modal');
     }
+    public function hydrate()
+    {
+        $this->emit('select2');
+    }
 
     public function updated($key, $value){
+//        dd($key);
         $this->saved = FALSE;
 
         $parts = explode(".",$key);
@@ -211,6 +222,7 @@ class AddQuotationModal extends Component
         $quotation_obj->manufacturer = $this->manufacturer;
         $quotation_obj->sq_walls = $this->sq_walls;
         $quotation_obj->sq_field = $this->sq_field;
+        $quotation_obj->customer_id = $this->customer_id;
         $quotation_obj->warranty = $this->warranty;
         $quotation_obj->parapet_length = $this->parapet_length;
         $quotation_obj->building_height = $this->building_height;

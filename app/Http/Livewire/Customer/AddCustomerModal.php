@@ -63,7 +63,6 @@ class AddCustomerModal extends Component
             $this->emit('success', __('New Customer created'));
         }
     }
-
     public function updateCustomer($id){
         $this->edit_mode = true;
         $customer = Customer::find($id);

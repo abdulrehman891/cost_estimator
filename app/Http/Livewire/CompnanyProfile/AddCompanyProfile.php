@@ -17,6 +17,7 @@ class AddCompanyProfile extends Component
     public $slogan;
     public $description;
     public $address;
+    public $email;
     public $phone_number;
     public $website;
 
@@ -39,6 +40,7 @@ class AddCompanyProfile extends Component
             $this->phone_number = $this->companyProfile->phone;
             $this->website = $this->companyProfile->website;
             $this->company_id = $this->companyProfile->id;
+            $this->email = $this->companyProfile->email;
 
 //            $file = UploadedFile::fake()->create($this->companyProfile->logo);
 //            $file = new File($this->companyProfile->logo);
@@ -73,6 +75,7 @@ class AddCompanyProfile extends Component
             $data['description'] = $this->description;
             $data['address'] = $this->address;
             $data['phone'] = $this->phone_number;
+            $data['email'] = $this->email;
             $data['website'] = $this->website;
             $data['established'] = $this->established_date;
             $data['user_id'] = Auth::user()->id;

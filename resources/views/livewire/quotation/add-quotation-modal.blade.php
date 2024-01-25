@@ -238,10 +238,24 @@
                                                 <!--begin::Label-->
                                                 <label class="required fw-semibold fs-6 mb-2">Project Manager</label>
                                                 <!--end::Label-->
-                                                <select class="form-select" name="project_manager" id="project_manager" data-control="select2" data-placeholder="Select an option">
+                                                <select class="form-select"  name="project_manager" id="project_manager" data-control="select2" data-placeholder="Select an option">
                                                     <option></option>
                                                     @foreach($users_list as $user)
-                                                        <option value="{{$user->id}}">{{$user->name}}</option>
+                                                        <option value="{{$user->id}}"  {{ $project_manager == $user->id ? 'selected' : '' }}>{{$user->name}}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <!--end::Input group-->
+
+                                            <!--begin::Input group-->
+                                            <div class="fv-row mb-10">
+                                                <!--begin::Label-->
+                                                <label class="required fw-semibold fs-6 mb-2">Customers</label>
+                                                <!--end::Label-->
+                                                <select class="form-select" name="customer" id="customer" data-control="select2" data-placeholder="Select an option">
+                                                    <option></option>
+                                                    @foreach($customer_list as $customer)
+                                                        <option value="{{$customer->id}}" {{ $customer_id == $customer->id ? 'selected' : '' }}>{{$customer->name}}</option>
                                                     @endforeach
                                                 </select>
                                             </div>
@@ -576,6 +590,16 @@
                 onReady: function () {
                 },
                 dateFormat: "Y-m-d",
+            });
+
+            $('#customer').on('change',function (e){
+                var data = $('#customer').select2('val')
+            @this.set('customer_id',data)
+            });
+
+            $('#project_manager').on('change',function (e){
+                var data = $('#project_manager').select2('val')
+            @this.set('project_manager',data)
             });
 
         // function changeProductEvent(element){
