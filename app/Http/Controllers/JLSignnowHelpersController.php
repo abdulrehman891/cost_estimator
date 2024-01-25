@@ -155,7 +155,7 @@ class JLSignnowHelpersController extends Controller
             }
             $entityManager = $this->auth->bearerAuthorization($access_token);
 
-            if (empty($request->input('sign_doc_name')) || empty($request->input('send_to_email')) || empty($request->input('fields'))) {
+            if (empty($request->input('sign_doc_name')) || empty($request->input('manager_email')) || empty($request->input('send_to_email')) || empty($request->input('fields'))) {
                 $response = [
                     'status' => false,
                     'msg' => 'Missing Params',
@@ -165,6 +165,7 @@ class JLSignnowHelpersController extends Controller
 
             $sign_doc_name = $request->input('sign_doc_name');
             $signerEmail = $request->input('send_to_email');
+            $manager_email = $request->input('manager_email');
             $fields = $request->input('fields');
             $new_doc_name = $sign_doc_name . "--" . date('Y:m:j:h:i');
 
@@ -180,19 +181,6 @@ class JLSignnowHelpersController extends Controller
             // echo "<br>The Doc to sign=$documentUniqueId<br>";           
             $message = "CS invited you to sign the quote";
             $cc = [];
-
-
-            // $input_data=array(
-            //     "company_name"=> "Quote Estimator Company",
-            //     "company_street_address"=> "Street Number 1",
-            //     "company_city_state_zip"=> "New York, NY, 61255524",
-            //     "company_phone"=> "+12525252525",
-            //     "company_email"=> "contractor@gmail.com",
-            //     "client_name"=> "Mr Ali",
-            //     "client_company_name"=> "Automatve",
-            //     "client_street_address"=> "Street Number 2",
-            //     "client_city_state_zip"=> "Viana, VN, A8569",
-            // );
 
             $input_data = $fields;
 
@@ -219,7 +207,7 @@ class JLSignnowHelpersController extends Controller
 
             //send the invite to the project manager
             $company_roleName = "Company_Manager";
-            $to[] = (new Recipient($this->from, $company_roleName, "", 1))
+            $to[] = (new Recipient($manager_email, $company_roleName, "", 1))
                 ->setSubject($this->subject)
                 ->setMessage($message);
 
@@ -229,7 +217,7 @@ class JLSignnowHelpersController extends Controller
             $to[] = (new Recipient($signerEmail, $roleName, $roleUniqueId, 2))
                 ->setSubject($this->subject)
                 ->setMessage($message);
-
+ 
             $invite = new Invite($this->from, $to, $cc);
 
             $res = $entityManager->create($invite, ["documentId" => $documentUniqueId]);

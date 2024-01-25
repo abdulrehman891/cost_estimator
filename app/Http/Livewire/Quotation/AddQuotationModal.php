@@ -164,6 +164,14 @@ class AddQuotationModal extends Component
         $this->emit('select2');
     }
 
+    public function toFloatTwo($number){
+        return (!empty($number) && is_numeric($number))? number_format((float)$number, 2, '.', ''):0;
+    }
+
+    public function toIntSimple($number){
+        return (!empty($number) && is_numeric($number))? (int)$number:0;
+    }
+
     public function updated($key, $value){
 //        dd($key);
         $this->saved = FALSE;
@@ -176,11 +184,10 @@ class AddQuotationModal extends Component
         if(count($parts) == 2 && $parts[0] == "quantity"){
             if($this->discount_price)
             {
-                $this->total_price[$parts[1]] = $this->unit_price[$parts[1]] * $value - $this->discount_price[$parts[1]];
+                $this->total_price[$parts[1]] = $this->toFloatTwo($this->unit_price[$parts[1]]) * $this->toIntSimple($value) - $this->toFloatTwo($this->discount_price[$parts[1]]);
             }else{
-                $this->total_price[$parts[1]] = $this->unit_price[$parts[1]] * $value;
+                $this->total_price[$parts[1]] = $this->toFloatTwo($this->unit_price[$parts[1]]) * $this->toIntSimple($value);
             }
-
         }
     }
     public function submit(){

@@ -39,28 +39,33 @@ class QuotationController extends Controller
 
     public function sendProposal($quotation_id)
     {
+        // session()->flash('message', 'Post successfully updated.');
+        // return redirect()->route('quotation.list')->with('success', 'your message,here');
+
         //send the quotation to the selected customer
-        $customer_id = "a0f7f959-d86a-45e8-888b-2b24eef131a0";
-        $customer_details = Customer::find($customer_id);
         $quotation_id = urldecode($quotation_id);
         $quote_data = Quotation::with('project')->find($quotation_id);
         $manager_id = (!empty($quote_data->project->manager_id)) ? $quote_data->project->manager_id : 1;
         $manager_details = User::select('name')->find($manager_id);
         $manager_company_details = CompanyProfile::where('user_id', '=', $manager_id)->first();
+        $customer_details = Customer::find($quote_data->customer_id);
 
-        // echo "<pre>";
+        //echo "<pre>";
         // print_r($customer_details);
         // print_r($quote_data->project);
         // print_r($manager_details['name']);
         // print_r($quote_data);
+        // print_r($manager_company_details->email);
         // die;
 
-        $from_company_email = "testmanager33@mailinator.com";
-        $cont = new JLSignnowHelpersController($from_company_email);
+        $manager_email = auth()->user()->email;
+        $manager_email = "testmanager44@mailinator.com";
+
+        $cont = new JLSignnowHelpersController($manager_company_details->email);
         $request_data = array(
             'sign_doc_name' => $cont->doc_name_pre . $quote_data->project->name,
             'send_to_email' => $customer_details->email,
-            'manager_email' => $customer_details->email,
+            'manager_email' => $manager_email,
             'fields' => array(
                 //preject related data
                 'client_project_name' => $quote_data->project->name,
@@ -88,8 +93,7 @@ class QuotationController extends Controller
             //signnow_document_id
             $updated_data = array(
                 'signnow_document_id' => $send_doc_response->getData()->documentUniqueId,
-                'status' => 'Pending_Manager_Signature',
-                'customer_id' => $customer_id,
+                'status' => 'Pending_Manager_Signature'
             );
             $quote_data->update($updated_data);
         } else {
