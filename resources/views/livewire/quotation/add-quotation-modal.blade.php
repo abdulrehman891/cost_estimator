@@ -297,7 +297,7 @@
                                 <!--end::Step 2-->
 
                                 <!--begin::Step 3-->
-                                @if($currentStep == 3)
+                                @if($currentStep == 3)                                
                                 <div class="card">
                                     <div class="card-header bg-secondary text-black"><h3 class="card-title">STEP 3/5 - Quotation</h3></div>
                                     <div class="card-body">
@@ -404,6 +404,13 @@
                                     </div>
                                     </div>
                                 </div>
+                                <script>
+                                    $("#prepared_date").flatpickr({
+                                        onReady: function () {
+                                    },
+                                        dateFormat: "Y-m-d",
+                                    });
+                                </script>
                                 @endif
                                 <!--end::Step 3-->
 
