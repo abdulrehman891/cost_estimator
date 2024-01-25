@@ -14,7 +14,7 @@ class Quotation extends Model
 {
     use HasFactory, HasUuids, SoftDeletes;
 
-    protected $fillable = ['project_id','created_by','prepared_date','assembly_type','manufacturer','sq_field','parapet_length','warranty','sq_walls','building_height','deck_type'];
+    protected $fillable = ['project_id','created_by','prepared_date','assembly_type','manufacturer','sq_field','parapet_length','warranty','sq_walls','building_height','deck_type','signnow_document_id','status','status_update_at'];
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class,'created_by');

@@ -42,6 +42,7 @@
 			<!--end:Menu item-->
 			<!--begin:Menu item-->
 
+            @can("view quotations")
             <div data-kt-menu-trigger="click" class="menu-item menu-accordion {{ request()->routeIs('quotation.*') ? 'here show' : '' }}">
                 <!--begin:Menu link-->
                 <span class="menu-link">
@@ -68,7 +69,10 @@
                 </div>
                 <!--end:Menu sub-->
             </div>
+            @endcan
+            {{-- Quotations End --}}
 
+            @can("view projects")
             <div data-kt-menu-trigger="click" class="menu-item menu-accordion {{ request()->routeIs('project.*') ? 'here show' : '' }}">
                 <!--begin:Menu link-->
                 <span class="menu-link">
@@ -94,7 +98,10 @@
                 </div>
                 <!--end:Menu sub-->
             </div>
+            @endcan
 
+
+            @can("view categories")
             <div data-kt-menu-trigger="click" class="menu-item menu-accordion {{ request()->routeIs('category.*') ? 'here show' : '' }}">
                 <!--begin:Menu link-->
                 <span class="menu-link">
@@ -121,7 +128,11 @@
                 </div>
                 <!--end:Menu sub-->
             </div>
+            @endcan
+            {{-- Categories End --}}
 
+
+            @can("view subcategories")
             <div data-kt-menu-trigger="click" class="menu-item menu-accordion {{ request()->routeIs('sub-category.*') ? 'here show' : '' }}">
                 <!--begin:Menu link-->
                 <span class="menu-link">
@@ -148,7 +159,10 @@
                 </div>
                 <!--end:Menu sub-->
             </div>
+            @endcan
+            {{-- SubCategories End --}}
 
+            @can("view products")
             <div data-kt-menu-trigger="click" class="menu-item menu-accordion {{ request()->routeIs('product.*') ? 'here show' : '' }}">
                 <!--begin:Menu link-->
                 <span class="menu-link">
@@ -175,8 +189,10 @@
                 </div>
                 <!--end:Menu sub-->
             </div>
+            @endcan
+            {{-- Products End --}}
 
-
+            @can("view projects")
             <div data-kt-menu-trigger="click" class="menu-item menu-accordion {{ request()->routeIs('project.*') ? 'here show' : '' }}">
                 <!--begin:Menu link-->
                 <span class="menu-link">
@@ -202,6 +218,10 @@
                 </div>
                 <!--end:Menu sub-->
             </div>
+            @endcan
+            {{-- Projects End --}}
+
+            @can("read user management")
 			<div data-kt-menu-trigger="click" class="menu-item menu-accordion {{ request()->routeIs('user-management.*') ? 'here show' : '' }}">
 				<!--begin:Menu link-->
 				<span class="menu-link">
@@ -252,6 +272,8 @@
 				<!--end:Menu sub-->
 			</div>
 			<!--end:Menu item-->
+            @endcan
+            {{-- User Management End --}}
 		</div>
 		<!--end::Menu-->
 	</div>

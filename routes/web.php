@@ -17,6 +17,9 @@ use App\Http\Controllers\PaymentsContoller;
 use App\Http\Controllers\StripeResponseHookHandler;
 use App\Http\Controllers\CompanyProfileController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\JLSignnowHelpersController;
+use App\Http\Controllers\ProductPriceHistoryController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -36,6 +39,7 @@ Route::middleware(['auth', 'twofactor'])->group(function () {
 });
 
 Route::post('/stripre_hook_handler', [StripeResponseHookHandler::class, 'handleWebhook']);
+Route::post('/signnow_hook_handler', [JLSignnowHelpersController::class, 'handleWebhook']);
 
 Route::middleware(['auth', 'verified'])->group(function () {
 
@@ -60,6 +64,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/product/list', [ProductController::class, 'index'])->name('product.list');
     Route::get('/product/show/{id}', [ProductController::class, 'show'])->name('product.show');
 
+    // Product Price History Routes
+    Route::get('/product-price-history/list', [ProductPriceHistoryController::class, 'index'])->name('product-price-history.list');
+    Route::get('/product-price-history/show/{id}', [ProductPriceHistoryController::class, 'show'])->name('product-price-history.show');
+
     // Product Routes
     Route::get('/project/list', [ProjectController::class, 'index'])->name('project.list');
     Route::get('/project/show/{id}', [ProjectController::class, 'show'])->name('project.show');
@@ -81,6 +89,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Quotation Routes
     Route::get('/quotation/list', [QuotationController::class, 'index'])->name('quotation.list')->middleware([Subscribed::class]);
     Route::get('/quotation/download/{id}', [QuotationController::class, 'downloadProposal'])->name('qoutation.download');
+    Route::get('/quotation/preview_doc/{signnow_document_id}', [JLSignnowHelpersController::class, 'previewDoc'])->name('qoutation.preview_doc');
     Route::get('/quotation/send/{id}', [QuotationController::class, 'sendProposal'])->name('qoutation.send');
 
 });

@@ -64,4 +64,9 @@ class Product extends Model
     {
         return $this->hasMany(QuoteLineItem::class);
     }
+
+    public function productPriceHistory()
+    {
+        return $this->hasMany(ProductPriceHistory::class);
+    }
 }

@@ -35,7 +35,7 @@
         </a>
     </div>
     <!--end::Menu item-->
-
+    @if(empty($quotation->signnow_document_id))
     <!--begin::Menu item-->
     <div class="menu-item px-3">
         <a href="{{ route('qoutation.send', $quotation) }}" class="menu-link px-3" data-kt-quotation-id="{{ $quotation->id }}" data-kt-action="send_row">
@@ -43,5 +43,15 @@
         </a>
     </div>
     <!--end::Menu item-->
+    @endif
+    @if(!empty($quotation->signnow_document_id) && $quotation->status!='Pending_Manager_Signature')
+    <!--begin::Menu item-->
+    <div class="menu-item px-3">
+        <a href="{{ route('qoutation.preview_doc', ['signnow_document_id'=>$quotation->signnow_document_id])}}" class="menu-link px-3" data-kt-quotation-id="{{ $quotation->id }}" data-kt-action="send_row">
+            Preview Doc.
+        </a>
+    </div>
+    <!--end::Menu item-->
+    @endif
 </div>
 <!--end::Menu-->
