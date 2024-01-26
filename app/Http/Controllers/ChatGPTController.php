@@ -13,14 +13,14 @@ class ChatGPTController extends Controller
             "Content-Type" => "application/json",
             "Authorization" => "Bearer ".env('OPENAI_API_KEY')
         ])->post(env('OPENAI_URL'),[
-            "model" => "gpt-3.5-turbo",
+            "model" => "gpt-3.5-turbo-1106",
             "messages" => [
                 [
                     "role" => "user",
                     "content" => $request->message
                 ]
             ],
-            "max_tokens" => 2048
+            "max_tokens" => 4096
         ])->body();
        return response()->json(json_decode($response));
     }
@@ -30,16 +30,17 @@ class ChatGPTController extends Controller
             "Content-Type" => "application/json",
             "Authorization" => "Bearer ".env('OPENAI_API_KEY')
         ])->timeout(60)->post(env('OPENAI_URL'),[
-            "model" => "gpt-3.5-turbo",
+            "model" => "gpt-3.5-turbo-1106",
             "messages" => [
                 [
                     "role" => "user",
                     "content" => $msg_data
                 ]
             ],
-            "max_tokens" => 2048
+            "max_tokens" => 4096
         ])->body();
         $data = json_decode($response, true);
+        //dd($data);
         $content = $data['choices'][0]['message']['content'];
         return $content;
     }

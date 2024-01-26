@@ -164,6 +164,14 @@ class AddQuotationModal extends Component
         $this->emit('select2');
     }
 
+    public function toFloatTwo($number){
+        return (!empty($number) && is_numeric($number))? number_format((float)$number, 2, '.', ''):0;
+    }
+
+    public function toIntSimple($number){
+        return (!empty($number) && is_numeric($number))? (int)$number:0;
+    }
+
     public function updated($key, $value){
 //        dd($key);
         $this->saved = FALSE;
@@ -176,11 +184,10 @@ class AddQuotationModal extends Component
         if(count($parts) == 2 && $parts[0] == "quantity"){
             if($this->discount_price)
             {
-                $this->total_price[$parts[1]] = $this->unit_price[$parts[1]] * $value - $this->discount_price[$parts[1]];
+                $this->total_price[$parts[1]] = $this->toFloatTwo($this->unit_price[$parts[1]]) * $this->toIntSimple($value) - $this->toFloatTwo($this->discount_price[$parts[1]]);
             }else{
-                $this->total_price[$parts[1]] = $this->unit_price[$parts[1]] * $value;
+                $this->total_price[$parts[1]] = $this->toFloatTwo($this->unit_price[$parts[1]]) * $this->toIntSimple($value);
             }
-
         }
     }
     public function submit(){
@@ -317,20 +324,46 @@ class AddQuotationModal extends Component
         $chat =new ChatGPTController();
         $formData = $this->getQuotationString();
 //        dd($formData);
-        $msg_data = "Create a construction project proposal by using below information Project Information
-Project Details:";
+/*
+        $msg_data = "I need you to work as an expert Construction Quotation Generator which has the ability to analyze and decode the Base64 Encoded given prameters and create a Construction Project Proposal by using provided information. The complete project information of project is as follows:
+            <--Project Details Section Start-->";
+       $msg_data .= base64_encode($formData['projectDetails']);
+        $msg_data .= "
+<--Project Details Section End -->
+
+        Modify and include the specific information in headings as per mentioned sections:
+Warranty, Inclusions, Payment Schedule, Compliance and Warranty Clause.
+
+Moreover, also mention Risk Factors for Quote Line Items using below Base64 Encoded details and calculate Total Quotable Price using total price of all Quote Line Items:
+        <--Quote Line Items Section Start-->";
+        $msg_data .= base64_encode($formData['quoteLineItemsDetails']);
+        $msg_data .= "
+        <--Quote Line Items Section End-->
+        Also include below Base64 Encoded Quotation Details and use in proposal:
+        <--Quotation Details Section Start-->";
+        $msg_data .= base64_encode($formData['quotationDetails']);
+        $msg_data .= "
+        <--Quotation Details Section End-->
+        Also write and include Validity and Disclaimers.format so that it can be sent to the client for approval.";
+        $msg_data .= " format so that it can be included in a PDF template";
+*/
+
+        $msg_data = "I need you to work as an expert Construction Quotation Generator. You have the ability to analyze and create a Construction Project Proposal by using provided information. The complete project information of project is as follows:
+            <--Project Details Start-->";
         $msg_data .= $formData['projectDetails'];
         $msg_data .= "
-
-        as per above details write details with below heading
-Warranty, Inclusions, Payment Schedule, Compliance and warranty clause
-moreover also mention risk factors for quote line items take below details and calculate line total and full total.";
-        $msg_data .= $formData['quoteLineItemsDetails'];
-        $msg_data .= " check below detail quotation details and use it in proposal
-        ";
+        <--Project Details End -->
+        <--Quotation Details Start-->";
         $msg_data .= $formData['quotationDetails'];
         $msg_data .= "
-
+        <--Quotation Details End-->
+        <--Quote Line Items Start-->";
+        $msg_data .= $formData['quoteLineItemsDetails'];
+        $msg_data .= "
+        <--Quote Line Items End-->
+        I need you to add details in points using above information and along with that, modify and include the specific information in headings as per mentioned sections:
+        Warranty, Inclusions, Payment Schedule, Compliance and Warranty Clause.
+        Moreover, also mention Risk Factors, Validity, Disclaimers and calculate Total Quotable Price using total price of all Quote Line Items.
             take above information and write proposal can be send to client for approval.
                         Also mention validity and disclaimers
                         Create around 250 words";
@@ -338,14 +371,40 @@ moreover also mention risk factors for quote line items take below details and c
         //sleep(2);
 
 //        dd($this->res_chatGPT);
-        $this->res_chatGPT = "";
+//        $this->res_chatGPT = "";
         $this->generatePDF($this->res_chatGPT,$quote_id,$formData['projectDetails']); // Generate PDF from the response
+
+        info($msg_data);
+
+
+        $this->res_chatGPT =$chat->createPurposalChatGPT($msg_data);
+        sleep(2);
+       // $this->res_chatGPT = "";
+       info("Chat GPT Response=>");
+       info($this->res_chatGPT);
+
+        $this->generatePDF($this->res_chatGPT,$quote_id, $formData['projectDetails']); // Generate PDF from the response
 //        $this->isLoading = false; // Stop loading
 //        $this->emit('dataUpdated');
+
     }
 
-    private function generatePDF($response,$quote_id,$project_details)
+    private function generatePDF($response,$quote_id, $project_details)
     {
+
+        $data = [
+            'project_details' => json_decode($project_details, true),
+            'prepared_date' => $this->prepared_date,
+            'inclusion' => $this->inclusions,
+            'exclusions' => $this->exclusions,
+            'payment_schedule' => $this->payment_schedule,
+            'price_escalation_clause' => $this->price_escalation_clause,
+            'alterations' => $this->alterations,
+            'compliance' => $this->compliance,
+            'timeline' => $this->timelines,
+            'warranty_clause' => $this->warranty_clause,
+            'chatGPTResponse' => $response,
+        ];
 
 //        if (Storage::disk('public')->exists('/uploads/docs_2.pdf')) {
 //            $filePath = Storage::disk('public')->path('uploads/docs_2.pdf');dd($filePath);

@@ -133,8 +133,7 @@
 {{--        <li>Scupper Boxes and Scupper Box Downspouts.</li>--}}
 {{--        <li>Post installation roof penetration tie-ins. (additional $750 for mobilization)</li>--}}
     </ul>
-
-    {{ $chatGPTResponse }}
+    {!! nl2br($chatGPTResponse) !!}
 {{--    <h2 class="mt-4">Lead Times:</h2>--}}
 {{--    <li>Expected lead time at the time of bidding is 2 - 3 weeks.</li>--}}
 
