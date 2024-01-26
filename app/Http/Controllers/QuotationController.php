@@ -45,6 +45,7 @@ class QuotationController extends Controller
         //send the quotation to the selected customer
         $quotation_id = urldecode($quotation_id);
         $quote_data = Quotation::with('project')->find($quotation_id);
+
         $manager_id = (!empty($quote_data->project->manager_id)) ? $quote_data->project->manager_id : 1;
         $manager_details = User::select('name')->find($manager_id);
         $manager_company_details = CompanyProfile::where('user_id', '=', $manager_id)->first();

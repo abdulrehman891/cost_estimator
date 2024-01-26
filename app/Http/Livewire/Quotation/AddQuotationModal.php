@@ -325,47 +325,79 @@ class AddQuotationModal extends Component
         $chat =new ChatGPTController();
         $formData = $this->getQuotationString();
 //        dd($formData);
+/*
         $msg_data = "I need you to work as an expert Construction Quotation Generator which has the ability to analyze and decode the Base64 Encoded given prameters and create a Construction Project Proposal by using provided information. The complete project information of project is as follows:
-            <--Base64 Encoded Project Details Section Start-->";
-        $msg_data .= base64_encode($formData['projectDetails']);
+            <--Project Details Section Start-->";
+       $msg_data .= base64_encode($formData['projectDetails']);
         $msg_data .= "
-<--Base64 Encoded Project Details Section End -->
+<--Project Details Section End -->
 
-        I need you to add details in points using above information and along with that, modify and include the specific information in headings as per mentioned sections:
+        Modify and include the specific information in headings as per mentioned sections:
 Warranty, Inclusions, Payment Schedule, Compliance and Warranty Clause.
 
 Moreover, also mention Risk Factors for Quote Line Items using below Base64 Encoded details and calculate Total Quotable Price using total price of all Quote Line Items:
-        <--Base64 Encoded Quote Line Items Section Start-->";
+        <--Quote Line Items Section Start-->";
         $msg_data .= base64_encode($formData['quoteLineItemsDetails']);
         $msg_data .= "
-<--Base64 Encoded Quote Line Items Section End-->
-
-        For more detailed proposal, also include below Base64 Encoded Quotation Details and use in proposal:
-        <--Base64 Encoded Quotation Details Section Start-->";
+        <--Quote Line Items Section End-->
+        Also include below Base64 Encoded Quotation Details and use in proposal:
+        <--Quotation Details Section Start-->";
         $msg_data .= base64_encode($formData['quotationDetails']);
         $msg_data .= "
-        <--Base64 Encoded Quotation Details Section End-->
+        <--Quotation Details Section End-->
+        Also write and include Validity and Disclaimers.format so that it can be sent to the client for approval.";
+        $msg_data .= " format so that it can be included in a PDF template";
+*/
 
-            In addition to above provided information, also write and include Validity and Disclaimers.
-            Combine all the above information and write proposal that can be sent to the client for approval.
-            "; //Create the proposal with around 1000 words
+        $msg_data = "I need you to work as an expert Construction Quotation Generator. You have the ability to analyze and create a Construction Project Proposal by using provided information. The complete project information of project is as follows:
+            <--Project Details Start-->";
+        $msg_data .= $formData['projectDetails'];
+        $msg_data .= "
+        <--Project Details End -->
+        <--Quotation Details Start-->";
+        $msg_data .= $formData['quotationDetails'];
+        $msg_data .= "
+        <--Quotation Details End-->
+        <--Quote Line Items Start-->";
+        $msg_data .= $formData['quoteLineItemsDetails'];
+        $msg_data .= "
+        <--Quote Line Items End-->
+        I need you to add details in points using above information and along with that, modify and include the specific information in headings as per mentioned sections:
+        Warranty, Inclusions, Payment Schedule, Compliance and Warranty Clause.
+        Moreover, also mention Risk Factors, Validity, Disclaimers and calculate Total Quotable Price using total price of all Quote Line Items.";
+        //Format the response so that it can be sent to the client for approval.";            
 
         info($msg_data);
 
+        
+        $this->res_chatGPT =$chat->createPurposalChatGPT($msg_data);
+        sleep(2);
+       // $this->res_chatGPT = "";
+       info("Chat GPT Response=>");
+       info($this->res_chatGPT);
 
-
-        /*
-//        $this->res_chatGPT =$chat->createPurposalChatGPT($msg_data);
-        //sleep(2);
-        $this->res_chatGPT = "";
-        $this->generatePDF($this->res_chatGPT,$quote_id); // Generate PDF from the response
+        $this->generatePDF($this->res_chatGPT,$quote_id, $formData['projectDetails']); // Generate PDF from the response
 //        $this->isLoading = false; // Stop loading
 //        $this->emit('dataUpdated');
-*/
+
     }
 
-    private function generatePDF($response,$quote_id)
+    private function generatePDF($response,$quote_id, $project_details)
     {
+
+        $data = [
+            'project_details' => json_decode($project_details, true),
+            'prepared_date' => $this->prepared_date,
+            'inclusion' => $this->inclusions,
+            'exclusions' => $this->exclusions,
+            'payment_schedule' => $this->payment_schedule,
+            'price_escalation_clause' => $this->price_escalation_clause,
+            'alterations' => $this->alterations,
+            'compliance' => $this->compliance,
+            'timeline' => $this->timelines,
+            'warranty_clause' => $this->warranty_clause,
+            'chatGPTResponse' => $response,
+        ];
 
 //        if (Storage::disk('public')->exists('/uploads/docs_2.pdf')) {
 //            $filePath = Storage::disk('public')->path('uploads/docs_2.pdf');dd($filePath);
@@ -375,7 +407,7 @@ Moreover, also mention Risk Factors for Quote Line Items using below Base64 Enco
 //        }
         try {
 //            $pdf = PDF::loadHTML("working is of HTML")->save('uploads/docs_2.pdf','public');
-            $pdf = PDF::loadView('pdf-template.proposal')->save("uploads/$quote_id.pdf",'public');
+            $pdf = PDF::loadView('pdf-template.proposal', $data)->save("uploads/$quote_id.pdf",'public');
             if($pdf){
                 return $pdf->download("uploads/$quote_id.pdf");
             }else{
