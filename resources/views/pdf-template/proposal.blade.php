@@ -60,7 +60,7 @@
 <div class="container mt-4">
     <div class="card border-0">
         <div class="card-body text-center">
-            <h5 class="card-title fw-bold  fs-1 text-decoration-underline">Twin Creek II</h5>
+            <h5 class="card-title fw-bold  fs-1 text-decoration-underline">{{ $project_details['project_name'] }}</h5>
             <p class="card-text fs-4">11464 Alamo Ranch, San Antonio, TX 78253</p>
         </div>
     </div>
@@ -72,9 +72,9 @@
         </div>
         <img src="img/image001.png" alt="">
         <div class="lower-text fs-5 text-black">
-            <span>Prepared Date: May 19, 2023</span>
+            <span>Prepared Date: {{ $prepared_date }}</span>
             <span>Estimator: Taylor Ivens</span>
-            <span>Project Manager: Steven Sartory</span>
+            <span>Project Manager: {{ $project_details['project_manager'] }}</span>
         </div>
     </div>
 
@@ -82,105 +82,108 @@
 <!-- section-two -->
 <div class="container">
     <h2 class="d-flex align-left   text-decoration-underline">Inclusions:</h2>
-    <p  class="d-flex text-start  ">Estimate accounts for all material, labor, and equipment. All material will be installed per manufacturer’s specifications. Any modifications in scope of work will require a written change order and may affect pricing. Estimate is based on plans provided by Galaxy Builders</p>
+    <p  class="d-flex text-start  ">{{ $inclusion }}</p>
 </div>
 
 <!-- section-three -->
 
-<h2 class="container d-flex align-left   text-decoration-underline mt-2">30-Year Architectural Shingles (Certainteed Landmark):</h2>
+{{--<h2 class="container d-flex align-left   text-decoration-underline mt-2">30-Year Architectural Shingles (Certainteed Landmark):</h2>--}}
 
 
-<div class="container mt-2 d-flex text-start">
+{{--<div class="container mt-2 d-flex text-start">--}}
 
 
-    <ul >
-        <li>Install synthetic underlayment to the entire substrate</li>
-        <li>Install 2” X 2” drip edge flashing to all eaves- Color TBD</li>
-        <li >Install Ice & water shield to all specified locations</li>
-        <li >Install galvanized pipe jack boots as needed</li>
-        <li >Paint all penetration pipes with manufacturer recommended paint</li>
-        <li >Fabricate and install headwall and sidewall flashing</li>
-        <li >Install starter shingles along all eaves and rakes</li>
-        <li >Install 30-Year architectural shingles to the field of the roof</li>
-        <li >Install corresponding hip and ridge shingles to ridge cap</li>
-        <li>Clear and haul off all job-related debris</li>
-    </ul>
-</div>
-<h2 class="container d-flex align-start   text-decoration-underline">60 Mil TPO (Mule-Hide):</h2>
-<div class="container mt-2 d-flex text-start">
+{{--    <ul >--}}
+{{--        <li>Install synthetic underlayment to the entire substrate</li>--}}
+{{--        <li>Install 2” X 2” drip edge flashing to all eaves- Color TBD</li>--}}
+{{--        <li >Install Ice & water shield to all specified locations</li>--}}
+{{--        <li >Install galvanized pipe jack boots as needed</li>--}}
+{{--        <li >Paint all penetration pipes with manufacturer recommended paint</li>--}}
+{{--        <li >Fabricate and install headwall and sidewall flashing  </li>--}}
+{{--        <li >Install starter shingles along all eaves and rakes</li>--}}
+{{--        <li >Install 30-Year architectural shingles to the field of the roof</li>--}}
+{{--        <li >Install corresponding hip and ridge shingles to ridge cap</li>--}}
+{{--        <li>Clear and haul off all job-related debris</li>--}}
+{{--    </ul>--}}
+{{--</div>--}}
+{{--<h2 class="container d-flex align-start   text-decoration-underline">60 Mil TPO (Mule-Hide):</h2>--}}
+{{--<div class="container mt-2 d-flex text-start">--}}
 
 
-    <ul >
-        <li>Mechanically Attach ½” Cover Board to substrate (R-Value 2.5)</li>
-        <li>Install 60 Mil TPO to field and walls (Fully Adhered)</li>
-        <li>Flash Shingle to TPO transition</li>
-        <li>Install edge flashing to all eaves- Color TBD</li>
-        <li>Install 891 Linear Feet of Termination Bar</li>
-        <li>Clear and haul off all job-related debris</li>
-    </ul>
-</div>
+{{--    <ul >--}}
+{{--        <li>Mechanically Attach ½” Cover Board to substrate (R-Value 2.5)</li>--}}
+{{--        <li>Install 60 Mil TPO to field and walls (Fully Adhered)</li>--}}
+{{--        <li>Flash Shingle to TPO transition</li>--}}
+{{--        <li>Install edge flashing to all eaves- Color TBD</li>--}}
+{{--        <li>Install 891 Linear Feet of Termination Bar</li>--}}
+{{--        <li>Clear and haul off all job-related debris</li>--}}
+{{--    </ul>--}}
+{{--</div>--}}
 <!-- section-four-->
 <div class="container mt-2 text-start">
     <h2>Exclusions:</h2>
     <ul >
-        <li>Rough Carpentry (wood nailers, decking, blocking, cants, and sheathing).</li>
-        <li>Painting.</li>
-        <li>MEP, flashings, curbs, pitch plans, and accessories.</li>
-        <li>Sheet Metal not related to roofing.</li>
-        <li>Protection of roof from other trades.</li>
-        <li>Canopy/Awning roofing and trim.</li>
-        <li>Scupper Boxes and Scupper Box Downspouts.</li>
-        <li>Post installation roof penetration tie-ins. (additional $750 for mobilization)</li>
+        {{ $exclusions }}
+{{--        <li>Rough Carpentry (wood nailers, decking, blocking, cants, and sheathing).</li>--}}
+{{--        <li>Painting.</li>--}}
+{{--        <li>MEP, flashings, curbs, pitch plans, and accessories.</li>--}}
+{{--        <li>Sheet Metal not related to roofing.</li>--}}
+{{--        <li>Protection of roof from other trades.</li>--}}
+{{--        <li>Canopy/Awning roofing and trim.</li>--}}
+{{--        <li>Scupper Boxes and Scupper Box Downspouts.</li>--}}
+{{--        <li>Post installation roof penetration tie-ins. (additional $750 for mobilization)</li>--}}
     </ul>
-    <h2 class="mt-4">Lead Times:</h2>
-    <li>Expected lead time at the time of bidding is 2 - 3 weeks.</li>
+
+    {{ $chatGPTResponse }}
+{{--    <h2 class="mt-4">Lead Times:</h2>--}}
+{{--    <li>Expected lead time at the time of bidding is 2 - 3 weeks.</li>--}}
 
 
-    <p><strong><u>Building A:</u></strong> Shingle: 340.66 SQ / TPO: 93.74 SQ</p>
-    <p>Total: $244,375.00</p>
+{{--    <p><strong><u>Building A:</u></strong> Shingle: 340.66 SQ / TPO: 93.74 SQ</p>--}}
+{{--    <p>Total: $244,375.00</p>--}}
 
-    <p> <strong><u>Building B:</u></strong> Shingle: 220 SQ / TPO: 59.34 SQ</p>
-    <p>Total: $157,835.00</p>
+{{--    <p> <strong><u>Building B:</u></strong> Shingle: 220 SQ / TPO: 59.34 SQ</p>--}}
+{{--    <p>Total: $157,835.00</p>--}}
 
-    <p> <strong><u>Building C:</u></strong>Shingle: 236.43 SQ / TPO: 62.07 SQ</p>
-    <p>Total: $169,580.00</p>
+{{--    <p> <strong><u>Building C:</u></strong>Shingle: 236.43 SQ / TPO: 62.07 SQ</p>--}}
+{{--    <p>Total: $169,580.00</p>--}}
 
-    <p><strong><u>Maintenance :</u></strong> Shingle: 32.59 SQ</p>
-    <p>Total: $23,370.00</p>
+{{--    <p><strong><u>Maintenance :</u></strong> Shingle: 32.59 SQ</p>--}}
+{{--    <p>Total: $23,370.00</p>--}}
 
-    <p><strong><u>Garage (2):</u></strong> Shingle: 20.69 SQ</p>
-    <p>Total Per Garage: $14,840.00</p>
-    <p>Total: $29,680.00</p>
+{{--    <p><strong><u>Garage (2):</u></strong> Shingle: 20.69 SQ</p>--}}
+{{--    <p>Total Per Garage: $14,840.00</p>--}}
+{{--    <p>Total: $29,680.00</p>--}}
 
-    <p><strong><u>Gutters:</u></strong>$34,910.00</p>
-    <p>1,815 Linear Feet of 5” K- Style Gutters - Aluminum</p>
-    <p>3,276 Linear Feet of 2x3 Downspouts</p>
+{{--    <p><strong><u>Gutters:</u></strong>$34,910.00</p>--}}
+{{--    <p>1,815 Linear Feet of 5” K- Style Gutters - Aluminum</p>--}}
+{{--    <p>3,276 Linear Feet of 2x3 Downspouts</p>--}}
 
-    <p style="color: #cc4125;">
-        SKYTRAK Telehandler:Not included in pricing</p>
-    <p style="color: #cc4125;">$7,000.00/month for rental</p>
-</div>
-<!-- section-five-->
-<div class="container mt-2 text-start">
-    <h5>Total: $659,750.00</h5>
+{{--    <p style="color: #cc4125;">--}}
+{{--        SKYTRAK Telehandler:Not included in pricing</p>--}}
+{{--    <p style="color: #cc4125;">$7,000.00/month for rental</p>--}}
+{{--</div>--}}
+{{--<!-- section-five-->--}}
+{{--<div class="container mt-2 text-start">--}}
+{{--    <h5>Total: $659,750.00</h5>--}}
 
     <h5 class="mt-4">Payment Schedule:</h5>
-    <p>LOA Construction will require a draw on materials to be paid within 30 days of delivery. A 33% draw can be paid prior to the delivery of material to lock in pricing. Otherwise, LOA Construction shall adjust the contract sum to reflect any changes in material pricing at the time of delivery. Balances will be invoiced in proportion to the work completed on a weekly basis.</p>
+    <p>{{ $payment_schedule }}</p>
 
     <h5 class="mt-4">Price Escalation Clause:</h5>
-    <p>Quote is good for 30 days. Due to volatile and random material price increases, the contract sum may be adjusted to reflect changes in material prices at the time of deposit or time of delivery (if no material deposit is collected).</p>
+    <p>{{ $price_escalation_clause }}</p>
 
     <h5 class="mt-4">Alterations:</h5>
-    <p>Any alterations due to material price increases or modifications to the original scope of work by the owner or contractor must be agreed upon between both parties before work shall commence. A change order will be sent and signed by both parties to indicate the changes made outside of this proposal. Payment for such alteration or modification shall be made at the time of the final completion of the work and reflected on the final invoice.</p>
+    <p>{{ $alterations }}</p>
 
     <h5 class="mt-4">Compliance:</h5>
-    <p>In performing under this agreement, all applicable governmental laws, regulations, orders, and safety procedures will be followed and complied with in all respects by both parties. LOA Construction will have a project manager on site to inspect the quality of work to ensure the project is running smoothly and will report back to the general contractor as needed.</p>
+    <p>{{ $compliance }}</p>
 
     <h5 class="mt-4">Timeline:</h5>
-    <p>LOA Construction will adhere to the provided timeline given to the project manager and the general contractor for this project.</p>
+    <p>{{ $timeline }}</p>
 
     <h5 class="mt-4">Warranty:</h5>
-    <p>5-Year Workmanship Warranty on Scope of Work Completed.</p>
+    <p>{{ $warranty_clause }}</p>
 
     <h5 class="mt-4">Contract Bid Accepted By:</h5>
     <p>Name: ______________________________</p>

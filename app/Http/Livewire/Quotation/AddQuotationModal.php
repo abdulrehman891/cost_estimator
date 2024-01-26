@@ -279,8 +279,7 @@ class AddQuotationModal extends Component
         $projectData['project_type'] =  $this->project_type;
         $project_manager = User::find($this->project_manager);
         if(!empty($project_manager->id)){
-
-            $projectData['project_manager'] =  $project_manager->first_name." ".$project_manager->last_name;
+            $projectData['project_manager'] =  $project_manager->name;
         } else {
 
             $projectData['project_manager'] =  "N/A";
@@ -337,13 +336,15 @@ moreover also mention risk factors for quote line items take below details and c
                         Create around 250 words";
 //        $this->res_chatGPT =$chat->createPurposalChatGPT($msg_data);
         //sleep(2);
+
+//        dd($this->res_chatGPT);
         $this->res_chatGPT = "";
-        $this->generatePDF($this->res_chatGPT,$quote_id); // Generate PDF from the response
+        $this->generatePDF($this->res_chatGPT,$quote_id,$formData['projectDetails']); // Generate PDF from the response
 //        $this->isLoading = false; // Stop loading
 //        $this->emit('dataUpdated');
     }
 
-    private function generatePDF($response,$quote_id)
+    private function generatePDF($response,$quote_id,$project_details)
     {
 
 //        if (Storage::disk('public')->exists('/uploads/docs_2.pdf')) {
@@ -354,7 +355,20 @@ moreover also mention risk factors for quote line items take below details and c
 //        }
         try {
 //            $pdf = PDF::loadHTML("working is of HTML")->save('uploads/docs_2.pdf','public');
-            $pdf = PDF::loadView('pdf-template.proposal')->save("uploads/$quote_id.pdf",'public');
+            $data = [
+                'project_details' => json_decode($project_details, true),
+                'prepared_date' => $this->prepared_date,
+                'inclusion' => $this->inclusions,
+                'exclusions' => $this->exclusions,
+                'payment_schedule' => $this->payment_schedule,
+                'price_escalation_clause' => $this->price_escalation_clause,
+                'alterations' => $this->alterations,
+                'compliance' => $this->compliance,
+                'timeline' => $this->timelines,
+                'warranty_clause' => $this->warranty_clause,
+                'chatGPTResponse' => "Chat GPT response will be there",
+            ];
+            $pdf = PDF::loadView('pdf-template.proposal',$data)->save("uploads/$quote_id.pdf",'public');
             if($pdf){
                 return $pdf->download("uploads/$quote_id.pdf");
             }else{
