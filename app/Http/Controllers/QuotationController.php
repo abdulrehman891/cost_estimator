@@ -14,6 +14,27 @@ use Illuminate\Support\Facades\Redirect;
 
 class QuotationController extends Controller
 {
+    public $status_list;
+    public function __construct($from_email = '')
+    {   /*
+        0 is pending manager signature
+        1 Signed Completed
+        2 is manager signed and client pending
+        3 is manager declined
+        4 is expired at manager side
+        5 is client declined
+        6 is expired at client side
+        */
+        $this->status_list = array(
+            "Pending Manager's Signature",
+            "Signed Successfully",
+            "Signed by Manager & Pending by Client",
+            "Declined by Manager",
+            "Expired at Manager's end",
+            "Declined_by_Client",
+            "Expired at Client's end",
+        );
+    }
     /**
      * Display a listing of the resource.
      */
@@ -94,7 +115,8 @@ class QuotationController extends Controller
             //signnow_document_id
             $updated_data = array(
                 'signnow_document_id' => $send_doc_response->getData()->documentUniqueId,
-                'status' => 'Pending_Manager_Signature'
+                //manager sign is pending
+                'status' => 0
             );
             $quote_data->update($updated_data);
         } else {

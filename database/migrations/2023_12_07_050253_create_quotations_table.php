@@ -35,7 +35,7 @@ return new class extends Migration
             $table->text('timelines');
             $table->text('warranty_clause');
             $table->text('signnow_document_id')->nullable();
-            $table->text('status')->nullable();
+            $table->tinyInteger('status')->nullable()->length(1);
             $table->dateTime('status_update_at')->nullable();
             $table->softDeletes();
         });

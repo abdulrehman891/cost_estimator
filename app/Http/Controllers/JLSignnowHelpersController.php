@@ -217,7 +217,7 @@ class JLSignnowHelpersController extends Controller
             $to[] = (new Recipient($signerEmail, $roleName, $roleUniqueId, 2))
                 ->setSubject($this->subject)
                 ->setMessage($message);
- 
+
             $invite = new Invite($this->from, $to, $cc);
 
             $res = $entityManager->create($invite, ["documentId" => $documentUniqueId]);
@@ -367,13 +367,15 @@ class JLSignnowHelpersController extends Controller
                 //$the_signer = User::where('email', '=', $signer_email)->select('id')->first();
                 if ($quote_data['status'] == 'Pending_Manager_Signature' || $quote_data['status'] == 'Declined_by_Manager') {
                     //if signer is manager
+                    //signature is pending by client
                     $updated_data = array(
-                        'status' => 'Signed_by_Manager_Pending_By_Client',
+                        'status' => 2,
                     );
                 } else {
                     //if signer is a client
+                    //signed successfully
                     $updated_data = array(
-                        'status' => 'Signed_Successfully_And_closed',
+                        'status' => 1,
                     );
                 }
                 $quot_obj = Quotation::find($quote_data['id']);
@@ -389,13 +391,15 @@ class JLSignnowHelpersController extends Controller
 
                 if ($quote_data['status'] == 'Pending_Manager_Signature') {
                     //if signer is manager
+                    //declined by manager
                     $updated_data = array(
-                        'status' => 'Declined_by_Manager',
+                        'status' => 3,
                     );
                 } else {
                     //if signer is a client
+                    //declined by client
                     $updated_data = array(
-                        'status' => 'Declined_by_Client',
+                        'status' => 5,
                     );
                     //cancel the invite if declined by the client
                 }
