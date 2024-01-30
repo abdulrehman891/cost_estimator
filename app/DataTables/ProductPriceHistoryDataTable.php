@@ -28,9 +28,9 @@ class ProductPriceHistoryDataTable extends DataTable
             ->editColumn('updated_at', function (ProductPriceHistory $productPriceHistory) {
                 return $productPriceHistory->updated_at->format('d M Y, h:i a');
             })
-            ->addColumn('action', function (ProductPriceHistory $productPriceHistory) {
-                return view('pages/apps.product-price-history.columns._actions', compact('product'));
-            })
+//            ->addColumn('action', function (ProductPriceHistory $productPriceHistory) {
+//                return view('pages/apps.product-price-history.columns._actions', compact('productPriceHistory'));
+//            })
             ->setRowId('id');
     }
 
@@ -39,9 +39,10 @@ class ProductPriceHistoryDataTable extends DataTable
      */
     public function query(ProductPriceHistory $model): QueryBuilder
     {
-        return $model->newQuery();
+        $query = $model->newQuery();
+        $query->where('product_id', '=', $this->product_id);
+        return $query;
     }
-
     /**
      * Optional method if you want to use the html builder.
      */
@@ -68,11 +69,6 @@ class ProductPriceHistoryDataTable extends DataTable
             Column::make('old_unit_price'),
             Column::make('created_at'),
             Column::make('updated_at'),
-            Column::computed('action')
-                ->addClass('text-end text-nowrap')
-                ->exportable(false)
-                ->printable(false)
-                ->width(60)
         ];
     }
 

@@ -185,7 +185,7 @@
                                 <!--begin::Step 1-->
                                 @if($currentStep == 1)
                                     <div class="card">
-                                        <div class="card-header bg-secondary text-black"><h3 class="card-title">STEP 1/5 - Project</h3></div>
+                                        <div class="card-header bg-primary text-black"><h3 class="card-title text-white">STEP 1/5 - Project</h3></div>
                                         <div class="card-body">
                                             <!--begin::Input group-->
                                             <div class="fv-row mb-10">
@@ -234,17 +234,17 @@
                                                 </div>
                                             </div>
                                             <!--begin::Input group-->
-                                            <div class="fv-row mb-10">
-                                                <!--begin::Label-->
-                                                <label class="required fw-semibold fs-6 mb-2">Project Manager</label>
-                                                <!--end::Label-->
-                                                <select class="form-select"  name="project_manager" id="project_manager" data-control="select2" data-placeholder="Select an option">
-                                                    <option></option>
-                                                    @foreach($users_list as $user)
-                                                        <option value="{{$user->id}}"  {{ $project_manager == $user->id ? 'selected' : '' }}>{{$user->name}}</option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
+{{--                                            <div class="fv-row mb-10">--}}
+{{--                                                <!--begin::Label-->--}}
+{{--                                                <label class="required fw-semibold fs-6 mb-2">Project Manager</label>--}}
+{{--                                                <!--end::Label-->--}}
+{{--                                                <select class="form-select"  name="project_manager" id="project_manager" data-control="select2" data-placeholder="Select an option">--}}
+{{--                                                    <option></option>--}}
+{{--                                                    @foreach($users_list as $user)--}}
+{{--                                                        <option value="{{$user->id}}"  {{ $project_manager == $user->id ? 'selected' : '' }}>{{$user->name}}</option>--}}
+{{--                                                    @endforeach--}}
+{{--                                                </select>--}}
+{{--                                            </div>--}}
                                             <!--end::Input group-->
 
                                             <!--begin::Input group-->
@@ -269,7 +269,7 @@
                                 <!--begin::Step 2-->
                                 @if($currentStep == 2)
                                 <div class="card">
-                                    <div class="card-header bg-secondary text-black"><h3 class="card-title">STEP 2/5 - Project Milestone</h3></div>
+                                    <div class="card-header bg-primary text-black"><h3 class="card-title text-white">STEP 2/5 - Project Milestone</h3></div>
                                     <div class="card-body">
                                         <div class="card m-2">
                                             @foreach($milestone_list as $index => $milestone)
@@ -297,9 +297,9 @@
                                 <!--end::Step 2-->
 
                                 <!--begin::Step 3-->
-                                @if($currentStep == 3)                                
+                                @if($currentStep == 3)
                                 <div class="card">
-                                    <div class="card-header bg-secondary text-black"><h3 class="card-title">STEP 3/5 - Quotation</h3></div>
+                                    <div class="card-header bg-primary text-black"><h3 class="card-title text-white">STEP 3/5 - Quotation</h3></div>
                                     <div class="card-body">
                                     <!--begin::Input group-->
                                     <div class="row">
@@ -387,15 +387,17 @@
                                     </div>
 
                                     <div class="row">
-                                        <div class="col-md-6 mb-4">
+                                        <div class="col-md-12 mb-10">
                                             <label class="required fw-semibold fs-6 mb-2">Compliance</label>
-                                            <input type="text" wire:model.defer="compliance" name="compliance" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Compliance"/>
-                                        </div>
-                                        <div class="col-md-6 mb-4">
-                                            <label class="required fw-semibold fs-6 mb-2">Timelines</label>
-                                            <input type="text" wire:model.defer="timelines" name="timelines" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Timelines"/>
+                                            <textarea name="compliance" wire:model.defer="compliance"  class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Compliance"> </textarea>
                                         </div>
                                     </div>
+                                        <div class="row">
+                                            <div class="col-md-12 mb-10">
+                                                <label class="required fw-semibold fs-6 mb-2">Timelines</label>
+                                                <textarea name="timelines" wire:model.defer="timelines"  class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Timelines"> </textarea>
+                                            </div>
+                                        </div>
                                     <div class="row">
                                         <div class="col-md-12 mb-10">
                                             <label class="required fw-semibold fs-6 mb-2">Warranty Clause</label>
@@ -417,7 +419,7 @@
                                 <!--begin::Step 4-->
                                 @if($currentStep == 4)
                                 <div class="card">
-                                    <div class="card-header bg-secondary text-black"><h3 class="card-title">STEP 4/5 - Quote Line Item</h3></div>
+                                    <div class="card-header bg-primary text-black"><h3 class="card-title text-white">STEP 4/5 - Quote Line Item</h3></div>
                                     <div class="card-body">
                                         <!--begin::Repeater-->
                                         <div id="quote_line_items">
@@ -463,7 +465,13 @@
                                                             </div>
                                                             <div class="form-group row mb-5">
                                                                 <div class="col-md-12 text-center">
+                                                                    <label class="checkbox checkbox-lg">
+                                                                        <input wire:model.defer="price_update.{{$index}}" type="checkbox" name="Checkboxes3_1">
+                                                                        <span></span>
+                                                                        Update Price
+                                                                        </label>
                                                                     <button class="btn btn-danger" wire:click.prevent="removeQuoteline({{$index}})"> Delete</button>
+
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -521,7 +529,7 @@
                                 <!--begin::Step 5-->
                                 @if($currentStep == 5)
                                 <div class="card">
-                                    <div class="card-header bg-secondary text-black"><h3 class="card-title">STEP 5/5 - Final Quotation</h3></div>
+                                    <div class="card-header bg-primary text-black"><h3 class="card-title text-white">STEP 5/5 - Final Quotation</h3></div>
                                     <div class="card-body">
                                         <div class="fv-row mb-10">
                                             <a href="{{ asset('storage/app/public') }}" download="proposal.pdf">Download Proposal</a>
@@ -604,10 +612,10 @@
             @this.set('customer_id',data)
             });
 
-            $('#project_manager').on('change',function (e){
-                var data = $('#project_manager').select2('val')
-            @this.set('project_manager',data)
-            });
+            // $('#project_manager').on('change',function (e){
+            //     var data = $('#project_manager').select2('val')
+            // @this.set('project_manager',data)
+            // });
 
         // function changeProductEvent(element){
         //     // console.log($(element));

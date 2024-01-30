@@ -2,7 +2,9 @@
 
 namespace App\DataTables;
 
+use App\Http\Controllers\JLSignnowHelpersController;
 use App\Models\Quotation;
+use App\Models\QuotationHistory;
 use Illuminate\Database\Eloquent\Builder as QueryBuilder;
 use Spatie\Permission\Models\Role;
 use Yajra\DataTables\EloquentDataTable;
@@ -12,11 +14,8 @@ use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Html\Editor\Editor;
 use Yajra\DataTables\Html\Editor\Fields;
 use Yajra\DataTables\Services\DataTable;
-use App\Http\Controllers\JLSignnowHelpersController;
-use App\Http\Controllers\QuotationController;
-use Illuminate\Http\Request;
 
-class QuotationsDataTable extends DataTable
+class QuotationHistoryDataTable extends DataTable
 {
     /**
      * Build the DataTable class.
@@ -33,13 +32,9 @@ class QuotationsDataTable extends DataTable
             ->editColumn('updated_at', function (Quotation $quotation) {
                 return $quotation->updated_at->format('d M Y, h:i a');
             })
-            ->editColumn('status', function (Quotation $quotation) {
-                $quote_controller = new QuotationController();
-                return (!empty($quote_controller->status_list[$quotation->status])) ? $quote_controller->status_list[$quotation->status] : '';
-            })
             ->addColumn('action', function (Quotation $quotation) {
                 $signnow_helper_obj = new JLSignnowHelpersController();
-                return view('pages/apps.quotation.columns._actions', compact('quotation','signnow_helper_obj'));
+                return view('pages/apps.quotation-history.columns._actions', compact('quotation','signnow_helper_obj'));
             })
             ->setRowId('id');
     }
@@ -49,15 +44,8 @@ class QuotationsDataTable extends DataTable
      */
     public function query(Quotation $model): QueryBuilder
     {
-        $adminRole = Role::where('name', 'administrator')->first();
-        $userIds = $adminRole->users->pluck('id');
-        $admin_user_id = $userIds[0];
         $query = $model->newQuery();
-        $query->whereIn('created_by',[$admin_user_id,$this->current_logged])->whereNull('parent_quotation');
-        $record_id = \Request::input('record_id');
-        if (!empty($record_id)) {
-            $query->where('id', '=', $record_id);
-        }
+        $query->where('parent_quotation', '=', $this->parent_id);
         return $query;
     }
 
@@ -67,7 +55,7 @@ class QuotationsDataTable extends DataTable
     public function html(): HtmlBuilder
     {
         return $this->builder()
-                    ->setTableId('quotations-table')
+            ->setTableId('quotations-table')
             ->columns($this->getColumns())
             ->minifiedAjax()
             ->dom('rt' . "<'row'<'col-sm-12 col-md-5'l><'col-sm-12 col-md-7'p>>",)

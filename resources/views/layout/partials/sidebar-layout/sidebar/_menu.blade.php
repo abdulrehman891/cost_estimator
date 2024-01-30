@@ -73,7 +73,7 @@
             {{-- Quotations End --}}
 
             @can("view customers")
-            <div data-kt-menu-trigger="click" class="menu-item menu-accordion {{ request()->routeIs('project.*') ? 'here show' : '' }}">
+            <div data-kt-menu-trigger="click" class="menu-item menu-accordion {{ request()->routeIs('customer.*') ? 'here show' : '' }}">
                 <!--begin:Menu link-->
                 <span class="menu-link">
 					<span class="menu-icon ">{!! getIcon('abstract-41', 'fs-2') !!}</span>

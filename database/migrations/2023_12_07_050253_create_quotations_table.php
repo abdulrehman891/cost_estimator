@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('quotations', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->timestamps();
+            $table->foreignUuid('parent_quotation')->nullable();
             $table->foreignUuid('project_id')->nullable();
             $table->foreignUuid('customer_id')->nullable();
             $table->foreignUuid('created_by');

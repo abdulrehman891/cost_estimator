@@ -165,4 +165,78 @@
         <!--end::Content-->
     </div>
 
+{{--           <div class="card">--}}
+
+{{--                <!--begin::Card body-->--}}
+{{--               <div class="card-body py-4" >--}}
+{{--                    <!--begin::Table-->--}}
+{{--                    <div class="table-responsive">--}}
+{{--                        <div id="customer-table_wrapper" class="dataTables_wrapper dt-bootstrap4 no-footer" >--}}
+{{--                        {{ $productHistoryTable->table() }}--}}
+{{--                        <table class="table align-middle table-row-dashed fs-6 gy-5 dataTable no-footer text-gray-600 fw-semibold" id="customer-table" style="width: 1537px;">--}}
+{{--                            <thead class="text-start text-muted fw-bold fs-7 text-uppercase gs-0">--}}
+{{--                                <tr>--}}
+{{--                                    <th title="Name" class="sorting" tabindex="0" aria-controls="customer-table" rowspan="1" colspan="1"--}}
+{{--                                        aria-label="Name: activate to sort column ascending" style="width: 204px;">Old Price</th>--}}
+{{--                                    <th title="Email" class="sorting" tabindex="0" aria-controls="customer-table" rowspan="1" colspan="1"--}}
+{{--                                        aria-label="Email: activate to sort column ascending" style="width: 321.25px;">New Price</th>--}}
+{{--                                    <th title="Email" class="sorting" tabindex="0" aria-controls="customer-table" rowspan="1" colspan="1"--}}
+{{--                                        aria-label="Email: activate to sort column ascending" style="width: 321.25px;">Created at</th>--}}
+
+{{--                                </tr>--}}
+{{--                            </thead>--}}
+{{--                            <tbody>--}}
+{{--                            @foreach($product_price_history as $productPriceHistory)--}}
+{{--                                <tr id="{{ $productPriceHistory->id }}" class="odd">--}}
+{{--                                    <td>{{ $productPriceHistory->old_unit_price }}</td>--}}
+{{--                                    <td>{{ $productPriceHistory->new_unit_price }}</td>--}}
+{{--                                    <td>{{ $productPriceHistory->created_at }}</td>--}}
+{{--                                </tr>--}}
+{{--                            @endforeach--}}
+{{--                            </tbody>--}}
+{{--                        </table>--}}
+{{--                    <!--end::Table-->--}}
+{{--                        </div>--}}
+{{--                </div>--}}
+{{--                <!--end::Card body-->--}}
+{{--               </div>--}}
+{{--            </div>--}}
+    <div class="flex-lg-row-fluid ms-lg-10">
+            <!--begin::Card-->
+            <div class="card card-flush mb-6 mb-xl-9">
+                <!--begin::Card header-->
+                <div class="card-header pt-5">
+                    <!--begin::Card title-->
+                    <div class="card-title">
+                        <h2 class="d-flex align-items-center">Product Price History
+{{--                            <span class="text-gray-600 fs-6 ms-1">({{ $role->users->count() }})</span>--}}
+                        </h2>
+                    </div>
+                    <!--end::Card title-->
+                    <!--begin::Card toolbar-->
+                    <div class="card-toolbar">
+                    </div>
+                    <!--end::Card toolbar-->
+                </div>
+                <!--end::Card header-->
+                <!--begin::Card body-->
+                <div class="card-body pt-0">
+                    <!--begin::Table-->
+                    <div class="table-responsive">
+                        {{ $dataTable->table() }}
+                    </div>
+                    <!--end::Table-->
+                </div>
+                <!--end::Card body-->
+            </div>
+            <!--end::Card-->
+        </div>
+
+        @push('scripts')
+            {{ $dataTable->scripts() }}
+        @endpush
+
+
+
 </x-default-layout>
+

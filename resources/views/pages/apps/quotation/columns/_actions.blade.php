@@ -34,6 +34,16 @@
             Download
         </a>
     </div>
+    <div class="menu-item px-3">
+        <a href="#" class="menu-link px-3" data-kt-quotation-id="{{ $quotation->id }}" data-bs-toggle="modal" data-bs-target="#kt_modal_add_quotation" data-kt-action="update_row">
+            Edit
+        </a>
+    </div>
+    <div class="menu-item px-3">
+        <a href="{{ route('quotation.show', $quotation) }}" class="menu-link px-3" >
+            View
+        </a>
+    </div>
     <!--end::Menu item-->
     @if(empty($quotation->signnow_document_id))
     <!--begin::Menu item-->
@@ -44,6 +54,7 @@
     </div>
     <!--end::Menu item-->
     @endif
+
     @if(!empty($quotation->signnow_document_id) && $quotation->status!='Pending_Manager_Signature')
     <!--begin::Menu item-->
     <div class="menu-item px-3">

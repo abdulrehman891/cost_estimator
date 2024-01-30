@@ -92,7 +92,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/quotation/download/{id}', [QuotationController::class, 'downloadProposal'])->name('qoutation.download');
     Route::get('/quotation/preview_doc/{signnow_document_id}', [JLSignnowHelpersController::class, 'previewDoc'])->name('qoutation.preview_doc');
     Route::get('/quotation/send/{id}', [QuotationController::class, 'sendProposal'])->name('qoutation.send');
-
+    Route::get('/quotation/show/{quotation}', [QuotationController::class, 'show'])->name('quotation.show');
 
     // Notifications Route
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications');

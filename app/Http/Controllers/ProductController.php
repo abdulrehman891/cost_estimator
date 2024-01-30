@@ -2,10 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\DataTables\ProductPriceHistoryDataTable;
 use App\Models\Product;
+use App\Models\ProductPriceHistory;
 use Illuminate\Http\Request;
 use App\DataTables\ProductsDataTable;
 use Illuminate\Support\Facades\Redirect;
+use Spatie\Permission\Models\Role;
+
+use App\Models\User;
 class ProductController extends Controller
 {
     /**
@@ -17,7 +22,7 @@ class ProductController extends Controller
 
         $user = auth()->user();
         if($user->can('view products')){
-            return $productdataTable->render('pages/apps.product.list');
+            return $productdataTable->with('current_logged',$user->id)->render('pages/apps.product.list');
         } else {
             return Redirect::to('dashboard');
         }
@@ -37,7 +42,6 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         //
-
         $user = auth()->user();
         if($user->can('create products')){
             $validatedData = $request->validate([
@@ -61,23 +65,23 @@ class ProductController extends Controller
         } else {
             return Redirect::to('dashboard');
         }
-
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Request $product)
+    public function show(Request $product, ProductPriceHistoryDataTable $dataTable)
     {
         //
         $user = auth()->user();
         if($user->can('view products')){
             $product = Product::with('user','product_category','product_subcategory', 'productPriceHistory')->find($product->id);
-            return view('pages/apps.product.show', compact('product'));
+            $product_price_history = ProductPriceHistory::where('product_id',$product->id)->get();
+            return $dataTable->with('product_id', $product->id)->render('pages/apps.product.show', compact('product'));
+//            return view('pages/apps.product.show', compact('product','product_price_history'));
         } else {
             return Redirect::to('dashboard');
         }
-
     }
 
     /**

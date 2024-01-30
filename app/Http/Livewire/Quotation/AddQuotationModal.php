@@ -11,6 +11,7 @@ use Livewire\Component;
 use App\Models\User;
 use App\Models\Project;
 use App\Models\Customer;
+use App\Models\ProductPriceHistory;
 use App;
 use PDF;
 use Illuminate\Support\Facades\Storage;
@@ -27,6 +28,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use Auth;
 use Livewire\WithFileUploads;
+use Spatie\Permission\Models\Role;
 
 class AddQuotationModal extends Component
 {
@@ -43,7 +45,7 @@ class AddQuotationModal extends Component
     public $expected_start_date;
     public $expected_end_date;
     public $project_size;
-    public $project_manager = null;
+//    public $project_manager = null;
     public $project_type;
     //End of Project module fields
     public $quoteItems = [''];
@@ -79,6 +81,7 @@ class AddQuotationModal extends Component
     public $quote_line_items;
     public $formData;
     public  $products = [];
+    public $price_update = [];
     public $unit_price = [];
     public $quantity = [];
     public $discount_price = [];
@@ -93,6 +96,8 @@ class AddQuotationModal extends Component
 
     public $customer_list;
     public $customer_id;
+    public $edit_mode = false;
+    public $quotationID;
 
     public $res_chatGPT="";
 
@@ -108,6 +113,7 @@ class AddQuotationModal extends Component
     protected $listeners = [
         'get_proposal' => 'getProposalChatGPT',
         'delete_quotation' => 'deleteQuotation',
+        'update_quotation' => 'updateQuotation',
     ];
 
     public function deleteQuotation($id)
@@ -134,9 +140,71 @@ class AddQuotationModal extends Component
     }
     public function mount(){
         $this->currentStep = 1;
-        $this->products_list =  Product::all();
+        $adminRole = Role::where('name', 'administrator')->first();
+        $userIds = $adminRole->users->pluck('id');
+        $admin_user_id = $userIds[0];
+        $this->products_list = Product::whereIn('created_by',[$admin_user_id, Auth::user()->id])->get(); //Product::all();
         $this->users_list = User::all();
-        $this->customer_list = Customer::all();
+        $this->customer_list = Customer::whereIn('created_by',[$admin_user_id, Auth::user()->id])->get();
+    }
+    public function updateQuotation($id)
+    {
+        $this->edit_mode = true;
+        $this->quotationID = $id;
+        $quotation = Quotation::find($id);
+        $this->prepared_date = $quotation->prepared_date;
+        $this->assembly_type = $quotation->assembly_type;
+        $this->manufacturer = $quotation->manufacturer;
+        $this->sq_walls = $quotation->sq_walls;
+        $this->sq_field = $quotation->sq_field;
+        $this->customer_id = $quotation->customer_id;
+        $this->warranty = $quotation->warranty;
+        $this->parapet_length = $quotation->parapet_length;
+        $this->building_height = $quotation->building_height;
+        $this->deck_type = $quotation->deck_type;
+        $this->inclusions = $quotation->inclusions;
+        $this->exclusions = $quotation->exclusions;
+        $this->payment_schedule = $quotation->payment_schedule;
+        $this->price_escalation_clause = $quotation->price_escalation_clause;
+        $this->alterations = $quotation->alterations;
+        $this->compliance = $quotation->compliance;
+        $this->timelines = $quotation->timelines;
+        $this->warranty_clause = $quotation->warranty_clause;
+        $project_id = $quotation->project_id;
+        $customer_id = $quotation->customer_id;
+        $project = Project::find($project_id);
+        $this->project_name = $project->name;
+        $this->description = $project->description;
+        $this->expected_start_date = $project->expected_start_date;
+        $this->expected_end_date = $project->expected_end_date;
+        $this->project_size = $project->project_size;
+        $this->project_type = $project->project_type;
+
+        $project_milestone = ProjectMilestone::where('project_id',$project_id)->get();
+//        $this->milestone_list =$project_milestone;
+        for($x = 0; $x < count($project_milestone); $x++)
+        {
+            $this->project_milestone[$x] = $project_milestone[$x]->name;
+            $this->milestone_description[$x] = $project_milestone[$x]->description;
+            if($x > 0)
+            {
+                $this->milestone_list[] = '';
+            }
+        }
+
+        $quoteLineItems = QuoteLineItem::where('quotation_id',$id)->get();
+        for($x = 0; $x < count($quoteLineItems); $x++)
+        {
+            $this->products[$x] = $quoteLineItems[$x]->product_id;
+            $this->unit_price[$x] = $quoteLineItems[$x]->unit_price;
+            $this->discount_price[$x] = $quoteLineItems[$x]->discount_price;
+            $this->quantity[$x] = $quoteLineItems[$x]->quantity;
+            $this->total_price[$x] = $quoteLineItems[$x]->total_price;
+            if($x > 0)
+            {
+                $this->quoteItems[] = '';
+            }
+        }
     }
     public function addMilestone(){
         $this->milestone_list[] ='';
@@ -191,11 +259,32 @@ class AddQuotationModal extends Component
         }
     }
     public function submit(){
-        $project_id = $this->addProject();
-        $this->addProjectMilestone($project_id);
-        $quotation_id = $this->addQuotation($project_id);
-        $this->addQuoteLineItems($quotation_id);
-        $this->getProposalChatGPT($quotation_id);
+          if ($this->edit_mode) {
+//            $this->quotationID
+              $chatGPT_res = $this->getProposalChatGPT();
+              if($chatGPT_res){
+                  $project_id = $this->addProject();
+                  $this->addProjectMilestone($project_id);
+                  $quotation_id = $this->addQuotation($project_id);
+                  $this->addQuoteLineItems($quotation_id);
+                  $this->generatePDF($chatGPT_res,$quotation_id);
+                  $quote_history = Quotation::find($quotation_id);
+                  $quote_history->parent_quotation = $this->quotationID;
+                  $quote_history->save();
+              }
+            $this->emit('success', __('Quotation updated'));
+        } else {
+              $chatGPT_res = $this->getProposalChatGPT();
+              if($chatGPT_res){
+                  $project_id = $this->addProject();
+                  $this->addProjectMilestone($project_id);
+                  $quotation_id = $this->addQuotation($project_id);
+                  $this->addQuoteLineItems($quotation_id);
+                  $this->generatePDF($chatGPT_res,$quotation_id);
+              }
+            // Emit a success event with a message
+            $this->emit('success', __('New Quotation created'));
+        }
 //        $this->increaseStep();
     }
     public function addQuoteLineItems($quotation_id)
@@ -204,7 +293,7 @@ class AddQuotationModal extends Component
             $quoteLineItem_obj = new QuoteLineItem();
             $quoteLineItem_obj->product_id = $this->products[$x];
             $quoteLineItem_obj->unit_price = $this->unit_price[$x];
-            $quoteLineItem_obj->discount_price = $this->discount_price[$x];
+            $quoteLineItem_obj->discount_price = $this->discount_price ? $this->discount_price[$x] : 0;
             $quoteLineItem_obj->quantity = $this->quantity[$x];
             $quoteLineItem_obj->total_price = $this->total_price[$x];
             $quoteLineItem_obj->created_by =  Auth::user()->id;
@@ -214,11 +303,19 @@ class AddQuotationModal extends Component
             $this->quoteLineItemsData[] = array(
                 "item_name" => $product_name,
                 "unit_price" => $this->unit_price[$x],
-                "discount_price" => $this->discount_price[$x],
+                "discount_price" => $this->discount_price ? $this->discount_price[$x] : 0,
                 "quantity" => $this->quantity[$x],
                 "total_price" => $this->total_price[$x]
             );
             $quoteLineItem_obj->save();
+            if($this->price_update && isset($this->price_update[$x]) && $this->price_update[$x] == true){
+                    $product_history = new ProductPriceHistory();
+                    $product_history->old_unit_price = $product->price;
+                    $product_history->new_unit_price = $this->unit_price[$x];
+                    $product_history->created_by = Auth::user()->id;
+                    $product_history->product_id = $product->id;
+                    $product_history->save();
+            }
         }
     }
     public  function addQuotation( $project_id)
@@ -258,7 +355,7 @@ class AddQuotationModal extends Component
             $project_obj->expected_end_date =  $this->expected_end_date;
             $project_obj->project_size =  $this->project_size;
             $project_obj->project_type =  $this->project_type;
-            $project_obj->manager_id =  $this->project_manager;
+            $project_obj->manager_id =  Auth::user()->id;
             $project_obj->save();
             return $project_obj->id;
     }
@@ -284,7 +381,7 @@ class AddQuotationModal extends Component
         $projectData['project_expected_end_date'] =  $this->expected_end_date;
         $projectData['project_size'] =  $this->project_size;
         $projectData['project_type'] =  $this->project_type;
-        $project_manager = User::find($this->project_manager);
+        $project_manager = User::find(Auth::user()->id);
         if(!empty($project_manager->id)){
             $projectData['project_manager'] =  $project_manager->name;
         } else {
@@ -318,7 +415,7 @@ class AddQuotationModal extends Component
 
         return $response;
     }
-    public function getProposalChatGPT($quote_id)
+    public function getProposalChatGPT()
     {
         $this->isLoading = true;
         $chat =new ChatGPTController();
@@ -372,28 +469,36 @@ Moreover, also mention Risk Factors for Quote Line Items using below Base64 Enco
 
 //        dd($this->res_chatGPT);
 //        $this->res_chatGPT = "";
-        $this->generatePDF($this->res_chatGPT,$quote_id,$formData['projectDetails']); // Generate PDF from the response
+//        $this->generatePDF($this->res_chatGPT,$quote_id,$formData['projectDetails']); // Generate PDF from the response
 
         info($msg_data);
 
 
-        $this->res_chatGPT =$chat->createPurposalChatGPT($msg_data);
+        $chatGPT_res =$chat->createPurposalChatGPT($msg_data);
         sleep(2);
        // $this->res_chatGPT = "";
        info("Chat GPT Response=>");
-       info($this->res_chatGPT);
+       info($chatGPT_res);
 
-        $this->generatePDF($this->res_chatGPT,$quote_id, $formData['projectDetails']); // Generate PDF from the response
+       return $chatGPT_res;
+
+        // Generate PDF from the response
 //        $this->isLoading = false; // Stop loading
 //        $this->emit('dataUpdated');
 
     }
 
-    private function generatePDF($response,$quote_id, $project_details)
+    private function generatePDF($response,$quote_id)
     {
-
+        $project_manager = User::find(Auth::user()->id);
+        if(!empty($project_manager->id)){
+            $project_manager_name =  $project_manager->name;
+        } else {
+            $project_manager_name =  "";
+        }
         $data = [
-            'project_details' => json_decode($project_details, true),
+            'project_name' => $this->project_name,
+            'project_manager' => $project_manager_name,
             'prepared_date' => $this->prepared_date,
             'inclusion' => $this->inclusions,
             'exclusions' => $this->exclusions,
@@ -405,28 +510,7 @@ Moreover, also mention Risk Factors for Quote Line Items using below Base64 Enco
             'warranty_clause' => $this->warranty_clause,
             'chatGPTResponse' => $response,
         ];
-
-//        if (Storage::disk('public')->exists('/uploads/docs_2.pdf')) {
-//            $filePath = Storage::disk('public')->path('uploads/docs_2.pdf');dd($filePath);
-//            return response()->download($filePath, 'asimocs_2.pdf');
-//        } else {
-//            abort(404, 'File not found');
-//        }
         try {
-//            $pdf = PDF::loadHTML("working is of HTML")->save('uploads/docs_2.pdf','public');
-            $data = [
-                'project_details' => json_decode($project_details, true),
-                'prepared_date' => $this->prepared_date,
-                'inclusion' => $this->inclusions,
-                'exclusions' => $this->exclusions,
-                'payment_schedule' => $this->payment_schedule,
-                'price_escalation_clause' => $this->price_escalation_clause,
-                'alterations' => $this->alterations,
-                'compliance' => $this->compliance,
-                'timeline' => $this->timelines,
-                'warranty_clause' => $this->warranty_clause,
-                'chatGPTResponse' => "Chat GPT response will be there",
-            ];
             $pdf = PDF::loadView('pdf-template.proposal',$data)->save("uploads/$quote_id.pdf",'public');
             if($pdf){
                 return $pdf->download("uploads/$quote_id.pdf");

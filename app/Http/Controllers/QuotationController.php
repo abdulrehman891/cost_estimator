@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\DataTables\QuotationHistoryDataTable;
 use App\DataTables\QuotationsDataTable;
 use App\Models\Quotation;
 use App\Models\Customer;
@@ -54,7 +55,7 @@ class QuotationController extends Controller
             //get current plan name
             $package_stripe_id = $user->subscriptions()->get('stripe_price');
             $package = Packages::where('stripe_id', '=', $package_stripe_id[0]->stripe_price)->select('title')->first();
-            return $quotationDataTable->render('pages/apps.quotation.list', compact('package', 'user'));
+            return $quotationDataTable->with('current_logged',$user->id)->render('pages/apps.quotation.list', compact('package', 'user'));
         } else {
             return Redirect::to('dashboard');
         }
@@ -160,9 +161,15 @@ class QuotationController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Quotation $quotation)
+    public function show(Quotation $quotation,QuotationHistoryDataTable $dataTable)
     {
-        //
+//        $user = auth()->user();
+//        if($user->can('view categories')){
+//            return view('pages/apps.quotation.show', compact('quotation'));
+       return $dataTable->with('parent_id',$quotation->id)->render('pages/apps.quotation.show',compact('quotation'));
+//        } else {
+//            return Redirect::to('dashboard');
+//        }
     }
 
     /**

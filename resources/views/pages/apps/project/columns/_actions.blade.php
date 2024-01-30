@@ -18,7 +18,7 @@
     @can("edit projects")
     <div class="menu-item px-3">
         <a href="#" class="menu-link px-3" data-kt-project-id="{{ $project->id }}" data-bs-toggle="modal" data-bs-target="#kt_modal_add_project" data-kt-action="update_row">
-            Edit NOW
+            Edit
         </a>
     </div>
     <!--end::Menu item-->

@@ -14,7 +14,8 @@ class ProductSubCategoryController extends Controller
     public function index(ProductSubCategoriesDataTable $productSubCategoriesDataTable)
     {
         //
-        return $productSubCategoriesDataTable->render('pages/apps.sub-category.list');
+        $user = auth()->user();
+        return $productSubCategoriesDataTable->with('current_logged',$user->id)->render('pages/apps.sub-category.list');
     }
 
     /**

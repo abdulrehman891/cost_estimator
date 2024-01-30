@@ -17,7 +17,7 @@ class CustomerController extends Controller
         //
         $user = auth()->user();
         if($user->can('view customers')){
-            return $customersDataTable->render('pages/apps.customer.list');
+            return $customersDataTable->with('current_logged',$user->id)->render('pages/apps.customer.list');
         } else {
             return Redirect::to('dashboard');
         }

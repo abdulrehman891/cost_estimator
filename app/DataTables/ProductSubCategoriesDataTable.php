@@ -4,6 +4,7 @@ namespace App\DataTables;
 
 use App\Models\ProductSubCategory;
 use Illuminate\Database\Eloquent\Builder as QueryBuilder;
+use Spatie\Permission\Models\Role;
 use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Html\Builder as HtmlBuilder;
 use Yajra\DataTables\Html\Button;
@@ -39,7 +40,12 @@ class ProductSubCategoriesDataTable extends DataTable
      */
     public function query(ProductSubCategory $model): QueryBuilder
     {
-        return $model->newQuery();
+        $adminRole = Role::where('name', 'administrator')->first();
+        $userIds = $adminRole->users->pluck('id');
+        $admin_user_id = $userIds[0];
+        $query = $model->newQuery();
+        $query->whereIn('created_by',[$admin_user_id,$this->current_logged]);
+        return $query;
     }
 
     /**

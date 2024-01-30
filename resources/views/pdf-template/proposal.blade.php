@@ -60,7 +60,7 @@
 <div class="container mt-4">
     <div class="card border-0">
         <div class="card-body text-center">
-            <h5 class="card-title fw-bold  fs-1 text-decoration-underline">{{ $project_details['project_name'] }}</h5>
+            <h5 class="card-title fw-bold  fs-1 text-decoration-underline">{{ $project_name }}</h5>
             <p class="card-text fs-4">11464 Alamo Ranch, San Antonio, TX 78253</p>
         </div>
     </div>
@@ -74,7 +74,7 @@
         <div class="lower-text fs-5 text-black">
             <span>Prepared Date: {{ $prepared_date }}</span>
             <span>Estimator: Taylor Ivens</span>
-            <span>Project Manager: {{ $project_details['project_manager'] }}</span>
+            <span>Project Manager: {{ $project_manager }}</span>
         </div>
     </div>
 

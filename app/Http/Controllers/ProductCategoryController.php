@@ -14,7 +14,8 @@ class ProductCategoryController extends Controller
     public function index(ProductCategoriesDataTable $categoriesDataTable)
     {
         //
-        return $categoriesDataTable->render('pages/apps.category.list');
+        $user = auth()->user();
+        return $categoriesDataTable->with('current_logged',$user->id)->render('pages/apps.category.list');
     }
 
     /**

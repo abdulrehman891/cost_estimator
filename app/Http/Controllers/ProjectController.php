@@ -16,7 +16,7 @@ class ProjectController extends Controller
     {
         $user = auth()->user();
         if($user->can('view projects')){
-            return $projectsDataTable->render('pages/apps.project.list');
+            return $projectsDataTable->with('current_logged',$user->id)->render('pages/apps.project.list');
         } else {
             return Redirect::to('dashboard');
         }

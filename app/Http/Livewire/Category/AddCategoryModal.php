@@ -46,7 +46,7 @@ class AddCategoryModal extends Component
                 ProductCategory::create($data);
             }
             if ($this->edit_mode) {
-                $this->emit('success', __('Categorys updated'));
+                $this->emit('success', __('Category updated'));
             } else {
                 // Emit a success event with a message
                 $this->emit('success', __('New category created'));
