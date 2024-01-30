@@ -16,6 +16,7 @@ use App\Models\Packages;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class PaymentsContoller extends Controller
 {
@@ -61,6 +62,16 @@ class PaymentsContoller extends Controller
                 $package->title, $package->price_usd, $package->validity_days
             );
         }
-        return view('pages/apps.packages.list', compact('packages', 'packes_related_data', 'user'));
+        $is_expired = false;
+        if (!empty($user->subscription_ends_at)) {
+            $expirationDate = Carbon::parse($user->subscription_ends_at);
+            if (Carbon::now()->gt($expirationDate)) {
+                $is_expired = true;
+            }
+            //get current plan name
+            $package_stripe_id = $user->subscriptions()->get('stripe_price');
+            $package = Packages::where('stripe_id', '=', $package_stripe_id[0]->stripe_price)->select('title')->first();
+        }
+        return view('pages/apps.packages.list', compact('packages', 'packes_related_data', 'user', 'is_expired','package'));
     }
 }

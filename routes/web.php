@@ -47,7 +47,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->middleware(['auth', 'twofactor']);
 
 
-    Route::get('/packages', [PaymentsContoller::class, 'Packages']);
+    Route::get('/packages', [PaymentsContoller::class, 'Packages'])->name('packages');
     Route::get('/pruchase_package', [PaymentsContoller::class, 'doPackagePurchase'])->name('pruchase_package');
     Route::get('/pruchase_thankyou', [PaymentsContoller::class, 'Pruchase_Thankyou'])->name('pruchase_thankyou');
     Route::get('/pruchase_failed', [PaymentsContoller::class, 'Pruchase_Failed'])->name('pruchase_failed');

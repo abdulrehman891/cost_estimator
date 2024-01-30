@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
-use Laravel\Cashier\Http\Controllers\WebhookController as BaseController; 
+use Laravel\Cashier\Http\Controllers\WebhookController as BaseController;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Carbon;
@@ -19,17 +19,19 @@ use Stripe\Stripe;
 use Stripe\Subscription as StripeSubscription;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Log;
+use App\Models\Packages;
 
 class StripeResponseHookHandler extends BaseController
 {
-    public function __construct(){
+    public function __construct()
+    {
         //vendor\laravel\cashier\src\Http\Controllers\WebhookController.php
         parent::__construct();
     }
     public function handleWebhook(Request $request)
     {
         $payload = json_decode($request->getContent(), true);
-        $method = 'handle'.Str::studly(str_replace('.', '_', $payload['type']));
+        $method = 'handle' . Str::studly(str_replace('.', '_', $payload['type']));
 
         WebhookReceived::dispatch($payload);
 
@@ -49,11 +51,11 @@ class StripeResponseHookHandler extends BaseController
     protected function handleCustomerSubscriptionCreated(array $payload)
     {
         $user = $this->getUserByStripeId($payload['data']['object']['customer']);
-        
+
         if ($user) {
             $data = $payload['data']['object'];
 
-            if (! $user->subscriptions->contains('stripe_id', $data['id'])) {
+            if (!$user->subscriptions->contains('stripe_id', $data['id'])) {
                 if (isset($data['trial_end'])) {
                     $trialEndsAt = Carbon::createFromTimestamp($data['trial_end']);
                 } else {
@@ -78,17 +80,27 @@ class StripeResponseHookHandler extends BaseController
                     'ends_at' => $subscription_ends_at,
                 ]);
 
+                //get package details by price ID
+                $price_id = $firstItem['price']['id'];
+                $package = Packages::where('stripe_id', '=', $price_id)->first();
+                $user_new_quote = intval($user->subscription_remaining_quota) + intval($package->quotations_quota);
+
+                Log::info("Old Quote=" . $user->subscription_remaining_quota);
+                Log::info("package Quote=" . $package->quotations_quota);
+                Log::info("user_new_quote =" . $user_new_quote);
+
                 //also save the subscription status in Users Table
-                $userdata=array(
-                    'subscription_ends_at'=>$subscription_ends_at,
-                    'subscription_transaction_stripe_id'=>$data['id'],
-                    'subscription_latest_invoice_stripe_id'=>$data['latest_invoice'],
-                );                
+                $userdata = array(
+                    'subscription_ends_at' => $subscription_ends_at,
+                    'subscription_remaining_quota' => $user_new_quote,
+                    'subscription_transaction_stripe_id' => $data['id'],
+                    'subscription_latest_invoice_stripe_id' => $data['latest_invoice'],
+                );
                 $user->update($userdata);
 
                 Log::info("data ends at ==> UTC=>  $subscription_ends_at");
-                Log::info(print_r($data,1));
-                Log::info(print_r($userdata,1));
+                Log::info(print_r($data, 1));
+                Log::info(print_r($userdata, 1));
 
                 foreach ($data['items']['data'] as $item) {
                     $subscription->items()->create([
@@ -101,7 +113,7 @@ class StripeResponseHookHandler extends BaseController
             }
 
             // Terminate the billable's generic trial if it exists...
-            if (! is_null($user->trial_ends_at)) {
+            if (!is_null($user->trial_ends_at)) {
                 $user->update(['trial_ends_at' => null]);
             }
         }

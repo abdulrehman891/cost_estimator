@@ -26,9 +26,10 @@ return new class extends Migration
             $table->string('profile_photo_path')->nullable();
             //fields for two factor authentication
             $table->string('two_factor_code')->nullable();
-            $table->dateTime('two_factor_expires_at')->nullable();           
+            $table->dateTime('two_factor_expires_at')->nullable();
             $table->timestamp('last_login_at')->nullable();
             $table->string('last_login_ip')->nullable();
+            $table->integer('subscription_remaining_quota')->default('0');
             $table->timestamp('subscription_ends_at')->nullable();
             $table->string('subscription_transaction_stripe_id')->nullable();
             $table->string('subscription_latest_invoice_stripe_id')->nullable();

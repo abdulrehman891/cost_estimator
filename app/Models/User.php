@@ -32,6 +32,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'two_factor_code',
         'two_factor_expires_at',
         'subscription_ends_at',
+        'subscription_remaining_quota',
         'subscription_transaction_stripe_id',
         'subscription_latest_invoice_stripe_id',
     ];

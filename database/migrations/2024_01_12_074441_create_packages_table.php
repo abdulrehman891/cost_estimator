@@ -18,6 +18,7 @@ class CreatePackagesTable extends Migration
             $table->string('stripe_id')->unique;
             $table->integer('validity_days');
             $table->integer('price_usd');
+            $table->integer('quotations_quota')->default('0');
             $table->timestamps();
         });
     }

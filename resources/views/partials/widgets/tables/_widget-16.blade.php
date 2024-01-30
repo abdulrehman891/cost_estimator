@@ -107,7 +107,7 @@
 											{{$quote_data['prepared_date']}}
 										</td>
 										<td class="text-end">
-											<a href="#" class="btn btn-sm btn-icon btn-bg-light btn-active-color-primary w-30px h-30px">{!! getIcon('black-right', 'fs-2 text-gray-500') !!}</a>
+											<a href="{{route('quotation.list', ['record_id' => $quote_data['id']])}}" class="btn btn-sm btn-icon btn-bg-light btn-active-color-primary w-30px h-30px">{!! getIcon('black-right', 'fs-2 text-gray-500') !!}</a>
 										</td>
 									</tr>
 							@endforeach
@@ -157,7 +157,7 @@
 											{{$quote_data['prepared_date']}}
 										</td>
 										<td class="text-end">
-											<a href="#" class="btn btn-sm btn-icon btn-bg-light btn-active-color-primary w-30px h-30px">{!! getIcon('black-right', 'fs-2 text-gray-500') !!}</a>
+											<a href="{{route('quotation.list', ['record_id' => $quote_data['id']])}}" class="btn btn-sm btn-icon btn-bg-light btn-active-color-primary w-30px h-30px">{!! getIcon('black-right', 'fs-2 text-gray-500') !!}</a>
 										</td>
 									</tr>
 							@endforeach
@@ -206,7 +206,7 @@
 											{{$quote_data['prepared_date']}}
 										</td>
 										<td class="text-end">
-											<a href="#" class="btn btn-sm btn-icon btn-bg-light btn-active-color-primary w-30px h-30px">{!! getIcon('black-right', 'fs-2 text-gray-500') !!}</a>
+											<a href="{{route('quotation.list', ['record_id' => $quote_data['id']])}}" class="btn btn-sm btn-icon btn-bg-light btn-active-color-primary w-30px h-30px">{!! getIcon('black-right', 'fs-2 text-gray-500') !!}</a>
 										</td>
 									</tr>
 							@endforeach

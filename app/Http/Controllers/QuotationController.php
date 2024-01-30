@@ -11,6 +11,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\JLSignnowHelpersController;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Packages;
 
 class QuotationController extends Controller
 {
@@ -42,7 +44,11 @@ class QuotationController extends Controller
     {
         $user = auth()->user();
         if ($user->can('view quotations')) {
-            return $quotationDataTable->render('pages/apps.quotation.list');
+            //add the package detail here as well
+            //get current plan name
+            $package_stripe_id = $user->subscriptions()->get('stripe_price');
+            $package = Packages::where('stripe_id', '=', $package_stripe_id[0]->stripe_price)->select('title')->first();
+            return $quotationDataTable->render('pages/apps.quotation.list', compact('package','user'));
         } else {
             return Redirect::to('dashboard');
         }
@@ -60,9 +66,6 @@ class QuotationController extends Controller
 
     public function sendProposal($quotation_id)
     {
-        // session()->flash('message', 'Post successfully updated.');
-        // return redirect()->route('quotation.list')->with('success', 'your message,here');
-
         //send the quotation to the selected customer
         $quotation_id = urldecode($quotation_id);
         $quote_data = Quotation::with('project')->find($quotation_id);
@@ -110,7 +113,6 @@ class QuotationController extends Controller
         $myRequest->merge($request_data);
         $send_doc_response = $cont->sendSignNowDocumenttoSign($myRequest);
         if ($send_doc_response->getData()->status == true) {
-            echo $send_doc_response->getData()->msg;
             //save the document details
             //signnow_document_id
             $updated_data = array(
@@ -119,9 +121,19 @@ class QuotationController extends Controller
                 'status' => 0
             );
             $quote_data->update($updated_data);
+            //at quote send, deduct the quota from user account
+            //get current plan name
+            $subscription_remaining_quota = (auth()->user()->subscription_remaining_quota > 1) ? auth()->user()->subscription_remaining_quota - 1 : 0;
+            $user = Auth::user();
+            // Update user attributes
+            $user->subscription_remaining_quota = $subscription_remaining_quota;
+            // Save the changes
+            $user->save();
+            session()->flash('message', $send_doc_response->getData()->msg);
         } else {
-            echo "Failed to send document";
+            session()->flash('error', "Failed to send the Document!");
         }
+        return redirect()->route('quotation.list', ['record_id' => $quote_data->id]);
     }
     /**
      * Show the form for creating a new resource.

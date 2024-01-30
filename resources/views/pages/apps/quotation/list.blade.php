@@ -4,6 +4,27 @@
         Quotation
     @endsection
 
+    @if (session()->has('message'))
+        <div class="alert alert-success">
+            {{ session('message') }}
+        </div>
+    @endif
+    @if (session()->has('error'))
+        <div class="alert alert-danger">
+            {{ session('error') }}
+        </div>
+    @endif
+
+    <!--begin::Heading--> 
+        @if(!empty($user->subscription_ends_at))
+            <div class="mb-13 text-center">    
+                <h1 class="mb-3">Your {{$package['title']}} Details:</h1>
+                <h3>Quota Expiry Date:<span class="badge badge-light-success me-4">{{$user->subscription_ends_at}} UTC</span></h3>
+                <h3>Quotes Generation Remaining Quota:<span class="badge badge-light-success me-4">{{$user->subscription_remaining_quota}}</span></h3>
+            </div>
+        @endif
+    <!--end::Heading-->
+
     @section('breadcrumbs')
         {{ Breadcrumbs::render('quotation.list') }}
     @endsection

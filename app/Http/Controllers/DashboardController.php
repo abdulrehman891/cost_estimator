@@ -60,13 +60,13 @@ class DashboardController extends Controller
         //get quotes by type
         $quotes_completed_residential = Quotation::join('projects', 'projects.id', '=', 'quotations.project_id')
             ->join('customers', 'customers.id', '=', 'quotations.customer_id')
-            ->where('status', '=', 1)->select('customers.name as customer_name', 'projects.project_type', 'projects.name AS project_name', 'quotations.prepared_date')->where('projects.project_type', '=', 'residential')->skip(0)->take(10)->orderBy('projects.created_at')->get();
+            ->where('status', '=', 1)->select('customers.name as customer_name', 'projects.project_type', 'projects.name AS project_name', 'quotations.prepared_date', 'quotations.id')->where('projects.project_type', '=', 'residential')->skip(0)->take(10)->orderBy('projects.created_at')->get();
         $quotes_completed_commercial = Quotation::join('projects', 'projects.id', '=', 'quotations.project_id')
             ->join('customers', 'customers.id', '=', 'quotations.customer_id')
-            ->where('status', '=', 1)->select('customers.name as customer_name', 'projects.project_type', 'projects.name AS project_name', 'quotations.prepared_date')->where('projects.project_type', '=', 'commercial')->skip(0)->take(10)->orderBy('projects.created_at')->get();
+            ->where('status', '=', 1)->select('customers.name as customer_name', 'projects.project_type', 'projects.name AS project_name', 'quotations.prepared_date', 'quotations.id')->where('projects.project_type', '=', 'commercial')->skip(0)->take(10)->orderBy('projects.created_at')->get();
         $quotes_completed_industrial = Quotation::join('projects', 'projects.id', '=', 'quotations.project_id')
             ->join('customers', 'customers.id', '=', 'quotations.customer_id')
-            ->where('status', '=', 1)->select('customers.name as customer_name', 'projects.project_type', 'projects.name AS project_name', 'quotations.prepared_date')->where('projects.project_type', '=', 'industrial')->skip(0)->take(10)->orderBy('projects.created_at')->get();
+            ->where('status', '=', 1)->select('customers.name as customer_name', 'projects.project_type', 'projects.name AS project_name', 'quotations.prepared_date', 'quotations.id')->where('projects.project_type', '=', 'industrial')->skip(0)->take(10)->orderBy('projects.created_at')->get();
         $completed_quotes_by_type = array(
             'commercial' => $quotes_completed_commercial,
             'residential' => $quotes_completed_residential,

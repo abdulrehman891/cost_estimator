@@ -33,7 +33,7 @@ class QuotationsDataTable extends DataTable
             })
             ->editColumn('status', function (Quotation $quotation) {
                 $quote_controller = new QuotationController();
-                return $quote_controller->status_list[$quotation->status];
+                return (!empty($quote_controller->status_list[$quotation->status])) ? $quote_controller->status_list[$quotation->status] : '';
             })
             ->addColumn('action', function (Quotation $quotation) {
                 $signnow_helper_obj = new JLSignnowHelpersController();

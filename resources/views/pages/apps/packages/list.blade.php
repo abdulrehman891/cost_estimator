@@ -12,6 +12,16 @@
             <!--begin::Heading-->
             <div class="mb-13 text-center">
                 <h1 class="mb-3">Upgrade a Packages</h1>
+                @if(!empty($user->subscription_ends_at) && !$is_expired)
+                    <h3>Current Package Plan:<span class="badge badge-light-success me-4">{{$package['title']}}</span></h3>
+                    <h3>Current Package Expiry Date:<span class="badge badge-light-success me-4">{{$user->subscription_ends_at}} UTC</span></h3>
+                    <h3>Current Package Remaining Quota:<span class="badge badge-light-success me-4">{{$user->subscription_remaining_quota}}</span></h3>
+                @elseif(!empty($user->subscription_ends_at) && $is_expired)
+                    <p>You packages has been expired, please purchase a new package, your existing quota will be added to the new Quota</p>
+                    <h3>Current Package Plan:<span class="badge badge-light-success me-4">{{$package['title']}}</span></h3>
+                    <h3>Current Package Expiry Date:<span class="badge badge-light-danger me-4">{{$user->subscription_ends_at}} UTC</span></h3>
+                    <h3>Current Package Remaining Quota:<span class="badge badge-light-success me-4">{{$user->subscription_remaining_quota}}</span></h3>                    
+                @endif
             </div>
             <!--end::Heading-->
             <!--begin::Packagess-->
