@@ -13,6 +13,7 @@ use App\Http\Controllers\JLSignnowHelpersController;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Packages;
+use Carbon\Carbon;
 
 class QuotationController extends Controller
 {
@@ -43,12 +44,17 @@ class QuotationController extends Controller
     public function index(QuotationsDataTable $quotationDataTable)
     {
         $user = auth()->user();
+        //if user subscription quota is ended, then redirect him to packages page
+        if (empty($user->subscription_ends_at) || empty($user->subscription_remaining_quota) || $user->subscription_remaining_quota < 1 || Carbon::now()->gt(Carbon::parse($user->subscription_ends_at))) {
+            //Redirect user to packages page and ask them to subscribe...
+            return redirect('/packages');
+        }
         if ($user->can('view quotations')) {
             //add the package detail here as well
             //get current plan name
             $package_stripe_id = $user->subscriptions()->get('stripe_price');
             $package = Packages::where('stripe_id', '=', $package_stripe_id[0]->stripe_price)->select('title')->first();
-            return $quotationDataTable->render('pages/apps.quotation.list', compact('package','user'));
+            return $quotationDataTable->render('pages/apps.quotation.list', compact('package', 'user'));
         } else {
             return Redirect::to('dashboard');
         }
