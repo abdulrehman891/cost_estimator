@@ -12,6 +12,8 @@ use Yajra\DataTables\Html\Editor\Editor;
 use Yajra\DataTables\Html\Editor\Fields;
 use Yajra\DataTables\Services\DataTable;
 use App\Http\Controllers\JLSignnowHelpersController;
+use App\Http\Controllers\QuotationController;
+use Illuminate\Http\Request;
 
 class QuotationsDataTable extends DataTable
 {
@@ -22,7 +24,6 @@ class QuotationsDataTable extends DataTable
      */
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
-        
         return (new EloquentDataTable($query))
             ->editColumn('created_at', function (Quotation $quotation) {
                 return $quotation->created_at->format('d M Y, h:i a');
@@ -30,9 +31,13 @@ class QuotationsDataTable extends DataTable
             ->editColumn('updated_at', function (Quotation $quotation) {
                 return $quotation->updated_at->format('d M Y, h:i a');
             })
+            ->editColumn('status', function (Quotation $quotation) {
+                $quote_controller = new QuotationController();
+                return $quote_controller->status_list[$quotation->status];
+            })
             ->addColumn('action', function (Quotation $quotation) {
                 $signnow_helper_obj = new JLSignnowHelpersController();
-                return view('pages/apps.quotation.columns._actions', compact('quotation','signnow_helper_obj'));
+                return view('pages/apps.quotation.columns._actions', compact('quotation', 'signnow_helper_obj'));
             })
             ->setRowId('id');
     }
@@ -42,7 +47,12 @@ class QuotationsDataTable extends DataTable
      */
     public function query(Quotation $model): QueryBuilder
     {
-        return $model->newQuery();
+        $record_id = \Request::input('record_id');
+        if (!empty($record_id)) {
+            return $model->newQuery()->where('id', '=', $record_id);
+        } else {
+            return $model->newQuery();
+        }
     }
 
     /**
@@ -51,7 +61,7 @@ class QuotationsDataTable extends DataTable
     public function html(): HtmlBuilder
     {
         return $this->builder()
-                    ->setTableId('quotations-table')
+            ->setTableId('quotations-table')
             ->columns($this->getColumns())
             ->minifiedAjax()
             ->dom('rt' . "<'row'<'col-sm-12 col-md-5'l><'col-sm-12 col-md-7'p>>",)

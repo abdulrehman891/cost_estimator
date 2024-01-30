@@ -32,7 +32,7 @@ class QuotationController extends Controller
             "Declined by Manager",
             "Expired at Manager's end",
             "Declined_by_Client",
-            "Expired at Client's end",
+            "Expired at Client's end"
         );
     }
     /**

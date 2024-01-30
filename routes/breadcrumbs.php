@@ -89,3 +89,9 @@ Breadcrumbs::for('quotation.list', function (BreadcrumbTrail $trail) {
 //    $trail->parent('product.list');
     $trail->push('Quotation List', route('quotation.list'));
 });
+
+// Home > Dashboard > Notifications > List
+Breadcrumbs::for('notification.list', function (BreadcrumbTrail $trail) {
+    //    $trail->parent('product.list');
+        $trail->push('Notifications List', route('notifications'));
+    });

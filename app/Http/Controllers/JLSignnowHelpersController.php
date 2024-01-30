@@ -26,6 +26,8 @@ use App\Models\User;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\NotificationController;
+use Illuminate\Support\Carbon;
 
 class JLSignnowHelpersController extends Controller
 {
@@ -33,8 +35,11 @@ class JLSignnowHelpersController extends Controller
     private $basic_token;
     private $user;
     private $password;
+    private $manager_expirationdays;
+    private $client_expirationdays;
     private $templateId;
     private $auth;
+    private $notifications;
     private $from;
     private $subject;
     public $doc_name_pre;
@@ -44,14 +49,16 @@ class JLSignnowHelpersController extends Controller
         $this->basic_token = env('SIGNNOW_API_BASIC_TOKEN');
         $this->user = env('SIGNNOW_API_USER');
         $this->password = env('SIGNNOW_API_PASSWORD');
+        $this->manager_expirationdays = env('SIGNNOW_API_MANAGER_EXPIRATIONDAYS');
+        $this->client_expirationdays = env('SIGNNOW_API_CLIENT_EXPIRATIONDAYS');
         $this->templateId = env('SIGNNOW_API_QUOTE_TEMPLATEID');
         $this->from = $from_email;
         $this->subject = env('SIGNNOW_API_EMAIL_SUBJECT');
         $this->doc_name_pre = env('SIGNNOW_API_DOC_NAME_PRE');
         $this->auth = new SignNowOAuth($this->host);
+        //send notification
+        $this->notifications = new NotificationController();
     }
-
-
 
     public function generateAccessRefreshToken()
     {
@@ -207,14 +214,14 @@ class JLSignnowHelpersController extends Controller
 
             //send the invite to the project manager
             $company_roleName = "Company_Manager";
-            $to[] = (new Recipient($manager_email, $company_roleName, "", 1))
+            $to[] = (new Recipient($manager_email, $company_roleName, "", 1, $this->manager_expirationdays))
                 ->setSubject($this->subject)
                 ->setMessage($message);
 
             //send invite to the cotractor
             $roleName = 'The_Client';
             $roleUniqueId = '';
-            $to[] = (new Recipient($signerEmail, $roleName, $roleUniqueId, 2))
+            $to[] = (new Recipient($signerEmail, $roleName, $roleUniqueId, 2, $this->client_expirationdays))
                 ->setSubject($this->subject)
                 ->setMessage($message);
 
@@ -365,21 +372,26 @@ class JLSignnowHelpersController extends Controller
                 $quote_data = Quotation::where('signnow_document_id', '=', $document_id)->select('id', 'created_by', 'status')->first();
                 //check if the process was completed by the Manager or client
                 //$the_signer = User::where('email', '=', $signer_email)->select('id')->first();
-                if ($quote_data['status'] == 'Pending_Manager_Signature' || $quote_data['status'] == 'Declined_by_Manager') {
+                if ($quote_data['status'] == 0 || $quote_data['status'] == 3) {
                     //if signer is manager
                     //signature is pending by client
                     $updated_data = array(
                         'status' => 2,
+                        'status_update_at' =>  Carbon::now()->toDateTimeString(),
                     );
+                    $notification_message = "The Quotation was signed by the Manager";
                 } else {
                     //if signer is a client
                     //signed successfully
                     $updated_data = array(
                         'status' => 1,
+                        'status_update_at' =>  Carbon::now()->toDateTimeString(),
                     );
+                    $notification_message = "The Quotation was completely Signed";
                 }
                 $quot_obj = Quotation::find($quote_data['id']);
                 $quot_obj->update($updated_data);
+                $this->notifications->sendMoudleNotification(1, $quote_data['created_by'], date('Y-m-d'), 'quotation', $quote_data['id'], "", "", "", $document_id, $notification_message, "", 200, 'signed');
             } else if ($meta['event'] == 'user.document.fieldinvite.decline') {
                 //cancel the invite, and add the status update
                 $document_id = $content['document_id'];
@@ -389,25 +401,57 @@ class JLSignnowHelpersController extends Controller
                 //check if declined by the Manager or client
                 //$the_signer = User::where('email', '=', $signer_email)->select('id')->first();
 
-                if ($quote_data['status'] == 'Pending_Manager_Signature') {
+                if ($quote_data['status'] == 0) {
                     //if signer is manager
                     //declined by manager
                     $updated_data = array(
                         'status' => 3,
+                        'status_update_at' =>  Carbon::now()->toDateTimeString(),
                     );
+                    $notification_message = "The Quotation was declined by the Manager";
                 } else {
                     //if signer is a client
                     //declined by client
                     $updated_data = array(
                         'status' => 5,
+                        'status_update_at' =>  Carbon::now()->toDateTimeString(),
                     );
+                    $notification_message = "The Quotation was declined by the Client";
                     //cancel the invite if declined by the client
                 }
                 $quot_obj = Quotation::find($quote_data['id']);
                 $quot_obj->update($updated_data);
+                $this->notifications->sendMoudleNotification(1, $quote_data['created_by'], date('Y-m-d'), 'quotation', $quote_data['id'], "", "", "", $document_id, $notification_message, "", 500, 'declined');
+            } else if ($meta['event'] == 'user.invite.expired') {
+                //cancel the invite, and add the status update
+                $document_id = $content['document_id'];
+                $signer_email = $content['signer'];
+                $status = $content['status'];
+                $quote_data = Quotation::where('signnow_document_id', '=', $document_id)->select('id', 'created_by', 'status')->first();
+                //check if declined by the Manager or client
+                //$the_signer = User::where('email', '=', $signer_email)->select('id')->first();
+                if ($quote_data['status'] == 0) {
+                    //if signer is manager
+                    //missed by manager
+                    $updated_data = array(
+                        'status' => 4,
+                        'status_update_at' =>  Carbon::now()->toDateTimeString(),
+                    );
+                    $notification_message = "The Quotation got Expired before the Manager Signature";
+                } else {
+                    //if signer is a client
+                    //missed by client
+                    $updated_data = array(
+                        'status' => 6,
+                        'status_update_at' =>  Carbon::now()->toDateTimeString(),
+                    );
+                    $notification_message = "The Quotation got Expired before the Client Signature";
+                }
+                $quot_obj = Quotation::find($quote_data['id']);
+                $quot_obj->update($updated_data);
+                //send system notification to Manager
+                $this->notifications->sendMoudleNotification(1, $quote_data['created_by'], date('Y-m-d'), 'quotation', $quote_data['id'], "", "", "", $document_id, $notification_message, "", 300, 'expired');
             }
-            // $signnow_signature = $request->header('x-signnow-signature');
-            // Log::info("signnow_signature=" . $signnow_signature);
             return response()->json('response from wequote', 200);
         } catch (Throwable $exception) {
             Log::info("ERROR [SignNow API Hook Error]: ");

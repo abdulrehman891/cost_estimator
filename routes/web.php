@@ -18,6 +18,7 @@ use App\Http\Controllers\StripeResponseHookHandler;
 use App\Http\Controllers\CompanyProfileController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\JLSignnowHelpersController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProductPriceHistoryController;
 
 
@@ -92,6 +93,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/quotation/preview_doc/{signnow_document_id}', [JLSignnowHelpersController::class, 'previewDoc'])->name('qoutation.preview_doc');
     Route::get('/quotation/send/{id}', [QuotationController::class, 'sendProposal'])->name('qoutation.send');
 
+
+    // Notifications Route
+    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications');
 });
 
 Route::get('/error', function () {
