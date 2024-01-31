@@ -40,7 +40,6 @@
 				<!--end:Menu content-->
 			</div>
 			<!--end:Menu item-->
-			<!--begin:Menu item-->
 
             @can("view quotations")
             <div data-kt-menu-trigger="click" class="menu-item menu-accordion {{ request()->routeIs('quotation.*') ? 'here show' : '' }}">
@@ -62,6 +61,18 @@
 								<span class="bullet bullet-dot"></span>
 							</span>
                             <span class="menu-title">View Quotations</span>
+                        </a>
+                        <!--end:Menu link-->
+                    </div>
+                    <!--end:Menu item-->
+                    <!--begin:Menu item-->
+                    <div class="menu-item">
+                        <!--begin:Menu link-->
+                        <a class="menu-link {{ request()->routeIs('quotation-template.list') ? 'active' : '' }}" href="{{ route('quotation-template.list') }}">
+							<span class="menu-bullet">
+								<span class="bullet bullet-dot"></span>
+							</span>
+                            <span class="menu-title">View Quotation Templates</span>
                         </a>
                         <!--end:Menu link-->
                     </div>
@@ -274,6 +285,35 @@
 			<!--end:Menu item-->
             @endcan
             {{-- User Management End --}}
+
+            @can("view admin configs")
+            <div data-kt-menu-trigger="click" class="menu-item menu-accordion {{ request()->routeIs('admin.*') ? 'here show' : '' }}">
+                <!--begin:Menu link-->
+                <span class="menu-link">
+					<span class="menu-icon ">{!! getIcon('abstract-41', 'fs-2') !!}</span>
+					<span class="menu-title">Administration</span>
+					<span class="menu-arrow"></span>
+				</span>
+                <!--end:Menu link-->
+                <!--begin:Menu sub-->
+                <div class="menu-sub menu-sub-accordion">
+                    <!--begin:Menu item-->
+                    <div class="menu-item">
+                        <!--begin:Menu link-->
+                        <a class="menu-link {{ request()->routeIs('adminconfigs.list') ? 'active' : '' }}" href="{{ route('adminconfigs.list') }}">
+							<span class="menu-bullet">
+								<span class="bullet bullet-dot"></span>
+							</span>
+                            <span class="menu-title">View Admin Config</span>
+                        </a>
+                        <!--end:Menu link-->
+                    </div>
+                    <!--end:Menu item-->
+                </div>
+                <!--end:Menu sub-->
+            </div>
+            @endcan
+            {{-- Config End --}}
 		</div>
 		<!--end::Menu-->
 	</div>

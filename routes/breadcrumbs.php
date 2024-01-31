@@ -84,12 +84,24 @@ Breadcrumbs::for('category.list', function (BreadcrumbTrail $trail) {
 });
 
 
+// Home > Dashboard > adminconfigs > List
+Breadcrumbs::for('adminconfigs.list', function (BreadcrumbTrail $trail) {
+    $trail->push('Admin Configurations List', route('adminconfigs.list'));
+});
+
+
 // Home > Dashboard > Quotations > List
 Breadcrumbs::for('quotation.list', function (BreadcrumbTrail $trail) {
 //    $trail->parent('product.list');
     $trail->push('Quotation List', route('quotation.list'));
 });
 
+
+// Home > Dashboard > Quotation Templates > List
+Breadcrumbs::for('quotation-template.list', function (BreadcrumbTrail $trail) {
+//    $trail->parent('product.list');
+    $trail->push('Quotation Template List', route('quotation-template.list'));
+});
 // Home > Dashboard > Notifications > List
 Breadcrumbs::for('notification.list', function (BreadcrumbTrail $trail) {
     //    $trail->parent('product.list');

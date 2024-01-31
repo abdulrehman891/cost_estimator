@@ -25,6 +25,7 @@ class DefaultLayout extends Component
      */
     public function render()
     {
+        $all_unread_notifications = "";
         $total_unread_notifications = Auth::user()->unreadNotifications->where('data.reminder_date', date('Y-m-d'))->count();
         if ($total_unread_notifications > 0) {
             $all_unread_notifications = Auth::user()->unreadNotifications->where('data.reminder_date', date('Y-m-d'));

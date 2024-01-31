@@ -3,6 +3,7 @@
 namespace App\Http\Livewire\Quotation;
 
 use App\Http\Controllers\ChatGPTController;
+use App\Http\Controllers\Admin\AdminConfigController;
 use App\Models\Product;
 use App\Models\ProjectMilestone;
 use App\Models\Quotation;
@@ -146,6 +147,18 @@ class AddQuotationModal extends Component
         $this->products_list = Product::whereIn('created_by',[$admin_user_id, Auth::user()->id])->get(); //Product::all();
         $this->users_list = User::all();
         $this->customer_list = Customer::whereIn('created_by',[$admin_user_id, Auth::user()->id])->get();
+
+
+        $adminConfController = new AdminConfigController();
+        $adminPrompts = $adminConfController->getAllPrompts();
+        $this->inclusions = isset($adminPrompts['inclusions'])?$adminPrompts['inclusions']:"";
+        $this->exclusions = isset($adminPrompts['exclusions'])?$adminPrompts['exclusions']:"";
+        $this->payment_schedule = isset($adminPrompts['payment_schedule'])?$adminPrompts['payment_schedule']:"";
+        $this->price_escalation_clause = isset($adminPrompts['price_escalation'])?$adminPrompts['price_escalation']:"";
+        $this->alterations = isset($adminPrompts['alterations'])?$adminPrompts['alterations']:"";
+        $this->compliance = isset($adminPrompts['compliance'])?$adminPrompts['compliance']:"";
+        $this->timelines = isset($adminPrompts['timelines'])?$adminPrompts['timelines']:"";
+        $this->warranty_clause = isset($adminPrompts['warranty'])?$adminPrompts['warranty']:"";
     }
     public function updateQuotation($id)
     {
@@ -444,8 +457,12 @@ Moreover, also mention Risk Factors for Quote Line Items using below Base64 Enco
         Also write and include Validity and Disclaimers.format so that it can be sent to the client for approval.";
         $msg_data .= " format so that it can be included in a PDF template";
 */
-
-        $msg_data = "I need you to work as an expert Construction Quotation Generator. You have the ability to analyze and create a Construction Project Proposal by using provided information. The complete project information of project is as follows:
+if(isset($adminAiPrompts['pre_data'])){
+            $msg_data = $adminAiPrompts['pre_data'];
+        } else{
+        $msg_data = "I need you to work as an expert Construction Quotation Generator. You have the ability to analyze and create a Construction Project Proposal by using provided information. The complete project information of project is as follows:";
+        }
+        $msg_data .= "
             <--Project Details Start-->";
         $msg_data .= $formData['projectDetails'];
         $msg_data .= "
@@ -458,12 +475,22 @@ Moreover, also mention Risk Factors for Quote Line Items using below Base64 Enco
         $msg_data .= $formData['quoteLineItemsDetails'];
         $msg_data .= "
         <--Quote Line Items End-->
-        I need you to add details in points using above information and along with that, modify and include the specific information in headings as per mentioned sections:
+        ";
+
+        if(isset($adminAiPrompts['post_data'])){
+            $msg_data = $adminAiPrompts['post_data'];
+        } else{
+            $msg_data .= "I need you to add details in points using above information and along with that, modify and include the specific information in headings as per mentioned sections:
         Warranty, Inclusions, Payment Schedule, Compliance and Warranty Clause.
-        Moreover, also mention Risk Factors, Validity, Disclaimers and calculate Total Quotable Price using total price of all Quote Line Items.
-            take above information and write proposal can be send to client for approval.
-                        Also mention validity and disclaimers
-                        Create around 250 words";
+        Moreover, also mention Risk Factors, Validity, Disclaimers and calculate Total Quotable Price using total price of all Quote Line Items. Take above information and write proposal can be send to client for approval.";
+        }
+        if(isset($adminAiPrompts['final_remarks'])){
+            $msg_data = $adminAiPrompts['final_remarks'];
+        } else{
+            $msg_data .="Also mention validity and disclaimers. Create minimum 250 words";
+}
+
+
 //        $this->res_chatGPT =$chat->createPurposalChatGPT($msg_data);
         //sleep(2);
 

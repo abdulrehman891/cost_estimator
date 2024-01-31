@@ -20,7 +20,8 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\JLSignnowHelpersController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProductPriceHistoryController;
-
+use App\Http\Controllers\QuotationTemplateController;
+use App\Http\Controllers\Admin\AdminConfigController;
 
 /*
 |--------------------------------------------------------------------------
@@ -94,6 +95,17 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/quotation/send/{id}', [QuotationController::class, 'sendProposal'])->name('qoutation.send');
     Route::get('/quotation/show/{quotation}', [QuotationController::class, 'show'])->name('quotation.show');
 
+
+    // Quotation Template
+    Route::get('/quotation-template/list', [QuotationTemplateController::class, 'index'])->name('quotation-template.list')->middleware([Subscribed::class]);
+
+
+    Route::prefix('admin')->group(function () {
+        Route::get('/configs', [AdminConfigController::class, 'index'])->name('adminconfigs.list');
+        Route::get('/configs/show/{id}', [AdminConfigController::class, 'show'])->name('adminconfigs.show');
+        Route::put('/configs/{config}', [AdminConfigController::class, 'update'])->name('adminconfigs.update');
+        Route::delete('/configs/{config}', [AdminConfigController::class, 'destroy'])->name('adminconfigs.destroy');
+    });
     // Notifications Route
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications');
 });
