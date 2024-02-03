@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('quotation_templates', function (Blueprint $table) {
             $table->uuid('id')->primary();
+            $table->string('name');
             $table->timestamps();
             $table->foreignUuid('created_by');
             $table->text('assembly_type');

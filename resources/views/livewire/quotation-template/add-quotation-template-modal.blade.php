@@ -38,6 +38,15 @@
                                     <!--begin::Input group-->
                                     <div class="row">
                                         <div class="col-md-12 mb-4">
+                                            <label class="required fw-semibold fs-6 mb-2">Name</label>
+                                            <input type="text" wire:model.defer="name"
+                                                name="name"
+                                                class="form-control form-control-solid mb-3 mb-lg-0"
+                                                placeholder="Name" />
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12 mb-4">
                                             <label class="required fw-semibold fs-6 mb-2">Assembly Type</label>
                                             <input type="textarea" wire:model.defer="assembly_type"
                                                 name="assembly_type"
@@ -176,7 +185,7 @@
                                         <div class="form-group">
                                             <div data-repeater-list="quote_template_line_items">
                                                 <div data-repeater-item>
-                                                    @foreach ($quoteTemplateItems as $index => $quoteLine)
+                                                    @foreach ($quoteTemplateLineItems as $index => $quoteLine)
                                                         <div class="card m-2">
 
                                                             <!--begin::Input group-->

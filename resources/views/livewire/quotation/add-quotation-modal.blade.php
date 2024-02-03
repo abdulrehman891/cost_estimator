@@ -301,6 +301,17 @@
                                 <div class="card">
                                     <div class="card-header bg-primary text-black"><h3 class="card-title text-white">STEP 3/5 - Quotation</h3></div>
                                     <div class="card-body">
+                                        <div class="fv-row m-5" >
+                                            <!--begin::Label-->
+                                            <label class="required fw-semibold fs-6 mb-2">Quotation Template</label>
+                                            <!--end::Label-->
+                                            <select wire:model="quotationTemplateID" class="form-select" name="quotationTemplateID" data-placeholder="Select an option" wire:change="loadQuotationTemplate()">
+                                                <option></option>
+                                                @foreach($quote_templates_list as $quote_template)
+                                                    <option value="{{$quote_template->id}}">{{$quote_template->name}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
                                     <!--begin::Input group-->
                                     <div class="row">
                                         <div class="col-md-6 mb-4">

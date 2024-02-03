@@ -14,7 +14,7 @@ class QuotationTemplate extends Model
 {
     use HasFactory, HasUuids, SoftDeletes;
 
-    protected $fillable = ['created_by','prepared_date','assembly_type','manufacturer','sq_field','parapet_length','warranty','sq_walls','building_height','deck_type'];
+    protected $fillable = ['created_by','name','assembly_type','manufacturer','sq_field','parapet_length','warranty','sq_walls','building_height','deck_type'];
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class,'created_by');

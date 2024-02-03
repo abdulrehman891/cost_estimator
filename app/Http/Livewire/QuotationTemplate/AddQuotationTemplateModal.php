@@ -13,10 +13,11 @@ class AddQuotationTemplateModal extends Component
     public $currentStep;
     public $totalStep = 5;
     public $isLoading = false;
-    public $quoteTemplateItems = [''];
+    public $quoteTemplateLineItems = [''];
 
     //List for Quotation Template Module
     // public $prepared_date;
+    public $name;
     public $assembly_type;
     public $manufacturer;
     public $sq_walls;
@@ -51,6 +52,9 @@ class AddQuotationTemplateModal extends Component
 
     public $users_list;
 
+    public $edit_mode = false;
+    public $quotationTemplateID;
+
     protected $rules = [
         'name' => 'required|string',
         'description' => 'string',
@@ -60,6 +64,7 @@ class AddQuotationTemplateModal extends Component
 
     protected $listeners = [
         'delete_quotation_template' => 'deleteQuotationTemplate',
+        'update_quotation_template' => 'updateQuotationTemplate',
     ];
 
     public function deleteQuotationTemplate($id){
@@ -92,12 +97,48 @@ class AddQuotationTemplateModal extends Component
         $this->timelines = isset($adminPrompts['timelines']) ? $adminPrompts['timelines'] : "";
         $this->warranty_clause = isset($adminPrompts['warranty']) ? $adminPrompts['warranty'] : "";
     }
+    public function updateQuotationTemplate($id)
+    {
+        $this->edit_mode = true;
+        $this->quotationTemplateID = $id;
+        $quotationTemplate = QuotationTemplate::find($id);
+        $this->name = $quotationTemplate->name;
+        $this->assembly_type = $quotationTemplate->assembly_type;
+        $this->manufacturer = $quotationTemplate->manufacturer;
+        $this->sq_walls = $quotationTemplate->sq_walls;
+        $this->sq_field = $quotationTemplate->sq_field;
+        $this->warranty = $quotationTemplate->warranty;
+        $this->parapet_length = $quotationTemplate->parapet_length;
+        $this->building_height = $quotationTemplate->building_height;
+        $this->deck_type = $quotationTemplate->deck_type;
+        $this->inclusions = $quotationTemplate->inclusions;
+        $this->exclusions = $quotationTemplate->exclusions;
+        $this->payment_schedule = $quotationTemplate->payment_schedule;
+        $this->price_escalation_clause = $quotationTemplate->price_escalation_clause;
+        $this->alterations = $quotationTemplate->alterations;
+        $this->compliance = $quotationTemplate->compliance;
+        $this->timelines = $quotationTemplate->timelines;
+        $this->warranty_clause = $quotationTemplate->warranty_clause;
+        $quoteLineItems = QuoteTemplateLineItem::where('quotation_template_id',$id)->get();
+        for($x = 0; $x < count($quoteLineItems); $x++)
+        {
+            $this->products[$x] = $quoteLineItems[$x]->product_id;
+            $this->unit_price[$x] = $quoteLineItems[$x]->unit_price;
+            $this->discount_price[$x] = $quoteLineItems[$x]->discount_price;
+            $this->quantity[$x] = $quoteLineItems[$x]->quantity;
+            $this->total_price[$x] = $quoteLineItems[$x]->total_price;
+            if($x > 0)
+            {
+                $this->quoteTemplateLineItems[] = '';
+            }
+        }
+    }
     public function addQuoteTemplateLine(){
-        $this->quoteTemplateItems[] = '';
+        $this->quoteTemplateLineItems[] = '';
     }
     public function removeQuoteline($index){
-        unset($this->quoteTemplateItems[$index]);
-        $this->quoteTemplateItems = array_values($this->quoteTemplateItems);
+        unset($this->quoteTemplateLineItems[$index]);
+        $this->quoteTemplateLineItems = array_values($this->quoteTemplateLineItems);
     }
     public function render(){
         return view('livewire.quotation-template.add-quotation-template-modal');
@@ -132,14 +173,27 @@ class AddQuotationTemplateModal extends Component
         }
     }
 
-    public function submit(){
-        $quotation_id = $this->addQuotationTemplate();
-        $this->addQuoteTemplateLineItems($quotation_id);
+    public function submit()
+    {
+        // if ($this->edit_mode) {
+        //     $quotation_template_id = $this->addQuotationTemplate();
+        //     $this->addQuoteTemplateLineItems($quotation_template_id);
+        //     $this->emit('success', __('Quotation Templateupdated'));
+        // } else {
+            $quotation_template_id = $this->addQuotationTemplate();
+            $this->addQuoteTemplateLineItems($quotation_template_id);
+        // }
     }
 
     public  function addQuotationTemplate(){
-        $quotation_obj = new QuotationTemplate();
+        if($this->edit_mode){
+            $quotation_obj = QuotationTemplate::find($this->quotationTemplateID);
+        } else {
+            $quotation_obj = new QuotationTemplate();
+        }
+
         // $quotation_obj->prepared_date = $this->prepared_date;
+        $quotation_obj->name = $this->name;
         $quotation_obj->assembly_type = $this->assembly_type;
         $quotation_obj->manufacturer = $this->manufacturer;
         $quotation_obj->sq_walls = $this->sq_walls;
@@ -162,7 +216,10 @@ class AddQuotationTemplateModal extends Component
     }
 
 
-    public function addQuoteTemplateLineItems($quotation_id){
+    public function addQuoteTemplateLineItems($quotation_template_id){
+        if($this->edit_mode){
+            QuoteTemplateLineItem::where('quotation_template_id', $quotation_template_id)->delete();
+        }
         for ($x = 0; $x < count($this->products); $x++) {
             $quoteLineItem_obj = new QuoteTemplateLineItem();
             $quoteLineItem_obj->product_id = $this->products[$x];
@@ -171,7 +228,7 @@ class AddQuotationTemplateModal extends Component
             $quoteLineItem_obj->quantity = $this->quantity[$x];
             $quoteLineItem_obj->total_price = $this->total_price[$x];
             $quoteLineItem_obj->created_by =  Auth::user()->id;
-            $quoteLineItem_obj->quotation_template_id = $quotation_id;
+            $quoteLineItem_obj->quotation_template_id = $quotation_template_id;
             $product = $this->products_list->where('id', $this->products[$x])->first();
             $product_name = $product->product_name;
             $this->quoteTemplateLineItemsData[] = array(

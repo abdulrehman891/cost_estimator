@@ -98,6 +98,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Quotation Template
     Route::get('/quotation-template/list', [QuotationTemplateController::class, 'index'])->name('quotation-template.list')->middleware([Subscribed::class]);
+    Route::get('/quotation-template/show/{quotation_template}', [QuotationTemplateController::class, 'show'])->name('quotation-template.show');
 
 
     Route::prefix('admin')->group(function () {

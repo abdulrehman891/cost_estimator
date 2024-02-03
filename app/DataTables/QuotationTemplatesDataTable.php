@@ -64,6 +64,7 @@ class QuotationTemplatesDataTable extends DataTable
     public function getColumns(): array
     {
         return [
+            Column::make('name'),
             Column::make('assembly_type'),
             Column::make('manufacturer'),
             Column::make('created_at'),

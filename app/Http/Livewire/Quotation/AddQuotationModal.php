@@ -8,6 +8,8 @@ use App\Models\Product;
 use App\Models\ProjectMilestone;
 use App\Models\Quotation;
 use App\Models\QuoteLineItem;
+use App\Models\QuotationTemplate;
+use App\Models\QuoteTemplateLineItem;
 use Livewire\Component;
 use App\Models\User;
 use App\Models\Project;
@@ -99,6 +101,8 @@ class AddQuotationModal extends Component
     public $customer_id;
     public $edit_mode = false;
     public $quotationID;
+    public $quotationTemplateID;
+    public $quote_templates_list;
 
     public $res_chatGPT="";
 
@@ -153,6 +157,8 @@ class AddQuotationModal extends Component
         $this->products_list = Product::whereIn('created_by',[$admin_user_id, Auth::user()->id])->get(); //Product::all();
         $this->users_list = User::all();
         $this->customer_list = Customer::whereIn('created_by',[$admin_user_id, Auth::user()->id])->get();
+
+        $this->quote_templates_list = QuotationTemplate::whereIn('created_by',[$admin_user_id, Auth::user()->id])->get();
 
 
         $adminConfController = new AdminConfigController();
@@ -225,6 +231,43 @@ class AddQuotationModal extends Component
             }
         }
     }
+
+    public function loadQuotationTemplate()
+    {
+        // $this->edit_mode = true;
+        // $this->quotationTemplateID = $id;
+        $quotationTemplate = QuotationTemplate::find($this->quotationTemplateID);
+        $this->assembly_type = $quotationTemplate->assembly_type;
+        $this->manufacturer = $quotationTemplate->manufacturer;
+        $this->sq_walls = $quotationTemplate->sq_walls;
+        $this->sq_field = $quotationTemplate->sq_field;
+        $this->warranty = $quotationTemplate->warranty;
+        $this->parapet_length = $quotationTemplate->parapet_length;
+        $this->building_height = $quotationTemplate->building_height;
+        $this->deck_type = $quotationTemplate->deck_type;
+        $this->inclusions = $quotationTemplate->inclusions;
+        $this->exclusions = $quotationTemplate->exclusions;
+        $this->payment_schedule = $quotationTemplate->payment_schedule;
+        $this->price_escalation_clause = $quotationTemplate->price_escalation_clause;
+        $this->alterations = $quotationTemplate->alterations;
+        $this->compliance = $quotationTemplate->compliance;
+        $this->timelines = $quotationTemplate->timelines;
+        $this->warranty_clause = $quotationTemplate->warranty_clause;
+        $quoteTemplateLineItems = QuoteTemplateLineItem::where('quotation_template_id',$this->quotationTemplateID)->get();
+        for($x = 0; $x < count($quoteTemplateLineItems); $x++)
+        {
+            $this->products[$x] = $quoteTemplateLineItems[$x]->product_id;
+            $this->unit_price[$x] = $quoteTemplateLineItems[$x]->unit_price;
+            $this->discount_price[$x] = $quoteTemplateLineItems[$x]->discount_price;
+            $this->quantity[$x] = $quoteTemplateLineItems[$x]->quantity;
+            $this->total_price[$x] = $quoteTemplateLineItems[$x]->total_price;
+            if($x > 0)
+            {
+                $this->quoteItems[] = '';
+            }
+        }
+    }
+
     public function addMilestone(){
         $this->milestone_list[] ='';
     }
