@@ -16,11 +16,10 @@ class QuotationTemplateController extends Controller
         //     return Redirect::to('dashboard');
         // }
     }
-    public function show(Request $quotation_template)
+    public function show(QuotationTemplate $quotation_template)
     {
 //        $user = auth()->user();
 //        if($user->can('view quotation templates')){
-            $quotation_template = QuotationTemplate::with('user')->find($quotation_template->id);
             return view('pages/apps.quotation-template.show',compact('quotation_template'));
 
 //        } else {
