@@ -25,10 +25,11 @@ class DefaultLayout extends Component
      */
     public function render()
     {
-        $all_unread_notifications = "";
         $total_unread_notifications = Auth::user()->unreadNotifications->where('data.reminder_date', date('Y-m-d'))->count();
         if ($total_unread_notifications > 0) {
             $all_unread_notifications = Auth::user()->unreadNotifications->where('data.reminder_date', date('Y-m-d'));
+        }else{
+            $all_unread_notifications = 0;
         }
         // See also starterkit/app/Core/Bootstrap/BootstrapDefault.php
         return view(config('settings.KT_THEME_LAYOUT_DIR') . '._default', compact('total_unread_notifications', 'all_unread_notifications'));

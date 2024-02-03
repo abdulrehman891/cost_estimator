@@ -24,6 +24,29 @@ document.querySelectorAll('[data-kt-action="delete_row"]').forEach(function (ele
     });
 });
 
+document.querySelectorAll('[data-kt-action="send_row"]').forEach(function (element) {
+    element.addEventListener('click', function () {
+
+        Swal.fire({
+            text: 'Are you sure you want to send Proposal?',
+            icon: 'warning',
+            buttonsStyling: false,
+            showCancelButton: true,
+            confirmButtonText: 'Yes',
+            cancelButtonText: 'No',
+            customClass: {
+                confirmButton: 'btn btn-danger',
+                cancelButton: 'btn btn-secondary',
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                //{{ route('qoutation.send', $quotation) }}
+                Livewire.emit('send_quotation', this.getAttribute('data-kt-quotation-id'));
+            }
+        });
+    });
+});
+
 // Add click event listener to update buttons
 document.querySelectorAll('[data-kt-action="update_row"]').forEach(function (element) {
     element.addEventListener('click', function () {
@@ -34,5 +57,5 @@ document.querySelectorAll('[data-kt-action="update_row"]').forEach(function (ele
 // Listen for 'success' event emitted by Livewire
 Livewire.on('success', (message) => {
     // Reload the users-table datatable
-    LaravelDataTables['subcategory-table'].ajax.reload();
+    LaravelDataTables['quotations-table'].ajax.reload();
 });

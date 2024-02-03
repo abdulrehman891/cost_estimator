@@ -115,6 +115,7 @@ class AddQuotationModal extends Component
         'get_proposal' => 'getProposalChatGPT',
         'delete_quotation' => 'deleteQuotation',
         'update_quotation' => 'updateQuotation',
+        'send_quotation' => 'sendQuotation',
     ];
 
     public function deleteQuotation($id)
@@ -122,6 +123,11 @@ class AddQuotationModal extends Component
         Quotation::destroy($id);
         // Emit a success event with a message
         $this->emit('success', 'Quotation successfully deleted');
+    }
+
+    public function sendQuotation($quotationId)
+    {
+        return redirect()->route('qoutation.send', $quotationId);
     }
 
     public function increaseStep()

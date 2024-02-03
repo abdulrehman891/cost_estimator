@@ -4,26 +4,51 @@
         Please subscribe to one of the packages below to get access to The Quote Generation Feature:
     @endsection
 
-    <div class="card">        
+    <div class="card">
         <!--begin::Card body-->
         <div class="card-body py-4">
         <!--begin::Modal body-->
         <div class="modal-body pt-0 pb-15 px-5 px-xl-20">
             <!--begin::Heading-->
-            <div class="mb-13 text-center">
-                <h1 class="mb-3">Upgrade a Packages</h1>
-                @if(!empty($user->subscription_ends_at) && !$is_expired)
-                    <h3>Current Package Plan:<span class="badge badge-light-success me-4">{{$package['title']}}</span></h3>
-                    <h3>Current Package Expiry Date:<span class="badge badge-light-success me-4">{{$user->subscription_ends_at}} UTC</span></h3>
-                    <h3>Current Package Remaining Quota:<span class="badge badge-light-success me-4">{{$user->subscription_remaining_quota}}</span></h3>
-                @elseif(!empty($user->subscription_ends_at) && $is_expired)
-                    <p>You packages has been expired, please purchase a new package, your existing quota will be added to the new Quota</p>
-                    <h3>Current Package Plan:<span class="badge badge-light-success me-4">{{$package['title']}}</span></h3>
-                    <h3>Current Package Expiry Date:<span class="badge badge-light-danger me-4">{{$user->subscription_ends_at}} UTC</span></h3>
-                    <h3>Current Package Remaining Quota:<span class="badge badge-light-success me-4">{{$user->subscription_remaining_quota}}</span></h3>                    
-                @endif
+            <div class="container mt-5">
+                <div class="card text-center">
+                    <h1 class="mb-3">Upgrade Package</h1>
+                    <div class="card-body row justify-content-center">
+                        @if(!empty($user->subscription_ends_at) && !$is_expired)
+                            <div class="col-md-4">
+                                <strong>Current Package Plan:</strong>
+                                <span class="badge bg-success">{{$package['title']}}</span>
+                            </div>
+                            <div class="col-md-4">
+                                <strong>Current Package Expiry Date:</strong>
+                                <span class="badge bg-success">{{$user->subscription_ends_at}} UTC</span>
+                            </div>
+                            <div class="col-md-4">
+                                <strong>Current Package Remaining Quota:</strong>
+                                <span class="badge bg-success">{{$user->subscription_remaining_quota}}</span>
+                            </div>
+                        @elseif(!empty($user->subscription_ends_at) && $is_expired)
+                            <div class="col-md-12">
+                                <p>Your package has expired. Please purchase a new package; your existing quota will be added to the new quota.</p>
+                            </div>
+                            <div class="col-md-4">
+                                <strong>Current Package Plan:</strong>
+                                <span class="badge bg-success">{{$package['title']}}</span>
+                            </div>
+                            <div class="col-md-4">
+                                <strong>Current Package Expiry Date:</strong>
+                                <span class="badge bg-danger">{{$user->subscription_ends_at}} UTC</span>
+                            </div>
+                            <div class="col-md-4">
+                                <strong>Current Package Remaining Quota:</strong>
+                                <span class="badge bg-success">{{$user->subscription_remaining_quota}}</span>
+                            </div>
+                        @endif
+                    </div>
+                </div>
             </div>
             <!--end::Heading-->
+
             <!--begin::Packagess-->
             <div class="d-flex flex-column">
                 <!--begin::Nav group-->
@@ -59,7 +84,7 @@
                                 <div class="ms-5">
                                     <span class="mb-2">$</span>
                                     <span class="fs-3x fw-bold" data-kt-plan-price-month="{{$packes_related_data['basic'][1]}}" data-kt-plan-price-annual="399">{{$packes_related_data['basic'][1]}}</span>
-                                    <span class="fs-7 opacity-50">/ 
+                                    <span class="fs-7 opacity-50">/
                                     <span data-kt-element="period">Mon</span></span>
                                 </div>
                                 <!--end::Price-->
@@ -86,7 +111,7 @@
                                 <div class="ms-5">
                                     <span class="mb-2">$</span>
                                     <span class="fs-3x fw-bold" data-kt-plan-price-month="{{$packes_related_data['advanced'][1]}}" data-kt-plan-price-annual="3399">{{$packes_related_data['advanced'][1]}}</span>
-                                    <span class="fs-7 opacity-50">/ 
+                                    <span class="fs-7 opacity-50">/
                                     <span data-kt-element="period">Mon</span></span>
                                 </div>
                                 <!--end::Price-->
@@ -103,7 +128,7 @@
                                     <!--end::Radio-->
                                     <!--begin::Info-->
                                     <div class="flex-grow-1">
-                                        <div class="d-flex align-items-center fs-2 fw-bold flex-wrap">Professional 
+                                        <div class="d-flex align-items-center fs-2 fw-bold flex-wrap">Professional
                                         <span class="badge badge-light-success ms-2 py-2 px-3 fs-7">Popular</span></div>
                                         <div class="fw-semibold opacity-75">Best value for 20+ team</div>
                                     </div>
@@ -114,7 +139,7 @@
                                 <div class="ms-5">
                                     <span class="mb-2">$</span>
                                     <span class="fs-3x fw-bold" data-kt-plan-price-month="{{$packes_related_data['professional'][1]}}" data-kt-plan-price-annual="9999">{{$packes_related_data['professional'][1]}}</span>
-                                    <span class="fs-7 opacity-50">/ 
+                                    <span class="fs-7 opacity-50">/
                                     <span data-kt-element="period">Mon</span></span>
                                 </div>
                                 <!--end::Price-->
@@ -133,7 +158,7 @@
                                 <!--begin::Heading-->
                                 <div class="pb-5">
                                     <h2 class="fw-bold text-gray-900">What's in Basic Package? <a href='{{ route('pruchase_package', ['the_package' => 'basic']) }}' target='_blank'><button type="button" class="btn btn-success" >Buy Now</button></a></h2>
-                                    <div class="text-muted fw-semibold">Optimal for 5+ team size and new startup</div>                                    
+                                    <div class="text-muted fw-semibold">Optimal for 5+ team size and new startup</div>
                                 </div>
                                 <!--end::Heading-->
                                 <!--begin::Body-->
@@ -213,13 +238,13 @@
                 </div>
                 <!--end::Row-->
             </div>
-            <!--end::Packagess-->            
+            <!--end::Packagess-->
         </div>
         <!--end::Modal body-->
 
 
 
 
-        
+
     </div>
 </x-default-layout>

@@ -18,7 +18,11 @@ class DashboardController extends Controller
         $pending_quotes = Quotation::whereIn('status', [0, 2])->count();
         $signed_quotes = Quotation::where('status', '=', 1)->count();
         $all_quotes = $pending_quotes + $signed_quotes;
-        $completed_percentage = round(($signed_quotes / $all_quotes) * 100, 2);
+        if($all_quotes > 0 ){
+            $completed_percentage = round(($signed_quotes / $all_quotes) * 100, 2);
+        }else{
+            $completed_percentage = 0;
+        }
         $quotes_counter_by_status = Quotation::selectRaw('status, COUNT(*) as count')->groupBy('status')->get();
         $quotation_obj = new QuotationController();
         //quotations report based on Status

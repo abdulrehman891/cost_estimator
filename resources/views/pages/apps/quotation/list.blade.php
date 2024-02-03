@@ -15,12 +15,23 @@
         </div>
     @endif
 
-    <!--begin::Heading--> 
+    <!--begin::Heading-->
         @if(!empty($user->subscription_ends_at))
-            <div class="mb-13 text-center">    
-                <h1 class="mb-3">Your {{$package['title']}} Details:</h1>
-                <h3>Quota Expiry Date:<span class="badge badge-light-success me-4">{{$user->subscription_ends_at}} UTC</span></h3>
-                <h3>Quotes Generation Remaining Quota:<span class="badge badge-light-success me-4">{{$user->subscription_remaining_quota}}</span></h3>
+
+            <div class="container mt-5">
+                <div class="card text-center">
+                    <h1 class="mb-3">Your {{$package['title']}} Details:</h1>
+                    <div class="card-body row justify-content-center">
+                            <div class="col-md-4">
+                                <strong>Quota Expiry Date:</strong>
+                                <span class="badge bg-success">{{$user->subscription_ends_at}} UTC</span>
+                            </div>
+                            <div class="col-md-4">
+                                <strong>Quotes Generation Remaining Quota:</strong>
+                                <span class="badge bg-success">{{$user->subscription_remaining_quota}}</span>
+                            </div>
+                    </div>
+                </div>
             </div>
         @endif
     <!--end::Heading-->

@@ -48,7 +48,7 @@
     @if(empty($quotation->signnow_document_id))
     <!--begin::Menu item-->
     <div class="menu-item px-3">
-        <a href="{{ route('qoutation.send', $quotation) }}" class="menu-link px-3" data-kt-quotation-id="{{ $quotation->id }}" data-kt-action="send_row">
+        <a href="#" class="menu-link px-3" data-kt-quotation-id="{{ $quotation->id }}" data-kt-action="send_row">
             Send Proposal
         </a>
     </div>
