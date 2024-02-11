@@ -6,7 +6,7 @@
         <!--begin::Heading-->
         <div class="text-center mb-11">
             <!--begin::Logo-->
-            <a href="{{ route('dashboard') }}" class="mb-12">
+            <a href="{{ env('LANDING_PAGE_URL') }}" class="mb-12">
                 <img alt="Logo" src="{{ image('logos/WeQuote_logo.png') }}" class="h-60px h-lg-75px"/>
             </a>
             <!--end::Logo-->
