@@ -51,12 +51,10 @@
 
                     <!--begin::Text-->
                     <div class="d-none d-lg-block text-white fs-base text-center">
-                        In this kind of post, <a href="#" class="opacity-75-hover text-warning fw-bold me-1">the blogger</a>
 
-                        introduces a person they’ve interviewed <br/> and provides some background information about
-
-                        <a href="#" class="opacity-75-hover text-warning fw-bold me-1">the interviewee</a>
-                        and their <br/> work following this is a transcript of the interview.
+                        Fast quotes without any hassle. The user-friendly interface is <a href="#" class="opacity-75-hover text-warning fw-bold me-1">fantastic</a>. 
+                        It's my go-to for all project estimates.WeQuote online quote tool is super simple, and the results are instant. 
+                        It saves time and effort. <a href="#" class="opacity-75-hover text-warning fw-bold me-1">All builders</a> must-have for anyone needing quick and accurate quotes!
                     </div>
                     <!--end::Text-->
                 </div>
