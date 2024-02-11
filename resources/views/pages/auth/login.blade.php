@@ -5,6 +5,11 @@
         @csrf
         <!--begin::Heading-->
         <div class="text-center mb-11">
+            <!--begin::Logo-->
+            <a href="{{ route('dashboard') }}" class="mb-12">
+                <img alt="Logo" src="{{ image('logos/WeQuote_logo.png') }}" class="h-60px h-lg-75px"/>
+            </a>
+            <!--end::Logo-->
             <!--begin::Title-->
             <h1 class="text-gray-900 fw-bolder mb-3">
                 Sign In
@@ -13,7 +18,7 @@
 
             <!--begin::Subtitle-->
             <div class="text-gray-500 fw-semibold fs-6">
-                Your Social Campaigns
+                Your Construction Estimator
             </div>
             <!--end::Subtitle--->
         </div>
