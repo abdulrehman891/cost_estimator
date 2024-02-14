@@ -72,7 +72,6 @@ class AddCompanyProfile extends Component
 
     public function submit()
     {
-        $latest_profile_details = [];
         $company_profile = [];
         $db_name = "";
         $db_email = "";
@@ -83,8 +82,8 @@ class AddCompanyProfile extends Component
             $db_email = $company_profile->email;
             $db_logo = $company_profile->image;
         }
-
-        DB::transaction(function () use ($company_profile, &$latest_profile_details) {
+        $data = [];
+        DB::transaction(function () use (&$company_profile, &$data) {
             // Prepare the data for creating a new user
             $data['name'] = $this->company_name;
             $data['slogan'] = $this->slogan;
@@ -96,24 +95,31 @@ class AddCompanyProfile extends Component
             $data['website'] = $this->website;
             $data['established'] = $this->established_date;
             $data['user_id'] = Auth::user()->id;
-            if (!empty($this->image) && $this->image_updated) {
-                $data['logo'] = $this->image->store('uploads', 'public');
-            }
             if ($this->edit_mode) {
+                if ($this->image && $this->image_updated) {
+                    $data['logo'] = $this->image->store('uploads', 'public');
+                }
                 $company_profile->update($data);
             } else {
+                if ($this->image) {
+                    $data['logo'] = $this->image->store('uploads', 'public');
+                }
                 $company_profile = CompanyProfile::create($data);
             }
         });
         //do the branding settings for Signnow
         $cont = new JLSignnowHelpersController(Auth::user()->email);
-        $company_profile = CompanyProfile::where('id', $this->company_id)->first();
+        //$company_profile = CompanyProfile::where('id', $this->company_id)->first();
+
+        // Log::info(print_r($company_profile, 1));
+        // Log::info(print_r($data, 1));
+
         if (empty($company_profile->signnow_brand_id)) {
             //create a new brand to manage invite email logo, colors, texts and other custom settings                       
             $request_data = array(
                 'title' => "Brand for " . $this->company_name . " by User:" . Auth::user()->email,
                 'contact_email' => $this->email,
-                'logo_url' => asset('storage/' . $this->companyProfile->logo)
+                'logo_url' => asset('storage/' . $data['logo'])
             );
             $response = $cont->CreateBrandFromTemplate($request_data);
             if ($response->getData()->status == true) {
@@ -155,7 +161,7 @@ class AddCompanyProfile extends Component
                 // The attribute has been changed
                 $request_data = array(
                     'brand_id' => $company_profile->signnow_brand_id,
-                    'logo_url' => asset('storage/' . $this->companyProfile->logo)
+                    'logo_url' => asset('storage/' . $data['logo'])
                 );
                 $response = $cont->EditBrandLogo($request_data);
                 if ($response->getData()->status == false) {
@@ -201,7 +207,7 @@ class AddCompanyProfile extends Component
         }
         if ($this->image && !empty($company_profile->signnow_organization_id)) {
             $logo_path = $this->image->getRealPath();
-            $logo_path = $this->companyProfile->logo;
+            $logo_path = $data['logo'];
             // Get the base64-encoded logo
             //$base64Logo = base64_encode(file_get_contents($this->image->getRealPath()));
 
