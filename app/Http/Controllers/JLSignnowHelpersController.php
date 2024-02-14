@@ -44,7 +44,8 @@ class JLSignnowHelpersController extends Controller
     private $auth;
     private $notifications;
     private $from;
-    private $subject;
+    private $subject_client;
+    private $subject_manager;
     public $doc_name_pre;
     public function __construct($from_email = '')
     {
@@ -56,7 +57,8 @@ class JLSignnowHelpersController extends Controller
         $this->client_expirationdays = env('SIGNNOW_API_CLIENT_EXPIRATIONDAYS');
         $this->templateId = env('SIGNNOW_API_QUOTE_TEMPLATEID');
         $this->from = $from_email;
-        $this->subject = env('SIGNNOW_API_EMAIL_SUBJECT');
+        $this->subject_client = env('SIGNNOW_API_EMAIL_SUBJECT_CLIENT');
+        $this->subject_manager = env('SIGNNOW_API_EMAIL_SUBJECT_MANAGER');
         $this->doc_name_pre = env('SIGNNOW_API_DOC_NAME_PRE');
         $this->auth = new SignNowOAuth($this->host);
         //send notification
@@ -924,14 +926,14 @@ class JLSignnowHelpersController extends Controller
             //send the invite to the project manager
             $company_roleName = "Company_Manager";
             $to[] = (new Recipient($manager_email, $company_roleName, "", 1, $this->manager_expirationdays))
-                ->setSubject($this->subject)
+                ->setSubject($this->subject_manager)
                 ->setMessage($message_manager);
 
             //send invite to the cotractor
             $roleName = 'The_Client';
             $roleUniqueId = '';
             $to[] = (new Recipient($signerEmail, $roleName, $roleUniqueId, 2, $this->client_expirationdays))
-                ->setSubject($this->subject)
+                ->setSubject($this->subject_client)
                 ->setMessage($message);
 
             $invite = new Invite($this->from, $to, $cc);
