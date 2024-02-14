@@ -18,7 +18,9 @@ use SignNow\Api\Entity\Document\SmartField\SmartField;
 use SignNow\Api\Entity\Template\Copy as TemplateCopy;
 use Illuminate\Support\Facades\Log;
 use DB;
+use GuzzleHttp\Client;
 use App\Models\JL_SignnowHelpersModel;
+use App\Models\CompanyProfile;
 use SignNow\Api\Entity\Document\DownloadLink;
 use SignNow\Api\Entity\Document\Download as DocumentDownload;
 use App\Models\Quotation;
@@ -28,6 +30,7 @@ use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\NotificationController;
 use Illuminate\Support\Carbon;
+use GuzzleHttp\Psr7\Stream;
 
 class JLSignnowHelpersController extends Controller
 {
@@ -71,17 +74,17 @@ class JLSignnowHelpersController extends Controller
         $expires_in = $bearerToken->getExpiresIn();
         $response_code = $bearerToken->getCode();
         $response_error = $bearerToken->getError();
-        Log::info("Refresh Token Response:");
-        Log::info(print_r($access_token, 1));
-        Log::info(print_r($refresh_token, 1));
-        Log::info(print_r($expires_in, 1));
+        // Log::info("Refresh Token Response:");
+        // Log::info(print_r($access_token, 1));
+        // Log::info(print_r($refresh_token, 1));
+        // Log::info(print_r($expires_in, 1));
 
         //vendor\signnow\api-php-sdk\src\Entity\Auth\Token.php
-        Log::info("access_token=$access_token");
-        Log::info("refresh_token=$refresh_token");
-        Log::info("expires_in=$expires_in");
-        Log::info("response_code=$response_code");
-        Log::info("response_error=$response_error");
+        // Log::info("access_token=$access_token");
+        // Log::info("refresh_token=$refresh_token");
+        // Log::info("expires_in=$expires_in");
+        // Log::info("response_code=$response_code");
+        // Log::info("response_error=$response_error");
 
         if (empty($access_token)) {
             $this->cleanAccessToken();
@@ -100,7 +103,7 @@ class JLSignnowHelpersController extends Controller
                 'data' => $data,
                 'expires_in' => $expiry_time,
             ]);
-            Log::info("New Token generated and saved");
+            //Log::info("New Token generated and saved");
             return true;
         }
     }
@@ -148,10 +151,712 @@ class JLSignnowHelpersController extends Controller
     }
 
 
+    public function CreateOrganization($inputs)
+    {
+        try {
+            $access_token = $this->getSignNowAccessToken();
+            if ($access_token == false) {
+                $response = [
+                    'status' => false,
+                    'msg' => 'Unable to Proceed! getting access token failed',
+                ];
+                return response()->json($response, 500);
+            }
+            $entityManager = $this->auth->bearerAuthorization($access_token);
+            $client = new Client();
+            // Replace 'YOUR_ACCESS_TOKEN' with your actual SignNow API access token
+            $accessToken = $access_token;
+            $response = $client->post($this->host . '/v2/organizations', [
+                'exceptions' => false,
+                'http_errors' => false,
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $accessToken,
+                    'Content-Type' => 'application/json',
+                ],
+                'json' => [
+                    'name' => $inputs['organization_name'],
+                    //'logo' => $inputs['logo'],
+
+                    // 'phone_number' => $inputs['phone_number'],
+                    // 'subscription_id' => $inputs['subscription_id'],
+                    // 'subscription_package_id' => $inputs['subscription_package_id'],
+                    // 'created' => $inputs['created'],
+                    // 'updated' => $inputs['updated'],
+                    // 'id' => $inputs['id'],
+                    // 'enterprise_id' => $inputs['enterprise_id'],
+
+
+                    // 'creator_user_id' => $inputs['creator_user_id'],
+
+
+
+                    //'country' => $inputs['country'],
+                    // 'billing_address' => [
+                    //     'street' => $inputs['billing_address.street'],
+                    //     'city' => $inputs['billing_address.city'],
+                    //     'state' => $inputs['billing_address.state'],
+                    //     'zip' => $inputs['billing_address.zip'],
+                    // ],
+                    // 'billing_info' => [
+                    //     'card_number' => $inputs['billing_info.card_number'],
+                    //     'expiration_date' => $inputs['billing_info.expiration_date'],
+                    //     'cvv' => $inputs['billing_info.cvv'],
+                    // ],
+                    // 'logo' => $inputs['logo'], // Assuming 'logo' is a base64-encoded image
+                    // 'phone_number' => $inputs['phone_number']
+                ],
+            ]);
+
+            $data = json_decode($response->getBody(), true);
+            Log::info(print_r($data, 1));
+            $statusCode = $response->getStatusCode();
+            if (!empty($data['id'])) {
+                return response()->json(['status' => true, 'msg' => 'Organization created successfully', 'id' => $data['id']]);
+            } else {
+                Log::info('Organization Creation Failed, status code=' . $statusCode);
+                Log::info(print_r($data, 1));
+                return response()->json(['status' => false, 'msg' => 'Organization creation failed',]);
+            }
+        } catch (Throwable $exception) {
+            Log::info("ERROR [SignNow API]: ");
+            Log::info(print_r($exception->getMessage(), true));
+            $response = [
+                'status' => false,
+                'msg' => 'failed to Create the Organization:' . $exception->getMessage()
+            ];
+            return response()->json($response, 500);
+        }
+    }
+
+
+    public function AssignBrandToDocument($document_id, $brand_id)
+    {
+        try {
+            $access_token = $this->getSignNowAccessToken();
+            if ($access_token == false) {
+                $response = [
+                    'status' => false,
+                    'msg' => 'Unable to Proceed! getting access token failed',
+                ];
+                return response()->json($response, 500);
+            }
+            $entityManager = $this->auth->bearerAuthorization($access_token);
+            $client = new Client();
+            //get the ID from current user profile
+            $response = $client->put($this->host . "/v2/documents/$document_id/brand", [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $access_token,
+                    'Content-Type' => 'application/json',
+                ],
+                'json' => [
+                    'brand_id' => $brand_id
+                ],
+            ]);
+
+            $data = json_decode($response->getBody(), true);
+            $statusCode = $response->getStatusCode();
+            if ($statusCode === 201) {
+                return response()->json(['status' => true, 'msg' => 'Brand successfully assigned to the document!']);
+            } else {
+                Log::info('Brand assignment to document failed, status code=' . $statusCode);
+                Log::info(print_r($data, 1));
+                return response()->json(['status' => false, 'msg' => 'Brand assignment to document failed',]);
+            }
+        } catch (Throwable $exception) {
+            Log::info("ERROR [SignNow API]: ");
+            Log::info(print_r($exception->getMessage(), true));
+            $response = [
+                'status' => false,
+                'msg' => 'failed to assignment Brand to document:' . $exception->getMessage()
+            ];
+            return response()->json($response, 500);
+        }
+    }
+
+    public function getDocumentBranding()
+    {
+        try {
+            $access_token = $this->getSignNowAccessToken();
+            if ($access_token == false) {
+                $response = [
+                    'status' => false,
+                    'msg' => 'Unable to Proceed! getting access token failed',
+                ];
+                return response()->json($response, 500);
+            }
+            $entityManager = $this->auth->bearerAuthorization($access_token);
+            $client = new Client();
+
+            // Replace 'YOUR_ACCESS_TOKEN' with your actual SignNow API access token
+            $accessToken = $access_token;
+
+            //get the ID from current user profile
+            $document_id = "b5a096a6c3ed44c481529cefa1cffc3bd497dbcd";
+            $response = $client->get($this->host . "/v2/documents/$document_id/brand", [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $accessToken,
+                    'Content-Type' => 'application/json',
+                    'Accept' => 'application/json',
+                ],
+            ]);
+
+            $data = json_decode($response->getBody(), true);
+
+            echo "<pre>";
+            print_r($data);
+            die;
+        } catch (Throwable $exception) {
+            Log::info("ERROR [SignNow API]: ");
+            Log::info(print_r($exception->getMessage(), true));
+            $response = [
+                'status' => false,
+                'msg' => 'failed to get Brand for the Document:' . $exception->getMessage()
+            ];
+            return response()->json($response, 500);
+        }
+    }
+
+    public function getAllBranding()
+    {
+        try {
+            $access_token = $this->getSignNowAccessToken();
+            if ($access_token == false) {
+                $response = [
+                    'status' => false,
+                    'msg' => 'Unable to Proceed! getting access token failed',
+                ];
+                return response()->json($response, 500);
+            }
+            $entityManager = $this->auth->bearerAuthorization($access_token);
+            $client = new Client();
+
+            // Replace 'YOUR_ACCESS_TOKEN' with your actual SignNow API access token
+            $accessToken = $access_token;
+            //get the ID from current user profile
+            $response = $client->get($this->host . "/v2/brands", [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $accessToken,
+                    'Content-Type' => 'application/json',
+                    'Accept' => 'application/json',
+                ],
+            ]);
+
+            $data = json_decode($response->getBody(), true);
+            foreach ($data['data'] as $index => $brand) {
+                if ($brand['owner_type'] == 'user') {
+                    // $client->delete($this->host . "/v2/brands/" . $brand['unique_id'], [
+                    //     'headers' => [
+                    //         'Authorization' => 'Bearer ' . $accessToken,
+                    //         'Content-Type' => 'application/json',
+                    //         'Accept' => 'application/json',
+                    //     ],
+                    // ]);
+                }
+            }
+            echo "<pre>";
+            print_r($data);
+            die;
+        } catch (Throwable $exception) {
+            Log::info("ERROR [SignNow API]: ");
+            Log::info(print_r($exception->getMessage(), true));
+            $response = [
+                'status' => false,
+                'msg' => 'failed to get all brandings list:' . $exception->getMessage()
+            ];
+            return response()->json($response, 500);
+        }
+    }
+
+    public function CreateBrandFromTemplate($inputs = array())
+    {
+        try {
+            $access_token = $this->getSignNowAccessToken();
+            if ($access_token == false) {
+                $response = [
+                    'status' => false,
+                    'msg' => 'Unable to Proceed! getting access token failed',
+                ];
+                return response()->json($response, 500);
+            }
+            $entityManager = $this->auth->bearerAuthorization($access_token);
+            $client = new Client();
+
+            // Replace 'YOUR_ACCESS_TOKEN' with your actual SignNow API access token
+            $accessToken = $access_token;
+            // Assuming the JSON file is located in the storage/app directory
+            $jsonFilePath = public_path('assets/media/sign_now_default_brand.json');
+            $brand_json = json_decode(file_get_contents($jsonFilePath), true);
+            // $brand_json['resources']['general']['header']['background'] = "#ff0000";
+            // $brand_json['resources']['general']['buttons']['default']['background'] = "#00ff00";
+            // $brand_json['resources']['general']['icons']['background'] = "#00ff00";
+            $brand_json['resources']['editor']['sender-info']['contact-email'] = $inputs['contact_email'];
+            $brand_json['resources']['editor']['accessibility']['visibility'] = false;
+            $brand_json['resources']['logo']['url'] = $inputs['logo_url'];
+            $brand_json['resources']['email-logo']['url'] = $inputs['logo_url'];
+            $brand_json['resources']['email-general']['logo']['position'] = 'middle';
+            $brand_json['resources']['email-general']['sender_email'] = $inputs['contact_email'];
+            $brand_json['resources']['email-general']['signnow_references'] = false;
+            //make the api call to create the brand
+            $response = $client->post($this->host . "/v2/brands", [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $access_token,
+                    'Content-Type' => 'application/json',
+                    'Accept' => 'application/json',
+                ],
+                'json' => [
+                    'title' => $inputs['title']
+                ],
+            ]);
+            $data = json_decode($response->getBody(), true);
+            $statusCode = $response->getStatusCode();
+            if ($statusCode === 201 && !empty($data['data']['id'])) {
+                $brand_id = $data['data']['id'];
+                $response_general = $client->put($this->host . "/v2/brands/$brand_id/resources/general", [
+                    'headers' => [
+                        'Authorization' => 'Bearer ' . $access_token,
+                        'Content-Type' => 'application/json',
+                        'Accept' => 'application/json',
+                    ],
+                    'json' => $brand_json['resources']['general'],
+                ]);
+
+                $response_editor = $client->put($this->host . "/v2/brands/$brand_id/resources/editor", [
+                    'headers' => [
+                        'Authorization' => 'Bearer ' . $access_token,
+                        'Content-Type' => 'application/json',
+                        'Accept' => 'application/json',
+                    ],
+                    'json' => $brand_json['resources']['editor'],
+                ]);
+
+
+                $response_logo = $client->put($this->host . "/v2/brands/$brand_id/resources/logo", [
+                    'headers' => [
+                        'Authorization' => 'Bearer ' . $access_token,
+                        'Content-Type' => 'application/json',
+                        'Accept' => 'application/json',
+                    ],
+                    'json' => [
+                        'url' => $brand_json['resources']['email-logo']['url']
+                    ],
+                ]);
+
+                $response_email_general = $client->put($this->host . "/v2/brands/$brand_id/resources/email-general", [
+                    'headers' => [
+                        'Authorization' => 'Bearer ' . $access_token,
+                        'Content-Type' => 'application/json',
+                        'Accept' => 'application/json',
+                    ],
+                    'json' =>  $brand_json['resources']['email-general'],
+                ]);
+
+                $response_general_statusCode = $response_general->getStatusCode();
+                $response_editor_statusCode = $response_editor->getStatusCode();
+                $response_logo_statusCode = $response_logo->getStatusCode();
+                $response_email_general_statusCode = $response_email_general->getStatusCode();
+                if ($response_general_statusCode != 204) {
+                    Log::info('response_general signnow brand creation failed=');
+                    Log::info(print_r($response_general, 1));
+                } else  if ($response_editor_statusCode != 204) {
+                    Log::info('response_editor signnow brand creation failed=');
+                    Log::info(print_r($response_editor, 1));
+                } else  if ($response_logo_statusCode != 204) {
+                    Log::info('logo signnow brand creation failed=');
+                    Log::info(print_r($response_logo, 1));
+                } else  if ($response_email_general_statusCode != 204) {
+                    Log::info('email-general signnow brand creation failed=');
+                    Log::info(print_r($response_email_general, 1));
+                }
+                return response()->json(['status' => true, 'msg' => 'Brand Created successfully', 'id' => $data['data']['id']]);
+            } else {
+                Log::info('Brand Creation Failed, status code=' . $statusCode);
+                Log::info(print_r($data, 1));
+                return response()->json(['status' => false, 'msg' => 'Brand Creation failed',]);
+            }
+        } catch (Throwable $exception) {
+            Log::info("ERROR [SignNow API]: ");
+            Log::info(print_r($exception->getMessage(), true));
+            $response = [
+                'status' => false,
+                'msg' => 'failed to Edit the Organization:' . $exception->getMessage()
+            ];
+            return response()->json($response, 500);
+        }
+    }
+
+
+    public function EditBrandName($inputs = array())
+    {
+        try {
+            $access_token = $this->getSignNowAccessToken();
+            if ($access_token == false) {
+                $response = [
+                    'status' => false,
+                    'msg' => 'Unable to Proceed! getting access token failed',
+                ];
+                return response()->json($response, 500);
+            }
+            $entityManager = $this->auth->bearerAuthorization($access_token);
+            $client = new Client();
+            // Replace 'YOUR_ACCESS_TOKEN' with your actual SignNow API access token
+            $accessToken = $access_token;
+            //make the api call to create the brand
+            $response = $client->put($this->host . "/v2/brands/" . $inputs['brand_id'], [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $access_token,
+                    'Content-Type' => 'application/json',
+                    'Accept' => 'application/json',
+                ],
+                'json' => [
+                    'title' => $inputs['title']
+                ],
+            ]);
+            $data = json_decode($response->getBody(), true);
+            $statusCode = $response->getStatusCode();
+            if ($statusCode === 204) {
+                return response()->json(['status' => true, 'msg' => 'Brand Name Updated successfully']);
+            } else {
+                Log::info('Brand Name Update Failed, status code=' . $statusCode);
+                Log::info(print_r($data, 1));
+                return response()->json(['status' => false, 'msg' => 'Brand Name Update failed',]);
+            }
+        } catch (Throwable $exception) {
+            Log::info("ERROR [SignNow API]: ");
+            Log::info(print_r($exception->getMessage(), true));
+            $response = [
+                'status' => false,
+                'msg' => 'failed to Edit the Brand:' . $exception->getMessage()
+            ];
+            return response()->json($response, 500);
+        }
+    }
+
+    public function EditBrandEditorInfo($inputs = array())
+    {
+        try {
+            $access_token = $this->getSignNowAccessToken();
+            if ($access_token == false) {
+                $response = [
+                    'status' => false,
+                    'msg' => 'Unable to Proceed! getting access token failed',
+                ];
+                return response()->json($response, 500);
+            }
+            $entityManager = $this->auth->bearerAuthorization($access_token);
+            $client = new Client();
+            // Replace 'YOUR_ACCESS_TOKEN' with your actual SignNow API access token
+            $accessToken = $access_token;
+            // Assuming the JSON file is located in the storage/app directory
+            $jsonFilePath = public_path('assets/media/sign_now_default_brand.json');
+            $brand_json = json_decode(file_get_contents($jsonFilePath), true);
+            $brand_json['resources']['editor']['sender-info']['contact-email'] = $inputs['contact_email'];
+            $brand_json['resources']['editor']['accessibility']['visibility'] = false;
+            $brand_json['resources']['email-general']['logo']['position'] = 'middle';
+            $brand_json['resources']['email-general']['sender_email'] = $inputs['contact_email'];
+            $brand_json['resources']['email-general']['signnow_references'] = false;
+            //make the api call to change the brand logo
+            $response_editor = $client->put($this->host . "/v2/brands/" . $inputs['brand_id'] . "/resources/editor", [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $access_token,
+                    'Content-Type' => 'application/json',
+                    'Accept' => 'application/json',
+                ],
+                'json' => $brand_json['resources']['editor'],
+            ]);
+
+            $response_email_general = $client->put($this->host . "/v2/brands/" . $inputs['brand_id'] . "/resources/email-general", [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $access_token,
+                    'Content-Type' => 'application/json',
+                    'Accept' => 'application/json',
+                ],
+                'json' =>  $brand_json['resources']['email-general'],
+            ]);
+
+            $response_editor_statusCode = $response_editor->getStatusCode();
+            $response_email_general_statusCode = $response_email_general->getStatusCode();
+            $data_editor = json_decode($response_editor->getBody(), true);
+            $data_email_general = json_decode($response_email_general->getBody(), true);
+
+            if ($response_editor_statusCode != 204) {
+                Log::info("Brand editor contact email Update failed $response_editor_statusCode");
+                Log::info(print_r($data_editor, 1));
+                return response()->json(['status' => false, 'msg' => 'Brand editor contact email Update failed']);
+            } else if ($response_email_general_statusCode != 204) {
+                Log::info("Brand email general Update failed $response_email_general_statusCode");
+                Log::info(print_r($data_email_general, 1));
+                return response()->json(['status' => false, 'msg' => 'Brand email general Update failed']);
+            } else {
+                return response()->json(['status' => true, 'msg' => 'Brand editor contact email/email general Updated successfully']);
+            }
+        } catch (Throwable $exception) {
+            Log::info("ERROR [SignNow API]: ");
+            Log::info(print_r($exception->getMessage(), true));
+            $response = [
+                'status' => false,
+                'msg' => 'failed to Edit the Brand editor contact email/email general:' . $exception->getMessage()
+            ];
+            return response()->json($response, 500);
+        }
+    }
+
+    public function EditBrandLogo($inputs = array())
+    {
+        try {
+            $access_token = $this->getSignNowAccessToken();
+            if ($access_token == false) {
+                $response = [
+                    'status' => false,
+                    'msg' => 'Unable to Proceed! getting access token failed',
+                ];
+                return response()->json($response, 500);
+            }
+            $entityManager = $this->auth->bearerAuthorization($access_token);
+            $client = new Client();
+            // Replace 'YOUR_ACCESS_TOKEN' with your actual SignNow API access token
+            $accessToken = $access_token;
+            //make the api call to change the brand logo
+            $response = $client->put($this->host . "/v2/brands/" . $inputs['brand_id'] . "/resources/logo", [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $access_token,
+                    'Content-Type' => 'application/json',
+                    'Accept' => 'application/json',
+                ],
+                'json' => [
+                    'url' => $inputs['logo_url']
+                ],
+            ]);
+            $data = json_decode($response->getBody(), true);
+            $statusCode = $response->getStatusCode();
+            if ($statusCode === 204) {
+                return response()->json(['status' => true, 'msg' => 'Brand Logo Updated successfully']);
+            } else {
+                Log::info('Brand Logo Update Failed, status code=' . $statusCode);
+                Log::info(print_r($data, 1));
+                return response()->json(['status' => false, 'msg' => 'Brand Logo Update failed',]);
+            }
+        } catch (Throwable $exception) {
+            Log::info("ERROR [SignNow API]: ");
+            Log::info(print_r($exception->getMessage(), true));
+            $response = [
+                'status' => false,
+                'msg' => 'failed to Edit the Brand Logo:' . $exception->getMessage()
+            ];
+            return response()->json($response, 500);
+        }
+    }
+
+    public function EditOrganization($inputs, $organizationId)
+    {
+        try {
+            $access_token = $this->getSignNowAccessToken();
+            if ($access_token == false) {
+                $response = [
+                    'status' => false,
+                    'msg' => 'Unable to Proceed! getting access token failed',
+                ];
+                return response()->json($response, 500);
+            }
+            $entityManager = $this->auth->bearerAuthorization($access_token);
+            $client = new Client();
+
+            // Replace 'YOUR_ACCESS_TOKEN' with your actual SignNow API access token
+            $accessToken = $access_token;
+            //get the ID from current user profile
+            $response = $client->put($this->host . "/v2/organizations/$organizationId", [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $accessToken,
+                    'Content-Type' => 'application/json',
+                ],
+                'json' => [
+                    'name' => $inputs['organization_name']
+                ],
+            ]);
+
+            $data = json_decode($response->getBody(), true);
+            $statusCode = $response->getStatusCode();
+            if ($statusCode === 204) {
+                return response()->json(['status' => true, 'msg' => 'Organization updated successfully']);
+            } else {
+                Log::info('Organization updation Failed, status code=' . $statusCode);
+                Log::info(print_r($data, 1));
+                return response()->json(['status' => false, 'msg' => 'Organization updation failed',]);
+            }
+        } catch (Throwable $exception) {
+            Log::info("ERROR [SignNow API]: ");
+            Log::info(print_r($exception->getMessage(), true));
+            $response = [
+                'status' => false,
+                'msg' => 'failed to Edit the Organization:' . $exception->getMessage()
+            ];
+            return response()->json($response, 500);
+        }
+    }
+
+    public function uploadOrganizationLogo(&$logo_src, $organizationId, $company_name)
+    {   //this method need to be fixed, fix it when going to use it, logo endpoint is not working as expected
+        try {
+            $access_token = $this->getSignNowAccessToken();
+            if ($access_token == false) {
+                $response = [
+                    'status' => false,
+                    'msg' => 'Unable to Proceed! getting access token failed',
+                ];
+                return response()->json($response, 500);
+            }
+            $entityManager = $this->auth->bearerAuthorization($access_token);
+            $client = new Client();
+
+            // Replace 'YOUR_ACCESS_TOKEN' with your actual SignNow API access token
+            $accessToken = $access_token;
+
+
+            // Make API request to update organization with the new logo
+            $response = $client->put($this->host . '/v2/organizations/' . $organizationId, [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $accessToken,
+                    'Content-Type' => 'multipart/form-data; boundary=' . $logo_src->getBoundary(),
+                ],
+                'json' => [
+                    'name' => $company_name
+                ],
+            ]);
+
+
+            //get the ID from current user profile
+            $response = $client->post($this->host . "/v2/organizations/$organizationId/logo", [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $accessToken,
+                    'Content-Type' => 'application/json',
+                ],
+                'json' => [
+                    'key' => "my first logo",
+                    'type' => "file",
+                    'logo' => $logo_src
+                ],
+            ]);
+
+
+            $data = json_decode($response->getBody(), true);
+            $statusCode = $response->getStatusCode();
+            if ($statusCode === 204) {
+                return response()->json(['status' => true, 'msg' => 'Organization logo uploaded successfully']);
+            } else {
+                Log::info('Organization uploading Failed, status code=' . $statusCode);
+                Log::info(print_r($data, 1));
+                return response()->json(['status' => false, 'msg' => 'Organization uploading failed',]);
+            }
+        } catch (Throwable $exception) {
+            Log::info("ERROR [SignNow API]: ");
+            Log::info(print_r($exception->getMessage(), true));
+            $response = [
+                'status' => false,
+                'msg' => 'failed to Edit the Organization:' . $exception->getMessage()
+            ];
+            return response()->json($response, 500);
+        }
+    }
+
+    public function DeleteOrganization($org_id)
+    {
+        try {
+            $access_token = $this->getSignNowAccessToken();
+            if ($access_token == false) {
+                $response = [
+                    'status' => false,
+                    'msg' => 'Unable to Proceed! getting access token failed',
+                ];
+                return response()->json($response, 500);
+            }
+            $entityManager = $this->auth->bearerAuthorization($access_token);
+            $client = new Client();
+            // Replace 'YOUR_ACCESS_TOKEN' with your actual SignNow API access token
+            $accessToken = $access_token;
+            //get the ID from current user profile 
+
+            try {
+                $response = $client->delete($this->host . "/v2/organizations/$org_id", [
+                    'exceptions' => false,
+                    'http_errors' => false,
+                    'headers' => [
+                        'Authorization' => 'Bearer ' . $accessToken,
+                        'Content-Type' => 'application/json',
+                    ],
+                ]);
+            } catch (\Exception $e) {
+                return response()->json(['status' => false, 'msg' => $e->getMessage()]);
+            }
+            $statusCode = $response->getStatusCode();
+            $data = json_decode($response->getBody(), true);
+            if ($statusCode === 204) {
+                // Successful deletion, the organization was deleted
+                return response()->json(['status' => true, 'msg' => 'Organization deleted successfully']);
+            } elseif ($statusCode === 404) {
+                // Organization not found or does not exist
+                return response()->json(['status' => false, 'msg' => 'Organization not found or does not exist']);
+            } else {
+                // Error handling - handle the specific error based on the response data
+                return response()->json(['status' => false, 'msg' => $data['error'] ?? 'An error occurred during organization deletion'], $statusCode);
+            }
+            //Delete the organization
+        } catch (Throwable $exception) {
+            Log::info("ERROR [SignNow API]: ");
+            Log::info(print_r($exception->getMessage(), true));
+            $response = [
+                'status' => false,
+                'msg' => 'failed to Delete the Organization:' . $exception->getMessage()
+            ];
+            return response()->json($response, 500);
+        }
+    }
+
+    public function makeUserOrganiationAdmin($organizationId, $userId)
+    {
+        $access_token = $this->getSignNowAccessToken();
+        if ($access_token == false) {
+            $response = [
+                'status' => false,
+                'msg' => 'Unable to Proceed! getting access token failed',
+            ];
+            return response()->json($response, 500);
+        }
+        $entityManager = $this->auth->bearerAuthorization($access_token);
+        $client = new Client();
+
+        // Replace 'YOUR_ACCESS_TOKEN' with your actual SignNow API access token
+        $accessToken = $access_token;
+
+        $response = $client->put($this->host . '/v2/organizations/' . $organizationId . '/users/' . $userId, [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $accessToken,
+                'Content-Type' => 'application/json',
+            ],
+            'json' => [
+                'role' => 'admin',
+                // Add other user-related parameters as needed
+            ],
+        ]);
+
+        $data = json_decode($response->getBody(), true);
+        return $data;
+    }
 
     public function sendSignNowDocumenttoSign(Request $request)
     {
         try {
+
+            if (empty(auth()->user()->companyProfile->signnow_brand_id)) {
+                //return error
+                $response = [
+                    'status' => false,
+                    'msg' => 'Unable to Proceed! Please update your Company Profile to be able to send Quotations!',
+                ];
+                return response()->json($response, 500);
+            }
+
+            //get the brand details from the User Company Profile
+            $brand_id = auth()->user()->companyProfile->signnow_brand_id;
+
             $access_token = $this->getSignNowAccessToken();
             if ($access_token == false) {
                 $response = [
@@ -185,8 +890,12 @@ class JLSignnowHelpersController extends Controller
 
             //current sent document ID
             $documentUniqueId = $new_doc_details->getId();
+
             // echo "<br>The Doc to sign=$documentUniqueId<br>";           
-            $message = "CS invited you to sign the quote";
+            $message = $fields['company_project_manager'] . " from (" . $fields['company_name_address'] . ")" . " invited you to sign the Quotation";
+            $message_header = "Please review and sign!";
+            $message_manager = "Please upload the system generated Quote and sign the document so that " . $fields['client_name_company_name'] . " may can review and sign the Quotation";
+            $message_header_manager = "Please Upload the required documents to initiate the quotation signing process for " . $fields['client_name_company_name'] . ".";
             $cc = [];
 
             $input_data = $fields;
@@ -216,7 +925,7 @@ class JLSignnowHelpersController extends Controller
             $company_roleName = "Company_Manager";
             $to[] = (new Recipient($manager_email, $company_roleName, "", 1, $this->manager_expirationdays))
                 ->setSubject($this->subject)
-                ->setMessage($message);
+                ->setMessage($message_manager);
 
             //send invite to the cotractor
             $roleName = 'The_Client';
@@ -229,6 +938,14 @@ class JLSignnowHelpersController extends Controller
 
             $res = $entityManager->create($invite, ["documentId" => $documentUniqueId]);
             if ($res->getStatus() == 'success') {
+
+                //assign brand to the document to apply the custom look and feel
+                $assigned_response = $this->AssignBrandToDocument($documentUniqueId, $brand_id);
+                if ($assigned_response->getData()->status == false) {
+                    Log::info("Unabel to Assign a Brand to a Document");
+                    Log::info(print_r($assigned_response, 1));
+                }
+
                 //return the ID, or save data to database                 
                 $response = [
                     'documentUniqueId' => $documentUniqueId,

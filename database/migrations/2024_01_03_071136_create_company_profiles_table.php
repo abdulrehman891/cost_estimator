@@ -19,11 +19,12 @@ return new class extends Migration
             $table->string('slogan')->nullable();
             $table->string('email');
             $table->text('description')->nullable();
-            $table->text('address')->nullable();
+            $table->text('address')->nullable();            
             $table->string('phone')->nullable();
             $table->string('website')->nullable();
             $table->string('logo')->nullable();
             $table->year('established')->nullable();
+            $table->string('signnow_brand_id')->nullable();
             $table->timestamps();
             $table->softDeletes();
 

@@ -94,6 +94,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/quotation/preview_doc/{signnow_document_id}', [JLSignnowHelpersController::class, 'previewDoc'])->name('qoutation.preview_doc');
     Route::get('/quotation/send/{id}', [QuotationController::class, 'sendProposal'])->name('qoutation.send');
     Route::get('/quotation/show/{quotation}', [QuotationController::class, 'show'])->name('quotation.show');
+    //keep them,temporary routes
+    // Route::get('/corg', [JLSignnowHelpersController::class, 'CreateOrganization']);
+    // Route::get('/eorg', [JLSignnowHelpersController::class, 'EditOrganization']); 
+    // Route::get('/dorg/{id}', [JLSignnowHelpersController::class, 'DeleteOrganization']); 
+    // Route::get('/cbrand', [JLSignnowHelpersController::class, 'CreateBrandFromTemplate']); 
+    // Route::get('/getbrand', [JLSignnowHelpersController::class, 'getDocumentBranding']); 
+    // Route::get('/getAllbrand', [JLSignnowHelpersController::class, 'getAllBranding']); 
 
 
     // Quotation Template

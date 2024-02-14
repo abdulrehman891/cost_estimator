@@ -15,15 +15,15 @@ class DashboardController extends Controller
     {
         addVendors(['amcharts', 'amcharts-maps', 'amcharts-stock']);
         //add the reports queries
-        $pending_quotes = Quotation::whereIn('status', [0, 2])->count();
-        $signed_quotes = Quotation::where('status', '=', 1)->count();
+        $pending_quotes = Quotation::whereIn('status', [0, 2])->where('created_by', '=', auth()->user()->id)->count();
+        $signed_quotes = Quotation::where('status', '=', 1)->where('created_by', '=', auth()->user()->id)->count();
         $all_quotes = $pending_quotes + $signed_quotes;
-        if($all_quotes > 0 ){
+        if ($all_quotes > 0) {
             $completed_percentage = round(($signed_quotes / $all_quotes) * 100, 2);
-        }else{
+        } else {
             $completed_percentage = 0;
         }
-        $quotes_counter_by_status = Quotation::selectRaw('status, COUNT(*) as count')->groupBy('status')->get();
+        $quotes_counter_by_status = Quotation::selectRaw('status, COUNT(*) as count')->where('created_by', '=', auth()->user()->id)->groupBy('status')->get();
         $quotation_obj = new QuotationController();
         //quotations report based on Status
         $status_labels = $quotation_obj->status_list;
@@ -60,17 +60,17 @@ class DashboardController extends Controller
             }
         }
         //all customers
-        $all_customers = Customer::count();
+        $all_customers = Customer::where('created_by', '=', auth()->user()->id)->count();
         //get quotes by type
         $quotes_completed_residential = Quotation::join('projects', 'projects.id', '=', 'quotations.project_id')
             ->join('customers', 'customers.id', '=', 'quotations.customer_id')
-            ->where('status', '=', 1)->select('customers.name as customer_name', 'projects.project_type', 'projects.name AS project_name', 'quotations.prepared_date', 'quotations.id')->where('projects.project_type', '=', 'residential')->skip(0)->take(10)->orderBy('projects.created_at')->get();
+            ->where('quotations.created_by', '=', auth()->user()->id)->where('status', '=', 1)->select('customers.name as customer_name', 'projects.project_type', 'projects.name AS project_name', 'quotations.prepared_date', 'quotations.id')->where('projects.project_type', '=', 'residential')->skip(0)->take(10)->orderBy('projects.created_at')->get();
         $quotes_completed_commercial = Quotation::join('projects', 'projects.id', '=', 'quotations.project_id')
             ->join('customers', 'customers.id', '=', 'quotations.customer_id')
-            ->where('status', '=', 1)->select('customers.name as customer_name', 'projects.project_type', 'projects.name AS project_name', 'quotations.prepared_date', 'quotations.id')->where('projects.project_type', '=', 'commercial')->skip(0)->take(10)->orderBy('projects.created_at')->get();
+            ->where('quotations.created_by', '=', auth()->user()->id)->where('status', '=', 1)->select('customers.name as customer_name', 'projects.project_type', 'projects.name AS project_name', 'quotations.prepared_date', 'quotations.id')->where('projects.project_type', '=', 'commercial')->skip(0)->take(10)->orderBy('projects.created_at')->get();
         $quotes_completed_industrial = Quotation::join('projects', 'projects.id', '=', 'quotations.project_id')
             ->join('customers', 'customers.id', '=', 'quotations.customer_id')
-            ->where('status', '=', 1)->select('customers.name as customer_name', 'projects.project_type', 'projects.name AS project_name', 'quotations.prepared_date', 'quotations.id')->where('projects.project_type', '=', 'industrial')->skip(0)->take(10)->orderBy('projects.created_at')->get();
+            ->where('quotations.created_by', '=', auth()->user()->id)->where('status', '=', 1)->select('customers.name as customer_name', 'projects.project_type', 'projects.name AS project_name', 'quotations.prepared_date', 'quotations.id')->where('projects.project_type', '=', 'industrial')->skip(0)->take(10)->orderBy('projects.created_at')->get();
         $completed_quotes_by_type = array(
             'commercial' => $quotes_completed_commercial,
             'residential' => $quotes_completed_residential,

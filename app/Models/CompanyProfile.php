@@ -24,6 +24,7 @@ class CompanyProfile extends Model
         'logo',
         'established',
         'user_id',
+        'signnow_brand_id',
     ];
 
 
