@@ -119,8 +119,9 @@ class AddCompanyProfile extends Component
             $request_data = array(
                 'title' => "Brand for " . $this->company_name . " by User:" . Auth::user()->email,
                 'contact_email' => $this->email,
-                'logo_url' => asset('storage/' . $data['logo'])
+                'logo_url' => (!empty($data['logo'])) ? asset('storage/' . $data['logo']) : asset('storage/' . $this->image)
             );
+            Log::info(print_r($request_data, 1));
             $response = $cont->CreateBrandFromTemplate($request_data);
             if ($response->getData()->status == true) {
                 //save the ID to the company profile record
@@ -163,6 +164,7 @@ class AddCompanyProfile extends Component
                     'brand_id' => $company_profile->signnow_brand_id,
                     'logo_url' => asset('storage/' . $data['logo'])
                 );
+                Log::info(print_r($request_data, 1));
                 $response = $cont->EditBrandLogo($request_data);
                 if ($response->getData()->status == false) {
                     Log::info("Error occured while updating the Brand logo where Company Id=$this->company_id");
