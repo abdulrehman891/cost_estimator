@@ -313,6 +313,48 @@
                 <!--end:Menu sub-->
             </div>
             @endcan
+
+             
+            <div data-kt-menu-trigger="click" class="menu-item menu-accordion {{ request()->routeIs('customer.*') ? 'here show' : '' }}">
+                <!--begin:Menu link-->
+                <span class="menu-link">
+					<span class="menu-icon ">{!! getIcon('abstract-41', 'fs-2') !!}</span>
+					<span class="menu-title">Settings</span>
+					<span class="menu-arrow"></span>
+				</span>
+                <!--end:Menu link-->
+                <!--begin:Menu sub-->
+                <div class="menu-sub menu-sub-accordion">
+                    <!--begin:Menu item-->
+                    <div class="menu-item">
+                        <!--begin:Menu link-->
+                        <a class="menu-link" href="#">
+							<span class="menu-bullet">
+								<span class="bullet bullet-dot"></span>
+							</span>
+                            <span class="menu-title">My Profile</span>
+                        </a>
+                        <!--end:Menu link-->
+                    </div>
+                    <!--end:Menu item-->
+                    <!--begin:Menu item-->
+                    <div class="menu-item">
+                        <!--begin:Menu link-->
+                        <a class="menu-link {{ request()->routeIs('company-profile.show') ? 'active' : '' }}" href="{{ route('company-profile.show') }}">
+							<span class="menu-bullet">
+								<span class="bullet bullet-dot"></span>
+							</span>
+                            <span class="menu-title">Company Profile</span>
+                        </a>
+                        <!--end:Menu link-->
+                    </div>
+                    <!--end:Menu item-->
+                </div>
+                <!--end:Menu sub-->
+            </div>
+            
+
+
             {{-- Config End --}}
 		</div>
 		<!--end::Menu-->

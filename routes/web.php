@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\QuotationController;
 use App\Http\Middleware\Subscribed;
+use App\Http\Middleware\CheckCompanyProfileMiddleware;
 use App\Http\Controllers\PaymentsContoller;
 use App\Http\Controllers\StripeResponseHookHandler;
 use App\Http\Controllers\CompanyProfileController;
@@ -43,7 +44,7 @@ Route::middleware(['auth', 'twofactor'])->group(function () {
 Route::post('/stripre_hook_handler', [StripeResponseHookHandler::class, 'handleWebhook']);
 Route::post('/signnow_hook_handler', [JLSignnowHelpersController::class, 'handleWebhook']);
 
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth', 'verified','hascompanyprofile'])->group(function () {
 
     Route::get('/', [DashboardController::class, 'index'])->middleware(['auth', 'twofactor']);
 

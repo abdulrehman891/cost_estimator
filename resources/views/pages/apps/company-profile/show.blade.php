@@ -20,6 +20,9 @@
                 <div class="tab-pane fade show active" id="kt_user_view_overview_tab" role="tabpanel">
                     <!--begin::Card-->
                     <div class="card card-flush mb-6 mb-xl-9">
+                        @if (empty(auth()->user()->companyProfile->signnow_brand_id))
+                        <p class="alert alert-warning">Please complete your company profile including with logo image to proceed..</p>
+                        @endif
                         <div class="card-body p-9">
                             <span>
                                 Company Profile

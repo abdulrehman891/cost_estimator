@@ -16,6 +16,7 @@ class AddCompanyProfile extends Component
 {
     use WithFileUploads;
     public $user;
+    public $signnow_brand_id;
     public $companyProfile;
     public $company_name;
     public $slogan;
@@ -45,6 +46,7 @@ class AddCompanyProfile extends Component
             $this->website = $this->companyProfile->website;
             $this->company_id = $this->companyProfile->id;
             $this->email = $this->companyProfile->email;
+            $this->signnow_brand_id = $this->companyProfile->signnow_brand_id;
 
             //            $file = UploadedFile::fake()->create($this->companyProfile->logo);
             //            $file = new File($this->companyProfile->logo);
