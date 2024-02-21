@@ -7,7 +7,11 @@
             <!--begin::Modal header-->
             <div class="modal-header" id="kt_modal_add_product_header">
                 <!--begin::Modal title-->
-                <h2 class="fw-bold">Add Category</h2>
+                @if($edit_mode)
+                    <h2 class="fw-bold">Edit Category</h2>
+                @else
+                    <h2 class="fw-bold">Add Category</h2>
+                @endif
                 <!--end::Modal title-->
                 <!--begin::Close-->
                 <div class="btn btn-icon btn-sm btn-active-icon-primary" data-bs-dismiss="modal" aria-label="Close">
@@ -29,15 +33,17 @@
                             <!--end::Label-->
                             <!--begin::Input-->
                             <input type="text" wire:model.defer="name" name="name" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Category Name"/>
+                            @error('name') <span class="text-danger">{{ $message }}</span> @enderror
                             <!--end::Input-->
                         </div>
                         <!--end::Input group-->
                         <div class="fv-row mb-7">
                             <!--begin::Label-->
-                            <label class="required fw-semibold fs-6 mb-2">Description</label>
+                            <label class="fw-semibold fs-6 mb-2">Description</label>
                             <!--end::Label-->
                             <!--begin::Input-->
                             <input type="textarea" wire:model.defer="description" name="description" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Description"/>
+
                             <!--end::Input-->
                         </div>
                     </div>

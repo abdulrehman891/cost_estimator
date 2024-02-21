@@ -23,6 +23,7 @@ use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProductPriceHistoryController;
 use App\Http\Controllers\QuotationTemplateController;
 use App\Http\Controllers\Admin\AdminConfigController;
+use App\Http\Controllers\ExcelController;
 
 /*
 |--------------------------------------------------------------------------
@@ -45,7 +46,8 @@ Route::post('/stripre_hook_handler', [StripeResponseHookHandler::class, 'handleW
 Route::post('/signnow_hook_handler', [JLSignnowHelpersController::class, 'handleWebhook']);
 
 Route::middleware(['auth', 'verified','hascompanyprofile'])->group(function () {
-
+    Route::get('/export-products', [ExcelController::class, 'exportProducts']);
+    Route::post('/excel-import', [ExcelController::class, 'importProducts']);
     Route::get('/', [DashboardController::class, 'index'])->middleware(['auth', 'twofactor']);
 
 
@@ -97,11 +99,11 @@ Route::middleware(['auth', 'verified','hascompanyprofile'])->group(function () {
     Route::get('/quotation/show/{quotation}', [QuotationController::class, 'show'])->name('quotation.show');
     //keep them,temporary routes
     // Route::get('/corg', [JLSignnowHelpersController::class, 'CreateOrganization']);
-    // Route::get('/eorg', [JLSignnowHelpersController::class, 'EditOrganization']); 
-    // Route::get('/dorg/{id}', [JLSignnowHelpersController::class, 'DeleteOrganization']); 
-    // Route::get('/cbrand', [JLSignnowHelpersController::class, 'CreateBrandFromTemplate']); 
-    // Route::get('/getbrand', [JLSignnowHelpersController::class, 'getDocumentBranding']); 
-    // Route::get('/getAllbrand', [JLSignnowHelpersController::class, 'getAllBranding']); 
+    // Route::get('/eorg', [JLSignnowHelpersController::class, 'EditOrganization']);
+    // Route::get('/dorg/{id}', [JLSignnowHelpersController::class, 'DeleteOrganization']);
+    // Route::get('/cbrand', [JLSignnowHelpersController::class, 'CreateBrandFromTemplate']);
+    // Route::get('/getbrand', [JLSignnowHelpersController::class, 'getDocumentBranding']);
+    // Route::get('/getAllbrand', [JLSignnowHelpersController::class, 'getAllBranding']);
 
 
     // Quotation Template

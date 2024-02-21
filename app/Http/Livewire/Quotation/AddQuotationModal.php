@@ -17,6 +17,7 @@ use App\Models\Customer;
 use App\Models\ProductPriceHistory;
 use App;
 use PDF;
+use Dompdf\Dompdf;
 use Illuminate\Support\Facades\Storage;
 
 
@@ -96,7 +97,6 @@ class AddQuotationModal extends Component
     //end of QuoteLine Module
     public $projectMilestoneArray = [];
     public $users_list;
-
     public $customer_list;
     public $customer_id;
     public $edit_mode = false;
@@ -104,15 +104,57 @@ class AddQuotationModal extends Component
     public $quotationTemplateID;
     public $quote_templates_list;
 
+    public $preview = false;
+    public $regenerate = false;
+    public $chatGPT_res ="";
     public $res_chatGPT="";
 
-    protected $rules = [
-        'name' => 'required|string',
-        'description' => 'string',
-        'expected_start_date' => 'required',
-        'expected_end_date' => 'required',
-        'prepared_date' => 'required',
-        'project_size' => 'required'
+    public $messages = [
+        'products.0' => 'The Product field is required.',
+        'unit_price.0' => 'The Product Unit Price field is required.',
+        'quantity.0' => 'The Product Quantity field is required.',
+        'total_price.0' => 'The Total Price field is required.',
+
+        'project_milestone.0' => 'The Project Milestone field is required.',
+    ];
+
+    public $validationRules = [
+        1 =>[
+            'project_name' => 'required|string',
+            'expected_start_date' => 'required',
+            'expected_end_date' => 'required',
+            'project_size' => 'required',
+            'project_type' => 'required',
+        ],
+        2 => [
+            "project_milestone.0" => 'required',
+        ],
+        3 => [
+            'prepared_date' => 'required',
+            'assembly_type' => 'required',
+            'manufacturer' => 'required',
+            'sq_walls' => 'required',
+            'sq_field' => 'required',
+            'warranty' => 'required',
+            'parapet_length' => 'required',
+            'building_height' => 'required',
+            'deck_type' => 'required',
+            'inclusions' => 'required',
+            'exclusions' => 'required',
+            'payment_schedule' => 'required',
+            'price_escalation_clause' => 'required',
+            'alterations' => 'required',
+            'compliance' => 'required',
+            'timelines' => 'required',
+            'warranty_clause' => 'required',
+        ],
+        4 =>[
+            "products.0" => 'required',
+            "unit_price.0" => 'required',
+            "quantity.0" => 'required',
+            "total_price.0" => 'required'
+        ]
+
     ];
 
     protected $listeners = [
@@ -133,12 +175,82 @@ class AddQuotationModal extends Component
     {
         return redirect()->route('qoutation.send', $quotationId);
     }
+    public function previewProposal(){
+        $this->preview = true;
+        if($this->chatGPT_res == ''){
+            $this->chatGPT_res = $this->getProposalChatGPT();
+        }
+        $this->emit('responseGenerated');
+
+    }
+    public function regenerateProposal(){
+        $this->isLoading = true;
+        $this->regenerate = true;
+
+        if($this->chatGPT_res){
+            $this->chatGPT_res = $this->getProposalChatGPT("regenerate and rephrase with given information");
+        }
+        $this->emit('responseGenerated');
+    }
+
+    public function addQuoteline()
+    {
+        $this->quoteItems[] = '';
+        $x = count($this->quoteItems)-1;
+        $this->validationRules[4] =  array_merge(
+            $this->validationRules[4],
+            [
+                "products.$x" => 'required',
+                "unit_price.$x" => 'required',
+                "quantity.$x" => 'required',
+                "total_price.$x" => 'required'
+            ]
+        );
+        $this->messages = array_merge(
+            $this->messages,
+            [
+                "products.$x" => 'The Product field is required.',
+                "unit_price.$x" => 'The Product Unit Price field is required.',
+                "quantity.$x" => 'The Product Quantity field is required.',
+                "total_price.$x" => 'The Product Total Price field is required.'
+            ]
+        );
+    }
+    public function removeQuoteline($index)
+    {
+        unset($this->quoteItems[$index]);
+        unset($this->validationRules[4]["products.".$index]);
+        unset($this->validationRules[4]["unit_price.".$index]);
+        unset($this->validationRules[4]["discount_price.".$index]);
+        unset($this->validationRules[4]["quantity.".$index]);
+        unset($this->validationRules[4]["total_price.".$index]);
+        $this->quoteItems = array_values($this->quoteItems);
+    }
+
+    public function addMilestone(){
+        $this->milestone_list[] ='';
+        $x = count($this->milestone_list)-1;
+        $this->messages = array_merge(
+            $this->messages,
+            [ "project_milestone.$x" => 'The Project Milestone field is required.' ]
+        );
+        $this->validationRules[2] =  array_merge(
+            $this->validationRules[2],
+            [ "project_milestone.$x" => 'required' ]
+        );
+    }
+    public function removeMilestone($index){
+        unset($this->milestone_list[$index]);
+        unset($this->validationRules[2]["project_milestone.".$index]);
+        $this->milestone_list = array_values($this->milestone_list);
+    }
 
     public function increaseStep()
     {
+        $this->validate($this->validationRules[$this->currentStep]);
         $this->currentStep++;
         if($this->currentStep == 5){
-            $this->getProposalChatGPT();
+//            $this->getProposalChatGPT();
         }
         if($this->currentStep > $this->totalStep)
         {
@@ -159,7 +271,6 @@ class AddQuotationModal extends Component
         $this->customer_list = Customer::whereIn('created_by',[$admin_user_id, Auth::user()->id])->get();
 
         $this->quote_templates_list = QuotationTemplate::whereIn('created_by',[$admin_user_id, Auth::user()->id])->get();
-
 
         $adminConfController = new AdminConfigController();
         $adminPrompts = $adminConfController->getAllPrompts();
@@ -268,22 +379,8 @@ class AddQuotationModal extends Component
         }
     }
 
-    public function addMilestone(){
-        $this->milestone_list[] ='';
-    }
-    public function removeMilestone($index){
-        unset($this->milestone_list[$index]);
-        $this->milestone_list = array_values($this->milestone_list);
-    }
-    public function addQuoteline()
-    {
-        $this->quoteItems[] = '';
-    }
-    public function removeQuoteline($index)
-    {
-        unset($this->quoteItems[$index]);
-        $this->quoteItems = array_values($this->quoteItems);
-    }
+
+
     public function render()
     {
         addVendors(['formrepeater']);
@@ -291,7 +388,8 @@ class AddQuotationModal extends Component
     }
     public function hydrate()
     {
-        $this->emit('select2');
+        $this->emit('data-change-event');
+//        $this->emit('select2');
     }
 
     public function toFloatTwo($number){
@@ -303,46 +401,61 @@ class AddQuotationModal extends Component
     }
 
     public function updated($key, $value){
-//        dd($key);
         $this->saved = FALSE;
-
+//        dd($key);
         $parts = explode(".",$key);
         if(count($parts) == 2 && $parts[0] == "products"){
             $product = $this->products_list->where('id', $value)->first();
             $this->unit_price[$parts[1]] = $product->price;
         }
         if(count($parts) == 2 && $parts[0] == "quantity"){
-            if($this->discount_price)
+            if(isset($this->discount_price[$parts[1]]))
             {
                 $this->total_price[$parts[1]] = $this->toFloatTwo($this->unit_price[$parts[1]]) * $this->toIntSimple($value) - $this->toFloatTwo($this->discount_price[$parts[1]]);
             }else{
                 $this->total_price[$parts[1]] = $this->toFloatTwo($this->unit_price[$parts[1]]) * $this->toIntSimple($value);
             }
         }
+        if(count($parts) == 2 && $parts[0] == "discount_price"){
+            if(isset($this->quantity[$parts[1]]))
+            {
+                $this->total_price[$parts[1]] = $this->toFloatTwo($this->unit_price[$parts[1]]) * $this->toFloatTwo($this->quantity[$parts[1]]) - $this->toIntSimple($value);
+            }
+        }
     }
     public function submit(){
+//        $this->validate($this->validationRules[4]);
+//        dd($this->chatGPT_res);
           if ($this->edit_mode) {
 //            $this->quotationID
-              $chatGPT_res = $this->getProposalChatGPT();
-              if($chatGPT_res){
+              if($this->preview == false && $this->regenerate == false)
+              {
+                  $this->chatGPT_res = $this->getProposalChatGPT();
+              }
+              if($this->chatGPT_res){
                   $project_id = $this->addProject();
                   $this->addProjectMilestone($project_id);
                   $quotation_id = $this->addQuotation($project_id);
                   $this->addQuoteLineItems($quotation_id);
-                  $this->generatePDF($chatGPT_res,$quotation_id);
+                  $this->generatePDF($this->chatGPT_res,$quotation_id);
                   $quote_history = Quotation::find($quotation_id);
                   $quote_history->parent_quotation = $this->quotationID;
                   $quote_history->save();
               }
             $this->emit('success', __('Quotation updated'));
         } else {
-              $chatGPT_res = $this->getProposalChatGPT();
-              if($chatGPT_res){
+              if($this->preview == false && $this->regenerate == false)
+              {
+//                  dd("updated");
+                  $this->chatGPT_res = $this->getProposalChatGPT();
+              }
+//              $this->chatGPT_res = $this->getProposalChatGPT();
+              if($this->chatGPT_res){
                   $project_id = $this->addProject();
                   $this->addProjectMilestone($project_id);
                   $quotation_id = $this->addQuotation($project_id);
                   $this->addQuoteLineItems($quotation_id);
-                  $this->generatePDF($chatGPT_res,$quotation_id);
+                  $this->generatePDF($this->chatGPT_res,$quotation_id);
               }
             // Emit a success event with a message
             $this->emit('success', __('New Quotation created'));
@@ -426,12 +539,12 @@ class AddQuotationModal extends Component
         for ($x = 0; $x < count($this->project_milestone); $x++) {
             $pm_obj = new ProjectMilestone();
             $pm_obj->name = $this->project_milestone[$x];
-            $pm_obj->description = $this->milestone_description[$x];
+            $pm_obj->description = $this->milestone_description ? $this->milestone_description[$x] : "";
             $pm_obj->created_by =  Auth::user()->id;
             $pm_obj->project_id = $project_id;
             $this->projectMilestoneArray[] = array(
                 "milestone_name" => $this->project_milestone[$x],
-                "milestone_description" => $this->milestone_description[$x],
+                "milestone_description" => $this->milestone_description ? $this->milestone_description[$x] : "",
             );
             $pm_obj->save();
         }
@@ -447,7 +560,6 @@ class AddQuotationModal extends Component
         if(!empty($project_manager->id)){
             $projectData['project_manager'] =  $project_manager->name;
         } else {
-
             $projectData['project_manager'] =  "N/A";
         }
         $quotationData['prepared_date']= $this->prepared_date;
@@ -477,39 +589,22 @@ class AddQuotationModal extends Component
 
         return $response;
     }
-    public function getProposalChatGPT()
+    public function getProposalChatGPT($prefix = "")
     {
         $this->isLoading = true;
         $chat =new ChatGPTController();
         $formData = $this->getQuotationString();
-//        dd($formData);
-/*
-        $msg_data = "I need you to work as an expert Construction Quotation Generator which has the ability to analyze and decode the Base64 Encoded given prameters and create a Construction Project Proposal by using provided information. The complete project information of project is as follows:
-            <--Project Details Section Start-->";
-       $msg_data .= base64_encode($formData['projectDetails']);
-        $msg_data .= "
-<--Project Details Section End -->
+        $msg_data = '';
+        if($this->regenerate == true)
+        {
+            $msg_data .= $prefix;
+        }
 
-        Modify and include the specific information in headings as per mentioned sections:
-Warranty, Inclusions, Payment Schedule, Compliance and Warranty Clause.
-
-Moreover, also mention Risk Factors for Quote Line Items using below Base64 Encoded details and calculate Total Quotable Price using total price of all Quote Line Items:
-        <--Quote Line Items Section Start-->";
-        $msg_data .= base64_encode($formData['quoteLineItemsDetails']);
-        $msg_data .= "
-        <--Quote Line Items Section End-->
-        Also include below Base64 Encoded Quotation Details and use in proposal:
-        <--Quotation Details Section Start-->";
-        $msg_data .= base64_encode($formData['quotationDetails']);
-        $msg_data .= "
-        <--Quotation Details Section End-->
-        Also write and include Validity and Disclaimers.format so that it can be sent to the client for approval.";
-        $msg_data .= " format so that it can be included in a PDF template";
-*/
 if(isset($adminAiPrompts['pre_data'])){
-            $msg_data = $adminAiPrompts['pre_data'];
+        $msg_data = $adminAiPrompts['pre_data'];
+
         } else{
-        $msg_data = "I need you to work as an expert Construction Quotation Generator. You have the ability to analyze and create a Construction Project Proposal by using provided information. The complete project information of project is as follows:";
+            $msg_data = "I need you to work as an expert Construction Quotation Generator. You have the ability to analyze and create a Construction Project Proposal by using provided information. The complete project information of project is as follows:";
         }
         $msg_data .= "
             <--Project Details Start-->";
@@ -539,7 +634,6 @@ if(isset($adminAiPrompts['pre_data'])){
             $msg_data .="Also mention validity and disclaimers. Create minimum 250 words";
 }
 
-
 //        $this->res_chatGPT =$chat->createPurposalChatGPT($msg_data);
         //sleep(2);
 
@@ -550,13 +644,13 @@ if(isset($adminAiPrompts['pre_data'])){
         info($msg_data);
 
 
-        $chatGPT_res =$chat->createPurposalChatGPT($msg_data);
+        $this->chatGPT_res = $chat->createPurposalChatGPT($msg_data);
         sleep(2);
        // $this->res_chatGPT = "";
        info("Chat GPT Response=>");
-       info($chatGPT_res);
+       info($this->chatGPT_res);
 
-       return $chatGPT_res;
+       return $this->chatGPT_res;
 
         // Generate PDF from the response
 //        $this->isLoading = false; // Stop loading

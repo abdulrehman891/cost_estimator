@@ -42,8 +42,9 @@ class AddProductModal extends Component
 
     protected $rules = [
         'product_name' => 'required|string',
-        'sku' => 'required|email',
-        'created_by' => 'required|string',
+        'sku' => 'required',
+        'price' => 'required',
+        'stock_quantity' => 'required',
         'description' => 'string',
     ];
     public function render()
@@ -69,7 +70,7 @@ class AddProductModal extends Component
 
     public function submit()
     {
-//        $this->validate();
+        $this->validate();
         DB::transaction(function () {
             // Prepare the data for creating a new user
             $data['product_name'] = $this->product_name;

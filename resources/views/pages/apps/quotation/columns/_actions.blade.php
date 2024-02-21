@@ -58,7 +58,7 @@
     @if(!empty($quotation->signnow_document_id) && $quotation->status!='Pending_Manager_Signature')
     <!--begin::Menu item-->
     <div class="menu-item px-3">
-        <a href="{{ route('qoutation.preview_doc', ['signnow_document_id'=>$quotation->signnow_document_id])}}" class="menu-link px-3" data-kt-quotation-id="{{ $quotation->id }}" data-kt-action="send_row">
+        <a href="{{ route('qoutation.preview_doc', ['signnow_document_id'=>$quotation->signnow_document_id])}}" class="menu-link px-3" data-kt-quotation-id="{{ $quotation->id }}" data-kt-action="preview_row">
             Preview Doc.
         </a>
     </div>

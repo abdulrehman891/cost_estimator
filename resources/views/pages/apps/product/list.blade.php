@@ -28,11 +28,35 @@
                 <!--begin::Toolbar-->
                 <div class="d-flex justify-content-end" data-kt-user-table-toolbar="base">
                     <!--begin::Add user-->
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#kt_modal_add_product">
-                        {!! getIcon('plus', 'fs-2', '', 'i') !!}
-                        Add Product
-                    </button>
+{{--                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#kt_modal_add_product">--}}
+{{--                        {!! getIcon('plus', 'fs-2', '', 'i') !!}--}}
+{{--                        Add Product--}}
+{{--                    </button>--}}
                     <!--end::Add user-->
+
+                    <div class="btn-group dropdown">
+
+
+                        <ul class="dropdown-menu">
+                            <li> <a class="btn btn-primary" href="{{ url('export-products') }}">
+                                    Export User Data
+                                </a></li>
+                            <li> <button type="button" class="btn btn-secondary" data-bs-toggle="modal"
+                                         data-bs-target="#staticBackdrop">
+                                    Import User Data
+                                </button></li>
+
+                        </ul>
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                data-bs-target="#kt_modal_add_product">
+                            {!! getIcon('plus', 'fs-2', '', 'i') !!}
+                            Add Product
+                        </button>
+                        <button type="button" class="btn btn-secondary btn-sm dropdown-toggle dropdown-toggle-split"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                            <span class="visually-hidden">Toggle Dropend</span>
+                        </button>
+                    </div>
                 </div>
                 <!--end::Toolbar-->
 
@@ -56,6 +80,37 @@
         </div>
         <!--end::Card body-->
     </div>
+        <!-- Button trigger modal -->
+        {{-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+            Launch static backdrop modal
+        </button> --}}
+
+        <!-- Modal -->
+        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+             aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="staticBackdropLabel">Select Import File</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="{{ url('excel-import') }}" method="POST" enctype="multipart/form-data">
+                            @csrf
+                            <input type="file" name="file" class="form-control">
+                            <br>
+                            <button class="btn btn-success">
+                                Import User Data
+                            </button>
+
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
     @push('scripts')
         {{ $dataTable->scripts() }}

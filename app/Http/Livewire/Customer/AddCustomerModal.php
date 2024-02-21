@@ -10,7 +10,6 @@ class AddCustomerModal extends Component
     public $name;
     public $email;
     public $phone_number;
-    public $address;
     public $edit_mode = false;
     public $customer_id;
     public $company_name;
@@ -23,19 +22,28 @@ class AddCustomerModal extends Component
         'delete_customer' => 'deleteCustomer',
         'update_customer' => 'updateCustomer',
     ];
+    protected $rules = [
+        'name' => 'required|string',
+        'email' => 'required',
+        'phone_number' => 'required',
+        'company_name' => 'required',
+        'company_phone' => 'required',
+        'company_email' => 'required',
+        'company_address' => 'required',
+    ];
     public function render()
     {
         return view('livewire.customer.add-customer-modal');
     }
 
     public function submit(){
+        $this->validate();
         $customer = Customer::find($this->customer_id);
         if($customer)
         {
             $customer->name = $this->name;
             $customer->email = $this->email;
             $customer->phone_number = $this->phone_number;
-            $customer->address = $this->address;
             $customer->company_name = $this->company_name;
             $customer->company_address = $this->company_address;
             $customer->company_phone = $this->company_phone;
@@ -48,7 +56,6 @@ class AddCustomerModal extends Component
             $customer->name = $this->name;
             $customer->email = $this->email;
             $customer->phone_number = $this->phone_number;
-            $customer->address = $this->address;
             $customer->company_name = $this->company_name;
             $customer->company_address = $this->company_address;
             $customer->company_phone = $this->company_phone;
@@ -70,7 +77,6 @@ class AddCustomerModal extends Component
         $this->customer_id = $id;
         $this->email = $customer->email;
         $this->phone_number = $customer->phone_number;
-        $this->address = $customer->address;
         $this->company_name = $customer->company_name;
         $this->company_address = $customer->company_address;
         $this->company_phone = $customer->company_phone;

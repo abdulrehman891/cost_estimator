@@ -16,10 +16,10 @@ return new class extends Migration
             $table->string('product_name');
             $table->text('description')->nullable();
             $table->decimal('price', 10, 2)->default('0');
-            $table->decimal('weight', 10, 2)->default('0');
-            $table->decimal('length', 10, 2)->default('0');
-            $table->decimal('width', 10, 2)->default('0');
-            $table->decimal('height', 10, 2)->default('0');
+            $table->decimal('weight', 10, 2)->default('0')->nullable();
+            $table->decimal('length', 10, 2)->default('0')->nullable();
+            $table->decimal('width', 10, 2)->default('0')->nullable();
+            $table->decimal('height', 10, 2)->default('0')->nullable();
             $table->string('material')->nullable();
             $table->string('color')->nullable();
             $table->integer('stock_quantity')->default('0');

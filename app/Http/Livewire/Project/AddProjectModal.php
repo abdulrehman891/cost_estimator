@@ -29,11 +29,11 @@ class AddProjectModal extends Component
     ];
 
     protected $rules = [
-        'name' => 'required|string',
-        'description' => 'string',
+        'project_name' => 'required|string',
         'expected_start_date' => 'required',
         'expected_end_date' => 'required',
-        'project_size' => 'required'
+        'project_size' => 'required',
+        'project_type' => 'required',
     ];
     public function render()
     {
@@ -42,6 +42,7 @@ class AddProjectModal extends Component
 
     public function submit()
     {
+        $this->validate();
         DB::transaction(function () {
             // Prepare the data for creating a new user
             $data['name'] = $this->project_name;

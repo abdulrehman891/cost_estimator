@@ -19,7 +19,7 @@
             <!--begin::Modal body-->
             <div class="modal-body px-5 my-7">
                 <!--begin::Form-->
-                <form id="kt_modal_add_category_form" class="form" action="#" wire:submit.prevent="submit" enctype="multipart/form-data">
+                <form id="kt_modal_add_subcategory_form" class="form" action="#" wire:submit.prevent="submit" enctype="multipart/form-data">
                     <!--begin::Scroll-->
                     <div class="d-flex flex-column scroll-y px-5 px-lg-10" id="kt_modal_add_user_scroll" data-kt-scroll="true" data-kt-scroll-activate="true" data-kt-scroll-max-height="auto" data-kt-scroll-dependencies="#kt_modal_add_user_header" data-kt-scroll-wrappers="#kt_modal_add_user_scroll" data-kt-scroll-offset="300px">
                         <!--begin::Input group-->
@@ -29,25 +29,29 @@
                             <!--end::Label-->
                             <!--begin::Input-->
                             <input type="text" wire:model.defer="sub_category_name" name="sub_category_name" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Sub-Category Name"/>
+                            @error('sub_category_name') <span class="text-danger">{{ $message }}</span> @enderror
                             <!--end::Input-->
                         </div>
-                        <div class="fv-row mb-7">
+                        <div class="fv-row mb-7" >
                             <!--begin::Label-->
                             <label class="required fw-semibold fs-6 mb-2">Category Name</label>
                             <!--end::Label-->
                             <!--begin::Input-->
-                            <select class="form-select" name="category_name" id="category_name" data-control="select2" data-placeholder="Select a Category" data-dropdown-parent="#kt_modal_add_subcategory">
-                                <option></option>
-                                @foreach($categories as $category)
-                                    <option value="{{$category->id}}"  {{ $product_category_id == $category->id ? 'selected' : '' }}>{{$category->name}}</option>
-                                @endforeach
-                            </select>
+                            <div wire:ignore>
+                                <select wire:model="product_category" class="form-select" name="selected_category" id="selected_category" data-control="select2" data-dropdown-parent="#kt_modal_add_subcategory" data-placeholder="Select a Category">
+                                    <option></option>
+                                    @foreach($categories as $category)
+                                        <option value="{{$category->id}}"  {{ $product_category == $category->id ? 'selected' : '' }}>{{$category->name}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
                             <!--end::Input-->
+                            @error('product_category') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
-                        <!--end::Input group-->
+                       <!--end::Input group-->
                         <div class="fv-row mb-7">
                             <!--begin::Label-->
-                            <label class="required fw-semibold fs-6 mb-2">Description</label>
+                            <label class="fw-semibold fs-6 mb-2">Description</label>
                             <!--end::Label-->
                             <!--begin::Input-->
                             <input type="textarea" wire:model.defer="description" name="description" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Description"/>
@@ -74,15 +78,20 @@
         </div>
         <!--end::Modal content-->
     </div>
-
-    @push('scripts')
         <script>
-            // $('#category_name').select2();
-            $('#category_name').on('change',function (e){
-                var data = $('#category_name').select2('val')
-                @this.set('product_category_id',data)
-            });
-        </script>
-    @endpush
+            document.addEventListener('livewire:load', function () {
+                $('#selected_category').select2();
+                $('#selected_category').on('change',function (e){
+                    let data = $(this).val();
+                    @this.set('product_category',data);
+
+                });
+                window.livewire.on('data-change-event', () =>{
+                    $('#selected_category').select2({
+                        closeOnSelect: true
+                    });
+                });
+            })
+          </script>
 </div>
 

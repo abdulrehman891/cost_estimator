@@ -32,11 +32,17 @@ class AddCompanyProfile extends Component
     public $company_id;
     public $image_updated = false;
 
+    protected $rules = [
+        'company_name' => 'required|string',
+        'email' => 'required',
+        'image' => 'required',
+    ];
+
     public function mount()
     {
         $this->user = auth()->user();
         $this->companyProfile = $this->user->companyProfile ?? null;
-        if ($this->companyProfile) {
+        if($this->companyProfile){
             $this->edit_mode =  true;
             $this->company_name = $this->companyProfile->name;
             $this->slogan = $this->companyProfile->slogan;
@@ -47,12 +53,11 @@ class AddCompanyProfile extends Component
             $this->company_id = $this->companyProfile->id;
             $this->email = $this->companyProfile->email;
             $this->signnow_brand_id = $this->companyProfile->signnow_brand_id;
-
+            $this->image = $this->companyProfile->logo;
             //            $file = UploadedFile::fake()->create($this->companyProfile->logo);
             //            $file = new File($this->companyProfile->logo);
             //            $this->image = $file->temporaryUrl();
             $this->image = $this->companyProfile->logo;
-            //            dd(asset('storage/'.$this->image));
             $this->established_date = $this->companyProfile->established;
         }
     }
@@ -67,13 +72,13 @@ class AddCompanyProfile extends Component
         $this->image_updated = true;
     }
 
-    public function updateCompanyProfile()
-    {
+    public function updateCompanyProfile(){
         dd('ok');
     }
 
     public function submit()
     {
+        $this->validate();
         $company_profile = [];
         $db_name = "";
         $db_email = "";
@@ -98,6 +103,7 @@ class AddCompanyProfile extends Component
             $data['established'] = $this->established_date;
             $data['user_id'] = Auth::user()->id;
             if ($this->edit_mode) {
+//                $company_profile = CompanyProfile::where('id', $this->company_id)->first();
                 if ($this->image && $this->image_updated) {
                     $data['logo'] = $this->image->store('uploads', 'public');
                 }
@@ -117,7 +123,7 @@ class AddCompanyProfile extends Component
         // Log::info(print_r($data, 1));
 
         if (empty($company_profile->signnow_brand_id)) {
-            //create a new brand to manage invite email logo, colors, texts and other custom settings                       
+            //create a new brand to manage invite email logo, colors, texts and other custom settings
             $request_data = array(
                 'title' => "Brand for " . $this->company_name . " by User:" . Auth::user()->email,
                 'contact_email' => $this->email,
@@ -186,7 +192,7 @@ class AddCompanyProfile extends Component
                 ],
             ]);
         }
-        
+
          $request_data = array(
             'title' => $this->company_name,
             'phone_number' => $this->phone_number,

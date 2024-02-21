@@ -57,10 +57,6 @@
     @push('scripts')
         {{ $dataTable->scripts() }}
         <script>
-
-            $('#category_name').select2({
-                dropdownParent: $('#kt_modal_add_subcategory')
-            });
             document.getElementById('mySearchInput').addEventListener('keyup', function () {
                 window.LaravelDataTables['subcategory-table'].search(this.value).draw();
             });

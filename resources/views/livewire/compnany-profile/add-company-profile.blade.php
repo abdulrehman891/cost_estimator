@@ -6,31 +6,33 @@
                 <div class="col-md-6 mb-4">
                     <label for="description" class="required fw-semibold fs-6 mb-2">Company Name</label>
                     <input type="text" wire:model.defer="company_name" id="company_name"  name="company_name" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Company Name"/>
+                    @error('company_name') <span class="text-danger">{{ $message }}</span> @enderror
+
                 </div>
                 <div class="col-md-6 mb-4">
-                    <label for="created_by" class="required fw-semibold fs-6 mb-2">Slogan</label>
+                    <label for="created_by" class="fw-semibold fs-6 mb-2">Slogan</label>
                     <input type="text" wire:model.defer="slogan" id="slogan" name="slogan" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Slogan"/>
                 </div>
             </div>
 
             <div class="row">
                 <div class="col-md-6 mb-4">
-                    <label for="description" class="required fw-semibold fs-6 mb-2">description</label>
+                    <label for="description" class="fw-semibold fs-6 mb-2">description</label>
                     <input type="text" wire:model.defer="description"  id="description" name="description" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Description"/>
                 </div>
                 <div class="col-md-6 mb-4">
-                    <label for="created_by" class="required fw-semibold fs-6 mb-2">Address</label>
+                    <label for="created_by" class="fw-semibold fs-6 mb-2">Address</label>
                     <input type="text" wire:model.defer="address" id="address" name="address" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Address"/>
                 </div>
             </div>
 
             <div class="row">
                 <div class="col-md-6 mb-4">
-                    <label for="description" class="required fw-semibold fs-6 mb-2">Phone Number</label>
+                    <label for="description" class="fw-semibold fs-6 mb-2">Phone Number</label>
                     <input type="text" wire:model.defer="phone_number" id="phone_number" name="phone_number" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Phone Number"/>
                 </div>
                 <div class="col-md-6 mb-4">
-                    <label for="created_by" class="required fw-semibold fs-6 mb-2">Website</label>
+                    <label for="created_by" class="fw-semibold fs-6 mb-2">Website</label>
                     <input type="text" wire:model.defer="website" id="website" name="website" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Website"/>
                 </div>
             </div>
@@ -38,17 +40,21 @@
                 <div class="col-md-6 mb-4">
                     <label for="description" class="required fw-semibold fs-6 mb-2">Email</label>
                     <input type="text" wire:model.defer="email" id="email" name="email" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Email"/>
+                    @error('email') <span class="text-danger">{{ $message }}</span> @enderror
+
                 </div>
                 <div class="col-md-6 mb-4">
-                    <label for="created_by" class="required fw-semibold fs-6 mb-2">Established Year</label>
+                    <label for="created_by" class="fw-semibold fs-6 mb-2">Established Year</label>
                     <input class="form-control form-control-solid" wire:model.defer="established_date" placeholder="Pick a date" name="established_date" id="established_date"/>
 
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-6 mb-4">
-                    <label for="description" class="required fw-semibold fs-6 mb-2">Logo</label>
+                    <label for="description" class="fw-semibold fs-6 mb-2">Logo</label>
                     <input wire:model.defer="image" accept="image/png,image/jpeg" type="file" id="image" class="form-control mb-3 mb-lg-0">
+                    @error('image') <span class="text-danger">{{ $message }}</span> @enderror
+
                     @if($image)
                         @if($edit_mode == true)
                             <img class="w-25 p-1" src="{{ asset('storage/'.$image) }}" alt="" />

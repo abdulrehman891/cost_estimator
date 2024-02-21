@@ -34,6 +34,8 @@
                             <!--begin::Input-->
                             <input type="text" wire:model.defer="name" name="name" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Customer Name"/>
                             <!--end::Input-->
+                            @error('name') <span class="text-danger">{{ $message }}</span> @enderror
+
                         </div>
                         <!--end::Input group-->
                         <!--begin::Input group-->
@@ -44,6 +46,7 @@
                             <!--begin::Input-->
                             <input type="text" wire:model.defer="email" name="email" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Email"/>
                             <!--end::Input-->
+                            @error('email') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
                         <!--end::Input group-->
                         <!--begin::Input group-->
@@ -54,16 +57,7 @@
                             <!--begin::Input-->
                             <input type="text" wire:model.defer="phone_number" name="phone_number" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Phone Number"/>
                             <!--end::Input-->
-                        </div>
-                        <!--end::Input group-->
-                        <!--begin::Input group-->
-                        <div class="fv-row mb-7">
-                            <!--begin::Label-->
-                            <label class="required fw-semibold fs-6 mb-2">Address</label>
-                            <!--end::Label-->
-                            <!--begin::Input-->
-                            <input type="text" wire:model.defer="address" name="address" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Address"/>
-                            <!--end::Input-->
+                            @error('phone_number') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
                         <!--end::Input group-->
 
@@ -75,6 +69,7 @@
                             <!--begin::Input-->
                             <input type="text" wire:model.defer="company_name" name="company_name" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Company Name"/>
                             <!--end::Input-->
+                            @error('company_name') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
                         <!--end::Input group-->
                         <!--begin::Input group-->
@@ -85,6 +80,7 @@
                             <!--begin::Input-->
                             <input type="text" wire:model.defer="company_phone" name="company_phone" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Company Phone"/>
                             <!--end::Input-->
+                            @error('company_phone') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
                         <!--end::Input group-->
 
@@ -96,6 +92,7 @@
                             <!--begin::Input-->
                             <input type="text" wire:model.defer="company_email" name="company_email" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Company Email"/>
                             <!--end::Input-->
+                            @error('company_email') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
                         <!--end::Input group-->
 
@@ -107,6 +104,7 @@
                             <!--begin::Input-->
                             <input type="text" wire:model.defer="company_address" name="company_address" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Company Address"/>
                             <!--end::Input-->
+                            @error('company_address') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
                         <!--end::Input group-->
                     </div>

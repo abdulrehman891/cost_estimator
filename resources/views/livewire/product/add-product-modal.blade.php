@@ -29,12 +29,13 @@
                             <!--end::Label-->
                             <!--begin::Input-->
                             <input type="text" wire:model.defer="product_name" name="product_name" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Product Name"/>
+                            @error('product_name') <span class="text-danger">{{ $message }}</span> @enderror
                             <!--end::Input-->
                         </div>
                         <!--end::Input group-->
                         <div class="fv-row mb-7">
                             <!--begin::Label-->
-                            <label class="required fw-semibold fs-6 mb-2">Description</label>
+                            <label class="fw-semibold fs-6 mb-2">Description</label>
                             <!--end::Label-->
                             <!--begin::Input-->
                             <input type="textarea" wire:model.defer="description" name="description" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Description"/>
@@ -47,6 +48,7 @@
                             <!--end::Label-->
                             <!--begin::Input-->
                             <input type="text" wire:model.defer="sku" name="sku" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="SKU"/>
+                            @error('sku') <span class="text-danger">{{ $message }}</span> @enderror
                             <!--end::Input-->
                         </div>
 
@@ -55,62 +57,67 @@
                             <div class="col-md-6 mb-4">
                                 <label for="description" class="required fw-semibold fs-6 mb-2">Price</label>
                                 <input type="text" wire:model.defer="price" id="price" name="price" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Price"/>
+                                @error('price') <span class="text-danger">{{ $message }}</span> @enderror
+
                             </div>
                             <div class="col-md-6 mb-4">
                                 <label for="created_by" class="required fw-semibold fs-6 mb-2">Stock Quantity</label>
                                 <input type="text" wire:model.defer="stock_quantity" id="stock_quantity" name="stock_quantity" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Stock Quantity"/>
+                                @error('stock_quantity') <span class="text-danger">{{ $message }}</span> @enderror
                             </div>
                         </div>
 
                         <div class="row">
                             <div class="col-md-6 mb-4">
-                                <label for="description" class="required fw-semibold fs-6 mb-2">Category</label>
-                                <select class="form-select" name="category_name" id="category_name" data-control="select2" data-dropdown-parent="#kt_modal_add_product" data-placeholder="Select an option">
-                                    <option></option>
-                                    @foreach($categories as $category)
-                                        <option value="{{$category->id}}"  {{ $product_category_id == $category->id ? 'selected' : '' }}>{{$category->name}}</option>
-                                    @endforeach
-                                </select>
+                                    <label for="category" class="fw-semibold fs-6 mb-2">Category</label>
+                                    <select class="form-select" name="category_name" id="category_name" data-control="select2" data-dropdown-parent="#kt_modal_add_product" data-placeholder="Select an option">
+                                        <option></option>
+                                        @foreach($categories as $category)
+                                            <option value="{{$category->id}}"  {{ $product_category_id == $category->id ? 'selected' : '' }}>{{$category->name}}</option>
+                                        @endforeach
+                                    </select>
                             </div>
                             <div class="col-md-6 mb-4">
-                                <label for="created_by" class="required fw-semibold fs-6 mb-2">Sub-Category</label>
-                                <select class="form-select" name="sub_category" data-control="select2" id="sub_category" data-dropdown-parent="#kt_modal_add_product" data-placeholder="Select an option">
-                                    <option></option>
-                                    @foreach ($subcategories as $subcategory)
-                                            <option value="{{ $subcategory->id }}" {{$sub_category_id == $subcategory->id ? 'selected' : '' }}>{{ $subcategory->name }}</option>
-                                    @endforeach
-                                </select>
+{{--                                <div wire:ignore>--}}
+                                    <label for="sub_category" class="fw-semibold fs-6 mb-2">Sub-Category</label>
+                                    <select class="form-select" name="sub_category" data-control="select2" id="sub_category" data-dropdown-parent="#kt_modal_add_product" data-placeholder="Select an option">
+                                        <option></option>
+                                        @foreach ($subcategories as $subcategory)
+                                                <option value="{{ $subcategory->id }}" {{$sub_category_id == $subcategory->id ? 'selected' : '' }}>{{ $subcategory->name }}</option>
+                                        @endforeach
+                                    </select>
+{{--                                </div>--}}
                             </div>
                         </div>
 
                         <div class="row">
                             <div class="col-md-6 mb-4">
-                                <label for="description" class="required fw-semibold fs-6 mb-2">Weight</label>
+                                <label for="description" class="fw-semibold fs-6 mb-2">Weight</label>
                                 <input type="text" wire:model.defer="weight" id="weight" name="weight" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Weight"/>
                             </div>
                             <div class="col-md-6 mb-4">
-                                <label for="created_by" class="required fw-semibold fs-6 mb-2">Width</label>
+                                <label for="created_by" class="fw-semibold fs-6 mb-2">Width</label>
                                 <input type="text" wire:model.defer="width" id="width" name="width" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Width"/>
                             </div>
                         </div>
 
                         <div class="row">
                             <div class="col-md-6 mb-4">
-                                <label for="description" class="required fw-semibold fs-6 mb-2">Length</label>
+                                <label for="description" class="fw-semibold fs-6 mb-2">Length</label>
                                 <input type="text" wire:model.defer="length" id="length" name="length" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Length"/>
                             </div>
                             <div class="col-md-6 mb-4">
-                                <label for="created_by" class="required fw-semibold fs-6 mb-2">Height</label>
+                                <label for="created_by" class="fw-semibold fs-6 mb-2">Height</label>
                                 <input type="text" wire:model.defer="height" id="height" name="height" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Height"/>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-6 mb-4">
-                                <label for="description" class="required fw-semibold fs-6 mb-2">Color</label>
+                                <label for="description" class="fw-semibold fs-6 mb-2">Color</label>
                                 <input type="text" wire:model.defer="color" id="color" name="color" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Color"/>
                             </div>
                             <div class="col-md-6 mb-4">
-                                <label for="created_by" class="required fw-semibold fs-6 mb-2">Material</label>
+                                <label for="created_by" class="fw-semibold fs-6 mb-2">Material</label>
                                 <input type="text" wire:model.defer="material" id="material" name="material" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Matrial"/>
                             </div>
                         </div>

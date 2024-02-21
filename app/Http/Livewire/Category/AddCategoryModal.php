@@ -32,13 +32,13 @@ class AddCategoryModal extends Component
 
     public function submit()
     {
+        $this->validate();
         DB::transaction(function () {
             // Prepare the data for creating a new category
             $data['name'] = $this->name;
             $data['description'] = $this->description;
             $data['created_by'] =  Auth::user()->id;
             // Create a new category record in the database
-
             if($this->category_id){
                 $category = ProductCategory::where('id', $this->category_id)->first();
                 $category->update($data);

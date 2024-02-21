@@ -30,11 +30,13 @@
                             <!--begin::Input-->
                             <input type="text" wire:model.defer="project_name" name="project_name" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Project Name"/>
                             <!--end::Input-->
+                            @error('project_name') <span class="text-danger">{{ $message }}</span> @enderror
+
                         </div>
                         <!--end::Input group-->
                         <div class="fv-row mb-7">
                             <!--begin::Label-->
-                            <label class="required fw-semibold fs-6 mb-2">Description</label>
+                            <label class="fw-semibold fs-6 mb-2">Description</label>
                             <!--end::Label-->
                             <!--begin::Input-->
                             <input type="textarea" wire:model.defer="description" name="description" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Description"/>
@@ -48,6 +50,8 @@
                             <!--begin::Input-->
                             <input class="form-control form-control-solid"  wire:model.defer="expected_start_date" placeholder="Pick a date" name="expected_start_date" id="expected_start_date"/>
                             <!--end::Input-->
+                            @error('expected_start_date') <span class="text-danger">{{ $message }}</span> @enderror
+
                         </div>
 
                         <div class="fv-row mb-7">
@@ -57,15 +61,18 @@
                             <!--begin::Input-->
                             <input class="form-control form-control-solid"  wire:model.defer="expected_end_date" placeholder="Pick a date" name="expected_end_date" id="expected_end_date"/>
                             <!--end::Input-->
+                            @error('expected_end_date') <span class="text-danger">{{ $message }}</span> @enderror
+
                         </div>
 
                         <div class="fv-row mb-7">
                             <!--begin::Label-->
-                            <label class="fw-semibold fs-6 mb-2">Project Size</label>
+                            <label class="required fw-semibold fs-6 mb-2">Project Size</label>
                             <!--end::Label-->
                             <!--begin::Input-->
                             <input type="text" wire:model.defer="project_size" name="project_size" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Project Size"/>
                             <!--end::Input-->
+                            @error('project_size') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
 
                         <div class="fv-row mb-7">
@@ -77,11 +84,12 @@
                                 <option value="commercial">Commercial</option>
                                 <option value="industrial">Industrial</option>
                             </select>
+                            @error('project_type') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
 
                         <div class="fv-row mb-7" wire:ignore>
                             <!--begin::Label-->
-                            <label class="required fw-semibold fs-6 mb-2">Project Manager</label>
+                            <label class="fw-semibold fs-6 mb-2">Project Manager</label>
                             <!--end::Label-->
                             <select class="form-select" name="project_manager" id="project_manager" data-control="select2" data-dropdown-parent="#kt_modal_add_project" data-placeholder="Select an option">
                                 <option></option>
