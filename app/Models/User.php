@@ -35,6 +35,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'subscription_remaining_quota',
         'subscription_transaction_stripe_id',
         'subscription_latest_invoice_stripe_id',
+        'status',
     ];
     /**
      * The attributes that should be hidden for serialization.
@@ -97,6 +98,18 @@ class User extends Authenticatable implements MustVerifyEmail
     public function getDefaultAddressAttribute()
     {
         return $this->addresses?->first();
+    }
+
+    public function activate(User $user)
+    {
+        $user->update(['status' => 'active']);
+//        return back(); // or redirect wherever appropriate
+    }
+
+    public function inactive(User $user)
+    {
+        $user->update(['status' => 'inactive']);
+//        return back(); // or redirect wherever appropriate
     }
 
     public function generateTwoFactorCode(): void

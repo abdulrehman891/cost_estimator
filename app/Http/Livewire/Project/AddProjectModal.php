@@ -6,13 +6,17 @@ use App\Models\User;
 use App\Models\Project;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 use Auth;
 
 class AddProjectModal extends Component
 {
+    use WithFileUploads;
     public $project_id;
     public $project_name;
     public $description;
+    public $address;
+    public $image;
     public $expected_start_date;
     public $expected_end_date;
 
@@ -47,12 +51,17 @@ class AddProjectModal extends Component
             // Prepare the data for creating a new user
             $data['name'] = $this->project_name;
             $data['description'] = $this->description;
+            $data['address'] = $this->address;
             $data['created_by'] =  Auth::user()->id;
             $data['expected_start_date'] =  $this->expected_start_date;
             $data['expected_end_date'] =  $this->expected_end_date;
             $data['project_size'] =  $this->project_size;
             $data['project_type'] =  $this->project_type;
             $data['manager_id'] =  $this->project_manager;
+            if($this->image && !empty($this->image))
+            {
+                $data['image'] = $this->image->store('uploads', 'public');
+            }
             if($this->project_id){
                 $project = Project::where('id', $this->project_id)->first();
                 $project->update($data);
@@ -83,6 +92,8 @@ class AddProjectModal extends Component
         $this->project_id = $project->id;
         $this->project_name = $project->name;
         $this->description= $project->description;
+        $this->address= $project->address;
+        $this->image = $project->image;
         $this->expected_start_date= $project->expected_start_date;
         $this->expected_end_date= $project->expected_end_date;
         $this->project_size= $project->project_size;

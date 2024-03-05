@@ -187,6 +187,17 @@
                                     <div class="card">
                                         <div class="card-header bg-primary text-black"><h3 class="card-title text-white">STEP 1/5 - Project</h3></div>
                                         <div class="card-body">
+                                            <div class="fv-row m-5" >
+                                                <!--begin::Label-->
+                                                <label class="fw-semibold fs-6 mb-2">Projects</label>
+                                                <!--end::Label-->
+                                                <select wire:model="projects" class="form-select" name="projects" data-placeholder="Select an option" >
+                                                    <option></option>
+                                                    @foreach($this->project_list as $project)
+                                                        <option value="{{$project->id}}">{{$project->name}}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
                                             <!--begin::Input group-->
                                             <div class="fv-row mb-10">
                                                 <!--begin::Label-->
@@ -206,6 +217,21 @@
                                                 <!--end::Label-->
                                                 <!--begin::Input-->
                                                 <input type="textarea" wire:model.defer="description" name="description" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Description"/>
+                                                <!--end::Input-->
+                                            </div>
+                                            <!--end::Input group-->
+                                            <div class="fv-row mb-10">
+                                                    <label for="image" class="fw-semibold fs-6 mb-2">Image</label>
+                                                    <input wire:model.defer="project_image" accept="image/png,image/jpeg" type="file" id="image" class="form-control mb-3 mb-lg-0">
+                                            </div>
+
+                                            <!--begin::Input group-->
+                                            <div class="fv-row mb-10">
+                                                <!--begin::Label-->
+                                                <label class="fw-semibold fs-6 mb-2">Address</label>
+                                                <!--end::Label-->
+                                                <!--begin::Input-->
+                                                <input type="textarea" wire:model.defer="address" name="address" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Address"/>
                                                 <!--end::Input-->
                                             </div>
                                             <!--end::Input group-->
@@ -451,6 +477,13 @@
 
                                                             <!--begin::Input group-->
                                                             <div class="fv-row m-5" >
+                                                                <label class="required fw-semibold fs-6 mb-2">Project Milestones</label>
+                                                                <select wire:model="milestone_quote.{{$index}}" class="form-select" name="milestone_quote" id="milestone_quote" data-placeholder="Select an option">
+                                                                    <option></option>
+                                                                    @for($x = 0; $x < count($this->project_milestone); $x++)
+                                                                        <option value="{{ $project_milestone[$x] }}" >{{ $project_milestone[$x] }}</option>
+                                                                    @endfor
+                                                                </select>
                                                                 <!--begin::Label-->
                                                                 <label class="required fw-semibold fs-6 mb-2">Product</label>
                                                                 <!--end::Label-->

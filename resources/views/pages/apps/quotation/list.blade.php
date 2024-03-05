@@ -97,8 +97,8 @@
             });
             document.addEventListener('livewire:load', function () {
                 Livewire.on('success', function () {
-                    $('#kt_modal_add_user').modal('hide');
-                    window.LaravelDataTables['users-table'].ajax.reload();
+                    $('#kt_modal_add_quotation').modal('hide');
+                    window.LaravelDataTables['quotations-table'].ajax.reload();
                 });
             });
             //prepared_date

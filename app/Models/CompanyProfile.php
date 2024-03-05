@@ -28,7 +28,7 @@ class CompanyProfile extends Model
     ];
 
 
-    public function users(): HasMany
+    public function user(): HasMany
     {
         return $this->belongsTo(User::class, 'user_id');
     }

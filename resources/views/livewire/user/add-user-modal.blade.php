@@ -6,7 +6,11 @@
             <!--begin::Modal header-->
             <div class="modal-header" id="kt_modal_add_user_header">
                 <!--begin::Modal title-->
-                <h2 class="fw-bold">Add User</h2>
+                @if($edit_mode)
+                    <h2 class="fw-bold">Edit User</h2>
+                @else
+                    <h2 class="fw-bold">Add User</h2>
+                @endif
                 <!--end::Modal title-->
                 <!--begin::Close-->
                 <div class="btn btn-icon btn-sm btn-active-icon-primary" data-bs-dismiss="modal" aria-label="Close">
@@ -86,6 +90,21 @@
                             @error('name')
                             <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
+                        <!--end::Input group-->
+                        <!--begin::Input group-->
+                        @if($edit_mode)
+                            <div class="fv-row mb-7">
+                                <!--begin::Label-->
+                                <label class="fw-semibold fs-6 mb-2">User Status</label>
+                                <!--end::Label-->
+                                <!--begin::Input-->
+                                <select class="form-select" wire:model="user_status" name="user_status" id="user_status" data-dropdown-parent="#kt_modal_add_user" data-placeholder="Select an option">
+                                    <option value="active" >Active</option>
+                                    <option value="inactive">In-Active</option>
+                                </select>
+                            </div>
+                        @endif
+
                         <!--end::Input group-->
                         <!--begin::Input group-->
                         <div class="fv-row mb-7">

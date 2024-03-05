@@ -30,50 +30,45 @@
     <header>
 
         <div class="container-fluid mt-2 d-flex flex-column align-items-start">
-            <img style="height: 200px;" src="{{ public_path('assets/media/image/11.jpg') }}" class="img-thumbnail  logo"
-                alt="">
+{{--            <img style="height: 200px;" src="{{ public_path('assets/media/image/11.jpg') }}" class="img-thumbnail  logo"--}}
+            <img style="height: 200px;" src="{{ public_path('storage/'.$company_logo) }}" class="img-thumbnail  logo"
+                alt="Logo Image not Found">
 
         </div>
         <div class="bimage2">
-            <img class="bimage2" width="2000px" height="auto"
-            src="{{ public_path('assets/media/image/66.png') }}"  alt="66 not found">
+{{--            src="{{ public_path('storage/'.$project_image) }}"--}}
+            <img class="bimage2" width="2000px" height="auto" src="{{ public_path('assets/media/image/66.png') }}"  alt="66 not found">
 
         </div>
 
         <div class="container  mt-5 d-flex flex-column align-items-end">
-
             <div class="card  border-0 ">
                 <div class="card-body text-center twin">
                     <h5 class="card-title fw-bold  fs-1 txt">{{ $project_name }}</h5>
-                    <p class="card-text fs-4">11464 Alamo Ranch, San Antonio, TX 78253</p>
+                    <p class="card-text fs-4">{{ $project_address }}</p>
                 </div>
             </div>
         </div>
     </header>
 
-
     <!-- Section-one -->
     <section id="section_1">
         <div class="container" style=" margin-top: 300px;">
-            <img src="{{ public_path('assets/media/image/22.png') }}" style="max-width: 100%; height: auto;"
-                alt="22 not found">
-
+            <img  src="{{ public_path('storage/'.$project_image) }}" style="max-width: 100%; height: auto;"
+                alt="Project Image not found">
             <div class="upper-text m-0">
-                Prepared By: LOA Construction, LLC
+                Prepared By: {{ $company_name }}
             </div>
             <div class="lower-text m-0 text-black">
-                <span>Prepared Date: {{ $prepared_date }}</span>
-                <span>Estimator: Taylor Ivens</span>
+                <span>Prepared Date: {{ $prepared_date }}</span><br />
                 <span>Project Manager: {{ $project_manager }}</span>
             </div>
         </div>
-
     </section>
 
     <!-- section-two -->
     <div class="bimage4" style="  background-image:url('assets/image/88.png') ">
         <div class="container section_2 mt-5 " style="page-break-before: always ">
-
             <h2 class="d-flex align-left txt">Inclusions:</h2>
             <p class="d-flex text-start  ">{{ $inclusion }}</p>
         </div>
@@ -123,33 +118,13 @@
 
             {!! nl2br($chatGPTResponse) !!}
 
-{{--            <h2 class="mt-4 txt">Lead Times:</h2>--}}
-{{--            <p>Expected lead time at the time of bidding is 2 - 3 weeks.</p>--}}
+            <h2 class="mt-4 txt">Lead Times:</h2>
+            <p>Expected lead time at the time of bidding is 2 - 3 weeks.</p>
 
-
-{{--            <p><strong><u>Building A:</u></strong> Shingle: 340.66 SQ / TPO: 93.74 SQ</p>--}}
-{{--            <p>Total: $244,375.00</p>--}}
-
-{{--            <p> <strong><u>Building B:</u></strong> Shingle: 220 SQ / TPO: 59.34 SQ</p>--}}
-{{--            <p>Total: $157,835.00</p>--}}
-
-{{--            <p> <strong><u>Building C:</u></strong>Shingle: 236.43 SQ / TPO: 62.07 SQ</p>--}}
-{{--            <p>Total: $169,580.00</p>--}}
-
-{{--            <p><strong><u>Maintenance :</u></strong> Shingle: 32.59 SQ</p>--}}
-{{--            <p>Total: $23,370.00</p>--}}
-
-{{--            <p><strong><u>Garage (2):</u></strong> Shingle: 20.69 SQ</p>--}}
-{{--            <p>Total Per Garage: $14,840.00</p>--}}
-{{--            <p>Total: $29,680.00</p>--}}
-
-{{--            <p><strong><u>Gutters:</u></strong>$34,910.00</p>--}}
-{{--            <p>1,815 Linear Feet of 5” K- Style Gutters - Aluminum</p>--}}
-{{--            <p>3,276 Linear Feet of 2x3 Downspouts</p>--}}
-
-{{--            <p style="color: #cc4125;">--}}
-{{--                <strong>SKYTRAK Telehandler:Not included in pricing $7,000.00/month for rental</strong>--}}
-{{--            </p>--}}
+            @foreach($mileStoneData as $milestone)
+                <p><strong><u>{{ $milestone['milestone_name'] }}:</u></strong> {{ $milestone['milestone_description']  }} </p>
+                <p>Total: {{ $milestone['milestone_cost'] }} </p>
+            @endforeach
         </div>
     </div>
     <!-- section-five-->
@@ -185,11 +160,10 @@
 
     <footer>
         <div class="container text-start mt-2">
-            <p><span>706 W. Ben White Blvd Suite 233a Austin, TX 78704</span> | <span>PH: 512.645.1687</span> |
-                <span>sales@loaconstruction.com</span>
+            <p><span>{{ $company_address }}</span> | <span>PH: {{ $company_phone }}</span> |
+                <span>{{ $company_email }}</span>
             </p>
-            <p><span><strong>www.loaconstruction.com</strong></span> | <span><strong>New Construction
-                        Estimate</strong></span></p>
+            <p><span><strong>{{ $company_website }}</strong></span> | <span><strong>{{ $company_name }}</strong></span></p>
         </div>
     </footer>
 </body>

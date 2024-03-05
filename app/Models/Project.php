@@ -14,7 +14,18 @@ class Project extends Model
 {
     use HasFactory, HasUuids, SoftDeletes;
 
-    protected $fillable = ['name','description','created_by','expected_start_date','expected_end_date','project_size','project_type','manager_id'];
+    protected $fillable = [
+        'name',
+        'description',
+        'created_by',
+        'expected_start_date',
+        'expected_end_date',
+        'project_size',
+        'project_type',
+        'manager_id',
+        'address',
+        'image'
+    ];
 
     public function user(): BelongsTo
     {

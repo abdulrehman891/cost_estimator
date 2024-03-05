@@ -20,6 +20,7 @@ class AddUserModal extends Component
     public $email;
     public $role;
     public $avatar;
+    public $user_status;
     public $saved_avatar;
 
     public $edit_mode = false;
@@ -42,10 +43,7 @@ class AddUserModal extends Component
 
         $roles_description = [
             'administrator' => 'Best for business owners and company administrators',
-            'developer' => 'Best for developers or people primarily using the API',
-            'analyst' => 'Best for people who need full access to analytics data, but don\'t need to update business settings',
-            'support' => 'Best for employees who regularly refund payments and respond to disputes',
-            'trial' => 'Best for people who need to preview content data, but don\'t need to make any updates',
+            'customer' => 'Best for customer or people primarily using the system',
         ];
 
         foreach ($roles as $i => $role) {
@@ -59,7 +57,6 @@ class AddUserModal extends Component
     {
         // Validate the form input data
         $this->validate();
-
         DB::transaction(function () {
             // Prepare the data for creating a new user
             $data = [
@@ -71,11 +68,15 @@ class AddUserModal extends Component
             } else {
                 $data['profile_photo_path'] = null;
             }
-
             if (!$this->edit_mode) {
                 $data['password'] = Hash::make($this->email);
             }
+            if($this->edit_mode)
+            {
+                $data['status'] = $this->user_status;
+            }
 
+//            dd($data);
             // Create a new user record in the database
             $user = $this->user_id ? User::find($this->user_id) : User::updateOrCreate([
                 'email' => $this->email,
@@ -90,7 +91,12 @@ class AddUserModal extends Component
             if ($this->edit_mode) {
                 // Assign selected role for user
                 $user->syncRoles($this->role);
-
+                if($this->user_status == 'active')
+                {
+                    $user->activate($user);
+                }elseif($this->user_status == 'inactive'){
+                    $user->inactive($user);
+                }
                 // Emit a success event with a message
                 $this->emit('success', __('User updated'));
             } else {
@@ -131,6 +137,7 @@ class AddUserModal extends Component
         $user = User::find($id);
 
         $this->user_id = $user->id;
+        $this->user_status = $user->status;
         $this->saved_avatar = $user->profile_photo_url;
         $this->name = $user->name;
         $this->email = $user->email;
