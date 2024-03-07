@@ -50,7 +50,6 @@ class AddCustomerModal extends Component
             $customer->company_email = $this->company_email;
             $customer->created_by =  Auth::user()->id;
             $customer->save();
-
         }else{
             $customer = new Customer();
             $customer->name = $this->name;

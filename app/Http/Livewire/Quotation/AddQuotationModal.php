@@ -95,6 +95,7 @@ class AddQuotationModal extends Component
 
     public $products_list;
     public $project_image;
+    public $project_image_changed = false;
 
     public $quoteLineItemsData = [];
     //end of QuoteLine Module
@@ -118,13 +119,14 @@ class AddQuotationModal extends Component
     public $use_existing_project = false;
     public $existing_project_id;
 
+
     public $messages = [
         'products.0' => 'The Product field is required.',
         'unit_price.0' => 'The Product Unit Price field is required.',
         'quantity.0' => 'The Product Quantity field is required.',
         'total_price.0' => 'The Total Price field is required.',
 
-        'project_milestone.0' => 'The Project Milestone field is required.',
+//        'project_milestone.0' => 'The Project Milestone field is required.',
     ];
 
     public $validationRules = [
@@ -136,7 +138,7 @@ class AddQuotationModal extends Component
             'project_type' => 'required',
         ],
         2 => [
-            "project_milestone.0" => 'required',
+//            "project_milestone.0" => 'required',
         ],
         3 => [
             'prepared_date' => 'required',
@@ -184,12 +186,17 @@ class AddQuotationModal extends Component
     {
         return redirect()->route('qoutation.send', $quotationId);
     }
+    public function updatedProject_image(){
+        $this->project_image_changed = true;
+    }
     public function previewProposal(){
+        $this->isLoading = true;
         $this->preview = true;
         if($this->chatGPT_res == ''){
             $this->chatGPT_res = $this->getProposalChatGPT();
         }
         $this->emit('responseGenerated');
+        $this->isLoading = false;
 
     }
     public function regenerateProposal(){
@@ -200,6 +207,8 @@ class AddQuotationModal extends Component
             $this->chatGPT_res = $this->getProposalChatGPT("regenerate and rephrase with given information");
         }
         $this->emit('responseGenerated');
+        $this->isLoading = false;
+
     }
 
     public function addQuoteline()
@@ -238,25 +247,27 @@ class AddQuotationModal extends Component
 
     public function addMilestone(){
         $this->milestone_list[] ='';
-        $x = count($this->milestone_list)-1;
-        $this->messages = array_merge(
-            $this->messages,
-            [ "project_milestone.$x" => 'The Project Milestone field is required.' ]
-        );
-        $this->validationRules[2] =  array_merge(
-            $this->validationRules[2],
-            [ "project_milestone.$x" => 'required' ]
-        );
+//        $x = count($this->milestone_list)-1;
+//        $this->messages = array_merge(
+//            $this->messages,
+//            [ "project_milestone.$x" => 'The Project Milestone field is required.' ]
+//        );
+//        $this->validationRules[2] =  array_merge(
+//            $this->validationRules[2],
+//            [ "project_milestone.$x" => 'required' ]
+//        );
     }
     public function removeMilestone($index){
-        unset($this->milestone_list[$index]);
-        unset($this->validationRules[2]["project_milestone.".$index]);
-        $this->milestone_list = array_values($this->milestone_list);
+            unset($this->milestone_list[$index]);
+//            unset($this->validationRules[2]["project_milestone.".$index]);
+            $this->milestone_list = array_values($this->milestone_list);
     }
 
     public function increaseStep()
     {
-        $this->validate($this->validationRules[$this->currentStep]);
+        if($this->currentStep != 2){
+            $this->validate($this->validationRules[$this->currentStep]);
+        }
         $this->currentStep++;
         if($this->currentStep == 5){
 //            $this->getProposalChatGPT();
@@ -272,6 +283,7 @@ class AddQuotationModal extends Component
     }
     public function mount(){
         $this->currentStep = 1;
+        $this->prepared_date = date('Y-m-d');
         $adminRole = Role::where('name', 'administrator')->first();
         $userIds = $adminRole->users->pluck('id');
         $admin_user_id = $userIds[0];
@@ -322,7 +334,9 @@ class AddQuotationModal extends Component
         $this->project_name = $project->name;
         $this->description = $project->description;
         $this->address = $project->address;
+//        dd($project->image);
         $this->project_image = $project->image;
+//        $this->project_image = $project->image;
         $this->expected_start_date = $project->expected_start_date;
         $this->expected_end_date = $project->expected_end_date;
         $this->project_size = $project->project_size;
@@ -354,58 +368,8 @@ class AddQuotationModal extends Component
             }
         }
     }
-
-    public function loadProject($val)
-    {
-
-        dd($val);
-//        $quotationTemplate = Project::find($this->quotationTemplateID);
-    }
-
-    public function loadQuotationTemplate()
-    {
-        // $this->edit_mode = true;
-        // $this->quotationTemplateID = $id;
-        $quotationTemplate = QuotationTemplate::find($this->quotationTemplateID);
-        if($quotationTemplate)
-        {
-            $this->assembly_type = $quotationTemplate->assembly_type;
-            $this->manufacturer = $quotationTemplate->manufacturer;
-            $this->sq_walls = $quotationTemplate->sq_walls;
-            $this->sq_field = $quotationTemplate->sq_field;
-            $this->warranty = $quotationTemplate->warranty;
-            $this->parapet_length = $quotationTemplate->parapet_length;
-            $this->building_height = $quotationTemplate->building_height;
-            $this->deck_type = $quotationTemplate->deck_type;
-            $this->inclusions = $quotationTemplate->inclusions;
-            $this->exclusions = $quotationTemplate->exclusions;
-            $this->payment_schedule = $quotationTemplate->payment_schedule;
-            $this->price_escalation_clause = $quotationTemplate->price_escalation_clause;
-            $this->alterations = $quotationTemplate->alterations;
-            $this->compliance = $quotationTemplate->compliance;
-            $this->timelines = $quotationTemplate->timelines;
-            $this->warranty_clause = $quotationTemplate->warranty_clause;
-        }
-        $quoteTemplateLineItems = QuoteTemplateLineItem::where('quotation_template_id',$this->quotationTemplateID)->get();
-        for($x = 0; $x < count($quoteTemplateLineItems); $x++)
-        {
-            $this->products[$x] = $quoteTemplateLineItems[$x]->product_id;
-            $this->unit_price[$x] = $quoteTemplateLineItems[$x]->unit_price;
-            $this->discount_price[$x] = $quoteTemplateLineItems[$x]->discount_price;
-            $this->quantity[$x] = $quoteTemplateLineItems[$x]->quantity;
-            $this->total_price[$x] = $quoteTemplateLineItems[$x]->total_price;
-            if($x > 0)
-            {
-                $this->quoteItems[] = '';
-            }
-        }
-    }
-
-
-
     public function render()
     {
-        addVendors(['formrepeater']);
         return view('livewire.quotation.add-quotation-modal');
     }
     public function hydrate()
@@ -423,7 +387,6 @@ class AddQuotationModal extends Component
     }
 
     public function updated($key, $value){
-
         $this->saved = FALSE;
 //        dd($key);
         if($key == "projects")
@@ -433,6 +396,7 @@ class AddQuotationModal extends Component
                 $this->project_name = $project_details->name;
                 $this->description = $project_details->description;
                 $this->address = $project_details->address;
+//                dd($project_details->image);
                 $this->project_image = $project_details->image;
                 $this->expected_start_date = $project_details->expected_start_date;
                 $this->expected_end_date = $project_details->expected_end_date;
@@ -440,7 +404,41 @@ class AddQuotationModal extends Component
                 $this->project_type = $project_details->project_type;
                 $this->use_existing_project = true;
                 $this->existing_project_id = $value;
-
+            }
+        }
+        if($key == "quotationTemplateID"){
+            $quotationTemplate = QuotationTemplate::find($this->quotationTemplateID);
+            if($quotationTemplate)
+            {
+                $this->assembly_type = $quotationTemplate->assembly_type;
+                $this->manufacturer = $quotationTemplate->manufacturer;
+                $this->sq_walls = $quotationTemplate->sq_walls;
+                $this->sq_field = $quotationTemplate->sq_field;
+                $this->warranty = $quotationTemplate->warranty;
+                $this->parapet_length = $quotationTemplate->parapet_length;
+                $this->building_height = $quotationTemplate->building_height;
+                $this->deck_type = $quotationTemplate->deck_type;
+                $this->inclusions = $quotationTemplate->inclusions;
+                $this->exclusions = $quotationTemplate->exclusions;
+                $this->payment_schedule = $quotationTemplate->payment_schedule;
+                $this->price_escalation_clause = $quotationTemplate->price_escalation_clause;
+                $this->alterations = $quotationTemplate->alterations;
+                $this->compliance = $quotationTemplate->compliance;
+                $this->timelines = $quotationTemplate->timelines;
+                $this->warranty_clause = $quotationTemplate->warranty_clause;
+            }
+            $quoteTemplateLineItems = QuoteTemplateLineItem::where('quotation_template_id',$this->quotationTemplateID)->get();
+            for($x = 0; $x < count($quoteTemplateLineItems); $x++)
+            {
+                $this->products[$x] = $quoteTemplateLineItems[$x]->product_id;
+                $this->unit_price[$x] = $quoteTemplateLineItems[$x]->unit_price;
+                $this->discount_price[$x] = $quoteTemplateLineItems[$x]->discount_price;
+                $this->quantity[$x] = $quoteTemplateLineItems[$x]->quantity;
+                $this->total_price[$x] = $quoteTemplateLineItems[$x]->total_price;
+                if($x > 0)
+                {
+                    $this->quoteItems[] = '';
+                }
             }
         }
         $parts = explode(".",$key);
@@ -592,7 +590,10 @@ class AddQuotationModal extends Component
             $project_obj->address = $this->address;
             if($this->project_image && !empty($this->project_image))
             {
-                $project_obj->image = $this->project_image->store('uploads', 'public');
+                if($this->project_image_changed)
+                {
+                    $project_obj->image = $this->project_image->store('uploads', 'public');
+                }
             }
             $project_obj->created_by =  Auth::user()->id;
             $project_obj->expected_start_date =  $this->expected_start_date;
@@ -668,8 +669,8 @@ class AddQuotationModal extends Component
             $msg_data .= $prefix;
         }
 
-if(isset($adminAiPrompts['pre_data'])){
-        $msg_data = $adminAiPrompts['pre_data'];
+        if(isset($adminAiPrompts['pre_data'])){
+            $msg_data = $adminAiPrompts['pre_data'];
 
         } else{
             $msg_data = "I need you to work as an expert Construction Quotation Generator. You have the ability to analyze and create a Construction Project Proposal by using provided information. The complete project information of project is as follows:";
@@ -692,38 +693,22 @@ if(isset($adminAiPrompts['pre_data'])){
         if(isset($adminAiPrompts['post_data'])){
             $msg_data = $adminAiPrompts['post_data'];
         } else{
-            $msg_data .= "I need you to add details in points using above information and along with that, modify and include the specific information in headings as per mentioned sections:
-        Warranty, Inclusions, Payment Schedule, Compliance and Warranty Clause.
-        Moreover, also mention Risk Factors, Validity, Disclaimers and calculate Total Quotable Price using total price of all Quote Line Items. Take above information and write proposal can be send to client for approval.";
+//            $msg_data .= "I need you to add details in points using above information and along with that, modify and include the specific information in headings as per mentioned sections:
+//        Warranty, Inclusions, Payment Schedule, Compliance and Warranty Clause.
+//        Moreover, also mention Risk Factors, Validity, Disclaimers and calculate Total Quotable Price using total price of all Quote Line Items.";
         }
         if(isset($adminAiPrompts['final_remarks'])){
             $msg_data = $adminAiPrompts['final_remarks'];
         } else{
-            $msg_data .="Also mention validity and disclaimers. Create minimum 250 words";
-}
-
-//        $this->res_chatGPT =$chat->createPurposalChatGPT($msg_data);
-        //sleep(2);
-
-//        dd($this->res_chatGPT);
-//        $this->res_chatGPT = "";
-//        $this->generatePDF($this->res_chatGPT,$quote_id,$formData['projectDetails']); // Generate PDF from the response
+            $msg_data .="check above details and give information with bold headings Validity, Risk Factors and Disclaimers.";
+        }
 
         info($msg_data);
 
-
         $this->chatGPT_res = $chat->createPurposalChatGPT($msg_data);
-        sleep(2);
-       // $this->res_chatGPT = "";
-//       info("Chat GPT Response=>");
-//       info($this->chatGPT_res);
-
-       return $this->chatGPT_res;
-
-        // Generate PDF from the response
-//        $this->isLoading = false; // Stop loading
-//        $this->emit('dataUpdated');
-
+//        sleep(2);
+        $this->isLoading = false;
+        return $this->chatGPT_res;
     }
 
     private function generatePDF($response,$quote_id)
@@ -734,6 +719,8 @@ if(isset($adminAiPrompts['pre_data'])){
         $company_address = $project_manager->companyProfile->address;
         $company_phone = $project_manager->companyProfile->phone;
         $company_website = $project_manager->companyProfile->website;
+        $year_architect_shingles = $project_manager->companyProfile->year_architect_shingles;
+        $mil_tpo = $project_manager->companyProfile->mil_tpo;
         $company_logo = $project_manager->companyProfile->logo;
         $quotation = Quotation::find($quote_id);
         $project_image = Project::find($quotation->project_id)->image;
@@ -763,6 +750,8 @@ if(isset($adminAiPrompts['pre_data'])){
             'project_image' => $project_image,
             'company_name' => $company_name,
             'company_email' => $company_email,
+            'year_architect_shingles' => $year_architect_shingles,
+            'mil_tpo' => $mil_tpo,
             'company_address' => $company_address,
             'company_phone' => $company_phone,
             'company_website' => $company_website,
@@ -789,8 +778,6 @@ if(isset($adminAiPrompts['pre_data'])){
             }
             return $pdf->download();
             $filePath = asset('storage/docs.pdf');
-//            dd($pdf);
-//            dd(Storage::exists('public/docs.pdf'));
 
             return response()->download($filePath);
             dd($filePath);
@@ -807,21 +794,5 @@ if(isset($adminAiPrompts['pre_data'])){
             dd('PDF generation error: ' . $e->getMessage());
             // Handle the error as needed
         }
-//        $dompdf = new Dompdf();
-//        $dompdf->loadHtml($html);
-//
-//// (Optional) Setup the paper size and orientation
-//        $dompdf->setPaper('A4', 'landscape');
-////        return $dompdf->download("abc.pdf");
-//
-//// Render the HTML as PDF
-////        $dompdf->render();
-//
-//// Output the generated PDF to Browser
-//         return $dompdf->stream();
-//        return $dompdf;
-//
-//        $pdfPath = storage_path("app/public/proposal.pdf");
-//        file_put_contents($pdfPath, $response);
     }
 }

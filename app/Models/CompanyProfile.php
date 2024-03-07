@@ -25,6 +25,8 @@ class CompanyProfile extends Model
         'established',
         'user_id',
         'signnow_brand_id',
+        'year_architect_shingles',
+        'mil_tpo',
     ];
 
 

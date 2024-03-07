@@ -58,4 +58,5 @@ document.querySelectorAll('[data-kt-action="update_row"]').forEach(function (ele
 Livewire.on('success', (message) => {
     // Reload the users-table datatable
     LaravelDataTables['quotations-table'].ajax.reload();
+    location.reload();
 });

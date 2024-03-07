@@ -83,38 +83,28 @@
 
 
         <ul>
-            <li>Install synthetic underlayment to the entire substrate</li>
-            <li>Install 2” X 2” drip edge flashing to all eaves- Color TBD</li>
-            <li>Install Ice & water shield to all specified locations</li>
-            <li>Install galvanized pipe jack boots as needed</li>
-            <li>Paint all penetration pipes with manufacturer recommended paint</li>
-            <li>Fabricate and install headwall and sidewall flashing </li>
-            <li>Install starter shingles along all eaves and rakes</li>
-            <li>Install 30-Year architectural shingles to the field of the roof</li>
-            <li>Install corresponding hip and ridge shingles to ridge cap</li>
-            <li>Clear and haul off all job-related debris</li>
+            {!! nl2br($year_architect_shingles) !!}
         </ul>
     </div>
-    <h2 class="container d-flex align-start ">60 Mil TPO (Mule-Hide):</h2>
+    <h2 class="container d-flex align-left  text-start mt-2">60 Mil TPO (Mule-Hide):</h2>
     <div class="container mt-2 d-flex text-start">
 
 
         <ul>
-            <li>Mechanically Attach ½” Cover Board to substrate (R-Value 2.5)</li>
-            <li>Install 60 Mil TPO to field and walls (Fully Adhered)</li>
-            <li>Flash Shingle to TPO transition</li>
-            <li>Install edge flashing to all eaves- Color TBD</li>
-            <li>Install 891 Linear Feet of Termination Bar</li>
-            <li>Clear and haul off all job-related debris</li>
+            {!! nl2br($mil_tpo) !!}
         </ul>
     </div>
     <!-- section-four-->
     <div class="  container mt-2 text-start">
-        <div class="bimage3" style="  background-image:url('assets/image/77.png') ">
+        <div class="bimage3" style=" background-image:url('assets/image/77.png') ">
             <div >
                 <h2 class="txt">Exclusions:</h2>
             </div>
-            {{ $exclusions }}
+
+            {!! nl2br($exclusions) !!}
+
+            <br />
+            <br />
 
             {!! nl2br($chatGPTResponse) !!}
 

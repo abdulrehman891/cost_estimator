@@ -32,6 +32,10 @@ class AddCompanyProfile extends Component
     public $company_id;
     public $image_updated = false;
 
+    public $year_architect_shingles;
+    public $mil_tpo;
+
+
     protected $rules = [
         'company_name' => 'required|string',
         'email' => 'required',
@@ -101,6 +105,8 @@ class AddCompanyProfile extends Component
             $data['email'] = $this->email;
             $data['website'] = $this->website;
             $data['established'] = $this->established_date;
+            $data['year_architect_shingles'] = $this->year_architect_shingles;
+            $data['mil_tpo'] = $this->mil_tpo;
             $data['user_id'] = Auth::user()->id;
             if ($this->edit_mode) {
 //                $company_profile = CompanyProfile::where('id', $this->company_id)->first();

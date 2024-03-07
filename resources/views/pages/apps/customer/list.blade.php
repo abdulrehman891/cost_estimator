@@ -38,7 +38,7 @@
                 <!--end::Toolbar-->
 
                 <!--begin::Modal-->
-                <livewire:customer.add-customer-modal></livewire:customer.add-customer-modal>
+
                 <!--end::Modal-->
             </div>
             <!--end::Card toolbar-->

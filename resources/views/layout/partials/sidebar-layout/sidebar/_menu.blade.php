@@ -42,7 +42,7 @@
 			<!--end:Menu item-->
 
             @can("view quotations")
-            <div data-kt-menu-trigger="click" class="menu-item menu-accordion {{ request()->routeIs('quotation.*') ? 'here show' : '' }}">
+            <div data-kt-menu-trigger="click" class="menu-item menu-accordion {{ request()->routeIs('quotation.*') || request()->routeIs('quotation-template.*') ? 'here show' : '' }}">
                 <!--begin:Menu link-->
                 <span class="menu-link">
 {{--                    ki-duotone ki-abstract-41 fs-2--}}
@@ -60,7 +60,7 @@
 							<span class="menu-bullet">
 								<span class="bullet bullet-dot"></span>
 							</span>
-                            <span class="menu-title">View Quotations</span>
+                            <span class="menu-title">Quotations</span>
                         </a>
                         <!--end:Menu link-->
                     </div>
@@ -72,7 +72,7 @@
 							<span class="menu-bullet">
 								<span class="bullet bullet-dot"></span>
 							</span>
-                            <span class="menu-title">View Quotation Templates</span>
+                            <span class="menu-title">Quotation Templates</span>
                         </a>
                         <!--end:Menu link-->
                     </div>
@@ -101,7 +101,7 @@
 							<span class="menu-bullet">
 								<span class="bullet bullet-dot"></span>
 							</span>
-                            <span class="menu-title">View Customers</span>
+                            <span class="menu-title">Customers</span>
                         </a>
                         <!--end:Menu link-->
                     </div>
@@ -131,7 +131,7 @@
 							<span class="menu-bullet">
 								<span class="bullet bullet-dot"></span>
 							</span>
-                            <span class="menu-title">View Categories</span>
+                            <span class="menu-title">Categories</span>
                         </a>
                         <!--end:Menu link-->
                     </div>
@@ -162,7 +162,7 @@
 							<span class="menu-bullet">
 								<span class="bullet bullet-dot"></span>
 							</span>
-                            <span class="menu-title">View Sub-Categories</span>
+                            <span class="menu-title">Sub-Categories</span>
                         </a>
                         <!--end:Menu link-->
                     </div>
@@ -192,7 +192,7 @@
 							<span class="menu-bullet">
 								<span class="bullet bullet-dot"></span>
 							</span>
-                            <span class="menu-title">View Products</span>
+                            <span class="menu-title">Products</span>
                         </a>
                         <!--end:Menu link-->
                     </div>
@@ -221,7 +221,7 @@
 							<span class="menu-bullet">
 								<span class="bullet bullet-dot"></span>
 							</span>
-                            <span class="menu-title">View Projects</span>
+                            <span class="menu-title">Projects</span>
                         </a>
                         <!--end:Menu link-->
                     </div>
@@ -287,7 +287,7 @@
             {{-- User Management End --}}
 
             @can("view admin configs")
-            <div data-kt-menu-trigger="click" class="menu-item menu-accordion {{ request()->routeIs('admin.*') ? 'here show' : '' }}">
+            <div data-kt-menu-trigger="click" class="menu-item menu-accordion {{ request()->routeIs('adminconfigs.*') ? 'here show' : '' }}">
                 <!--begin:Menu link-->
                 <span class="menu-link">
 					<span class="menu-icon ">{!! getIcon('abstract-41', 'fs-2') !!}</span>
@@ -304,7 +304,7 @@
 							<span class="menu-bullet">
 								<span class="bullet bullet-dot"></span>
 							</span>
-                            <span class="menu-title">View Admin Config</span>
+                            <span class="menu-title">Admin Config</span>
                         </a>
                         <!--end:Menu link-->
                     </div>
@@ -314,8 +314,8 @@
             </div>
             @endcan
 
-             
-            <div data-kt-menu-trigger="click" class="menu-item menu-accordion {{ request()->routeIs('customer.*') ? 'here show' : '' }}">
+
+            <div data-kt-menu-trigger="click" class="menu-item menu-accordion {{ request()->routeIs('company-profile.*') ? 'here show' : '' }}">
                 <!--begin:Menu link-->
                 <span class="menu-link">
 					<span class="menu-icon ">{!! getIcon('abstract-41', 'fs-2') !!}</span>
@@ -352,7 +352,7 @@
                 </div>
                 <!--end:Menu sub-->
             </div>
-            
+
 
 
             {{-- Config End --}}

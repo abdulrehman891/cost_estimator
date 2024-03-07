@@ -50,6 +50,19 @@
                 </div>
             </div>
             <div class="row">
+                <div class="col-md-12 mb-10">
+                    <label class="fw-semibold fs-6 mb-2">30-Year Architectural Shingles</label>
+                    <textarea name="30_year_architect_shingles" wire:model.defer="year_architect_shingles"  class="form-control form-control-solid mb-3 mb-lg-0" placeholder="30-Year Architectural Shingles"> </textarea>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12 mb-10">
+                    <label class="fw-semibold fs-6 mb-2">60 Mil TPO (Mule-Hide)</label>
+                    <textarea name="60_mil_tpo" wire:model.defer="mil_tpo"  class="form-control form-control-solid mb-3 mb-lg-0" placeholder="60 Mil TPO (Mule-Hide)"> </textarea>
+                </div>
+            </div>
+            <div class="row">
                 <div class="col-md-6 mb-4">
                     <label for="description" class="fw-semibold fs-6 mb-2">Logo</label>
                     <input wire:model.defer="image" accept="image/png,image/jpeg" type="file" id="image" class="form-control mb-3 mb-lg-0">
