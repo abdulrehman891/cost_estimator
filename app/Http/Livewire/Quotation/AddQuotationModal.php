@@ -776,20 +776,20 @@ class AddQuotationModal extends Component
             }else{
                 return false;
             }
-            return $pdf->download();
-            $filePath = asset('storage/docs.pdf');
-
-            return response()->download($filePath);
-            dd($filePath);
-            if(file_exists($filePath))
-            {
-                return response()->download($filePath);
-                dd('ok');
-            }else{
-                dd('not ok');
-
-            }
-            return response()->download($filePath, 'docs.pdf',$headers);
+//            return $pdf->download();
+//            $filePath = asset('storage/docs.pdf');
+//
+//            return response()->download($filePath);
+//            dd($filePath);
+//            if(file_exists($filePath))
+//            {
+//                return response()->download($filePath);
+//                dd('ok');
+//            }else{
+//                dd('not ok');
+//
+//            }
+//            return response()->download($filePath, 'docs.pdf',$headers);
         } catch (\Exception $e) {
             dd('PDF generation error: ' . $e->getMessage());
             // Handle the error as needed

@@ -178,7 +178,7 @@
 
                                         <div class="fv-row mb-10">
                                             <!--begin::Label-->
-                                            <label class="required fw-semibold fs-6 mb-2">Customers</label>
+                                            <label class="fw-semibold fs-6 mb-2">Customers</label>
                                             <!--end::Label-->
                                             <div wire:ignore>
                                                 <select wire:model="customer_id" class="form-select" name="customer" id="customer" data-dropdown-parent="#kt_modal_add_quotation" data-control="select2" data-placeholder="Select an option">

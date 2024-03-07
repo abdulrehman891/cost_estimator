@@ -57,6 +57,8 @@ class AddCompanyProfile extends Component
             $this->company_id = $this->companyProfile->id;
             $this->email = $this->companyProfile->email;
             $this->signnow_brand_id = $this->companyProfile->signnow_brand_id;
+            $this->year_architect_shingles = $this->companyProfile->year_architect_shingles;
+            $this->mil_tpo = $this->companyProfile->mil_tpo;
             $this->image = $this->companyProfile->logo;
             //            $file = UploadedFile::fake()->create($this->companyProfile->logo);
             //            $file = new File($this->companyProfile->logo);
