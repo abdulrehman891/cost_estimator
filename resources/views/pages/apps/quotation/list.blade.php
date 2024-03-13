@@ -40,7 +40,7 @@
         {{ Breadcrumbs::render('quotation.list') }}
     @endsection
 
-    <div class="card">
+    <div class="mt-4 card">
         <!--begin::Card header-->
         <div class="card-header border-0 pt-6">
             <!--begin::Card title-->
@@ -60,7 +60,7 @@
                 <!--begin::Toolbar-->
                 <div class="d-flex justify-content-end" data-kt-user-table-toolbar="base">
                     <!--begin::Add user-->
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#kt_modal_add_quotation">
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#kt_modal_add_quotation" data-kt-action="open_modal">
                         {!! getIcon('plus', 'fs-2', '', 'i') !!}
                         Add Quotation
                     </button>

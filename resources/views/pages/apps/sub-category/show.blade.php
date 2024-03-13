@@ -12,18 +12,6 @@
     <div class="d-flex flex-column flex-lg-row">
         <!--begin::Content-->
         <div class="flex-lg-row-fluid ms-lg-15">
-            <!--begin:::Tabs-->
-            <ul class="nav nav-custom nav-tabs nav-line-tabs nav-line-tabs-2x border-0 fs-4 fw-semibold mb-8">
-                <!--begin:::Tab item-->
-                <li class="nav-item ms-auto">
-                    <!--begin::Action menu-->
-                    <a href="#" class="btn btn-primary ps-7" data-kt-menu-trigger="click" data-kt-menu-attach="parent" data-kt-menu-placement="bottom-end">Actions
-                        <i class="ki-duotone ki-down fs-2 me-0"></i></a>
-                    <!--end::Menu-->
-                </li>
-                <!--end:::Tab item-->
-            </ul>
-            <!--end:::Tabs-->
             <!--begin:::Tab content-->
             <div class="tab-content" id="myTabContent">
                 <!--begin:::Tab pane-->

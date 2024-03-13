@@ -9,20 +9,27 @@
 {{--    @endsection--}}
 
     <!--begin::Layout-->
-    <div class="d-flex flex-column flex-lg-row">
+        <script src="{{ asset('columns/_draw-scripts.js') }}"></script>
+
+        <div class="d-flex flex-column flex-lg-row">
         <!--begin::Content-->
         <div class="flex-lg-row-fluid ms-lg-15">
             <!--begin:::Tabs-->
-            <ul class="nav nav-custom nav-tabs nav-line-tabs nav-line-tabs-2x border-0 fs-4 fw-semibold mb-8">
-                <!--begin:::Tab item-->
-                <li class="nav-item ms-auto">
-                    <!--begin::Action menu-->
-                    <a href="#" class="btn btn-primary ps-7" data-kt-menu-trigger="click" data-kt-menu-attach="parent" data-kt-menu-placement="bottom-end">Actions
-                        <i class="ki-duotone ki-down fs-2 me-0"></i></a>
-                    <!--end::Menu-->
-                </li>
-                <!--end:::Tab item-->
-            </ul>
+{{--            <ul class="nav nav-custom nav-tabs nav-line-tabs nav-line-tabs-2x border-0 fs-4 fw-semibold mb-8">--}}
+{{--                <!--begin:::Tab item-->--}}
+{{--                <li class="nav-item ms-auto">--}}
+{{--                    <!--begin::Action menu-->--}}
+{{--                    <a href="#" class="btn btn-primary ps-7" data-kt-menu-trigger="click" data-kt-menu-attach="parent" data-kt-menu-placement="bottom-end">Actions--}}
+{{--                        <i class="ki-duotone ki-down fs-2 me-0"></i></a>--}}
+{{--                    <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-800 menu-state-bg-light-primary fw-semibold py-4 w-250px fs-6" data-kt-menu="true">--}}
+{{--                        <div class="menu-item px-5">--}}
+{{--                            <a href="#" class="menu-link px-5" data-kt-category-id="{{ $productCategory->id }}" data-bs-toggle="modal" data-bs-target="#kt_modal_add_category" data-kt-action="update_row">Edit Category</a>--}}
+{{--                        </div>--}}
+{{--                    </div>--}}
+{{--                    <!--end::Menu-->--}}
+{{--                </li>--}}
+{{--                <!--end:::Tab item-->--}}
+{{--            </ul>--}}
             <!--end:::Tabs-->
             <!--begin:::Tab content-->
             <div class="tab-content" id="myTabContent">

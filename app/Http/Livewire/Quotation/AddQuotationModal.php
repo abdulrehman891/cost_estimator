@@ -46,6 +46,7 @@ class AddQuotationModal extends Component
     //List for Project Module
     public $project_name;
     public $description;
+    public $scope_of_work;
     public $address;
     public $expected_start_date;
     public $expected_end_date;
@@ -94,7 +95,7 @@ class AddQuotationModal extends Component
     public $total_price = [];
 
     public $products_list;
-    public $project_image;
+    public $projectImage;
     public $project_image_changed = false;
 
     public $quoteLineItemsData = [];
@@ -118,6 +119,7 @@ class AddQuotationModal extends Component
 
     public $use_existing_project = false;
     public $existing_project_id;
+    public $updateProjectId;
 
 
     public $messages = [
@@ -186,7 +188,8 @@ class AddQuotationModal extends Component
     {
         return redirect()->route('qoutation.send', $quotationId);
     }
-    public function updatedProject_image(){
+
+    public function updatedProjectImage(){
         $this->project_image_changed = true;
     }
     public function previewProposal(){
@@ -329,21 +332,18 @@ class AddQuotationModal extends Component
         $this->timelines = $quotation->timelines;
         $this->warranty_clause = $quotation->warranty_clause;
         $project_id = $quotation->project_id;
+        $this->updateProjectId = $project_id;
         $customer_id = $quotation->customer_id;
         $project = Project::find($project_id);
         $this->project_name = $project->name;
-        $this->description = $project->description;
+        $this->scope_of_work = $project->scope_of_work;
         $this->address = $project->address;
-//        dd($project->image);
-        $this->project_image = $project->image;
-//        $this->project_image = $project->image;
+        $this->projectImage = $project->image;
         $this->expected_start_date = $project->expected_start_date;
         $this->expected_end_date = $project->expected_end_date;
         $this->project_size = $project->project_size;
         $this->project_type = $project->project_type;
-
         $project_milestone = ProjectMilestone::where('project_id',$project_id)->get();
-//        $this->milestone_list =$project_milestone;
         for($x = 0; $x < count($project_milestone); $x++)
         {
             $this->project_milestone[$x] = $project_milestone[$x]->name;
@@ -394,10 +394,10 @@ class AddQuotationModal extends Component
             $project_details = Project::find($value);
             if($project_details){
                 $this->project_name = $project_details->name;
-                $this->description = $project_details->description;
+                $this->scope_of_work = $project_details->scope_of_work;
                 $this->address = $project_details->address;
 //                dd($project_details->image);
-                $this->project_image = $project_details->image;
+                $this->projectImage = $project_details->image;
                 $this->expected_start_date = $project_details->expected_start_date;
                 $this->expected_end_date = $project_details->expected_end_date;
                 $this->project_size = $project_details->project_size;
@@ -473,11 +473,12 @@ class AddQuotationModal extends Component
               if($this->chatGPT_res){
                   if($this->use_existing_project == false)
                   {
-                      $project_id = $this->addProject();
+                      $this->updateProject($this->existing_project_id);
+//                      $project_id = $this->addProject();
                   }else{
                       $project_id = $this->existing_project_id;
                   }
-                  $this->addProjectMilestone($project_id);
+                  $this->updateProjectMilestone($project_id);
                   $quotation_id = $this->addQuotation($project_id);
                   $this->addQuoteLineItems($quotation_id);
                   $this->generatePDF($this->chatGPT_res,$quotation_id);
@@ -581,18 +582,51 @@ class AddQuotationModal extends Component
         $quotation_obj->save();
         return $quotation_obj->id;
     }
+    public function updateProject($project_id)
+    {
+        $project_obj = Project::find($project_id);
+        if($project_obj) {
+            // Update the project properties
+            $project_obj->name = $this->project_name;
+            $project_obj->scope_of_work = $this->scope_of_work;
+            $project_obj->address = $this->address;
+
+            if($this->projectImage && !empty($this->projectImage)) {
+                if($this->project_image_changed) {
+                    // Store the new image and update the image property
+                    $project_obj->image = $this->projectImage->store('uploads', 'public');
+                } else {
+                    // Update the image property with the existing image
+                    $project_obj->image = $this->projectImage;
+                }
+            }
+
+            // Update other properties
+            $project_obj->expected_start_date =  $this->expected_start_date;
+            $project_obj->expected_end_date =  $this->expected_end_date;
+            $project_obj->project_size =  $this->project_size;
+            $project_obj->project_type =  $this->project_type;
+
+            // Save the changes
+            $project_obj->save();
+        } else {
+            return "project not exist";
+        }
+    }
 
     public function addProject(){
             $project_obj = new Project();
             // Prepare the data for creating a new user
             $project_obj->name = $this->project_name;
-            $project_obj->description = $this->description;
+            $project_obj->scope_of_work = $this->scope_of_work;
             $project_obj->address = $this->address;
-            if($this->project_image && !empty($this->project_image))
+            if($this->projectImage && !empty($this->projectImage))
             {
                 if($this->project_image_changed)
                 {
-                    $project_obj->image = $this->project_image->store('uploads', 'public');
+                    $project_obj->image = $this->projectImage->store('uploads', 'public');
+                }else{
+                    $project_obj->image = $this->projectImage;
                 }
             }
             $project_obj->created_by =  Auth::user()->id;
@@ -603,6 +637,23 @@ class AddQuotationModal extends Component
             $project_obj->manager_id =  Auth::user()->id;
             $project_obj->save();
             return $project_obj->id;
+    }
+
+    public function updateProjectMilestone($project_id)
+    {
+        DB::table('project_milestones')->where('project_id', '=',$project_id)->delete();
+        for ($x = 0; $x < count($this->project_milestone); $x++) {
+            $pm_obj = new ProjectMilestone();
+            $pm_obj->name = $this->project_milestone[$x];
+            $pm_obj->description = $this->milestone_description ? $this->milestone_description[$x] : "";
+            $pm_obj->created_by =  Auth::user()->id;
+            $pm_obj->project_id = $project_id;
+            $this->projectMilestoneArray[] = array(
+                "milestone_name" => $this->project_milestone[$x],
+                "milestone_description" => $this->milestone_description ? $this->milestone_description[$x] : "",
+            );
+            $pm_obj->save();
+        }
     }
     public function addProjectMilestone($project_id)
     {
@@ -687,8 +738,13 @@ class AddQuotationModal extends Component
         <--Quote Line Items Start-->";
         $msg_data .= $formData['quoteLineItemsDetails'];
         $msg_data .= "
-        <--Quote Line Items End-->
-        ";
+        <--Quote Line Items End-->.
+        Return response in the following parsable JSON format:
+        {
+            'validity' : 'validity content',
+            'disclaimer' : 'Disclaimer Content',
+            'risk_factor' : 'Risk factor content',
+        }";
 
         if(isset($adminAiPrompts['post_data'])){
             $msg_data = $adminAiPrompts['post_data'];
@@ -702,11 +758,8 @@ class AddQuotationModal extends Component
         } else{
             $msg_data .="check above details and give information with bold headings Validity, Risk Factors and Disclaimers.";
         }
-
         info($msg_data);
-
         $this->chatGPT_res = $chat->createPurposalChatGPT($msg_data);
-//        sleep(2);
         $this->isLoading = false;
         return $this->chatGPT_res;
     }
@@ -723,7 +776,7 @@ class AddQuotationModal extends Component
         $mil_tpo = $project_manager->companyProfile->mil_tpo;
         $company_logo = $project_manager->companyProfile->logo;
         $quotation = Quotation::find($quote_id);
-        $project_image = Project::find($quotation->project_id)->image;
+        $projectImage = Project::find($quotation->project_id)->image;
         if(!empty($project_manager->id)){
             $project_manager_name =  $project_manager->name;
         } else {
@@ -744,10 +797,12 @@ class AddQuotationModal extends Component
                 'milestone_cost' => $total_cost,
             ];
         }
+        $decode_response = json_decode($response);
+//        dd($decode_response->validity);
         $data = [
             'project_name' => $this->project_name,
             'project_address' => $this->address,
-            'project_image' => $project_image,
+            'project_image' => $projectImage,
             'company_name' => $company_name,
             'company_email' => $company_email,
             'year_architect_shingles' => $year_architect_shingles,
@@ -767,11 +822,14 @@ class AddQuotationModal extends Component
             'timeline' => $this->timelines,
             'warranty_clause' => $this->warranty_clause,
             'chatGPTResponse' => $response,
+            'validity' => $decode_response->validity,
+            'disclaimer' => $decode_response->disclaimer,
+            'risk_factor' => $decode_response->risk_factor,
             'mileStoneData' => $milestone_array,
         ];
         try {
             $pdf = PDF::loadView('pdf-template.proposal',$data)->save("uploads/$quote_id.pdf",'public');
-            if($pdf){
+            if($pdf && is_file("uploads/$quote_id.pdf")){
                 return $pdf->download("uploads/$quote_id.pdf");
             }else{
                 return false;

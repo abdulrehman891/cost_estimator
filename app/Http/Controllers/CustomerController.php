@@ -43,9 +43,16 @@ class CustomerController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Customer $customer)
+    public function show(Request $customer)
     {
-        //
+        $user = auth()->user();
+        if($user->can('view customers')){
+            $customer = Customer::find($customer->id);
+            return view('pages/apps.customer.show', compact('customer'));
+        } else {
+            return Redirect::to('dashboard');
+        }
+
     }
 
     /**

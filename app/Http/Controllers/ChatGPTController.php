@@ -24,7 +24,7 @@ class ChatGPTController extends Controller
         ])->body();
        return response()->json(json_decode($response));
     }
-    public function createPurposalChatGPT($msg_data)
+    public function  createPurposalChatGPT($msg_data)
     {
         $response = Http::withHeaders([
             "Content-Type" => "application/json",

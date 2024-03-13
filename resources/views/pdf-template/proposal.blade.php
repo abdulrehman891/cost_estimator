@@ -104,9 +104,30 @@
             {!! nl2br($exclusions) !!}
 
             <br />
+            <div >
+                <h2 class="txt">Validity:</h2>
+            </div>
+
+            {!! nl2br($validity) !!}
             <br />
 
-            {!! nl2br($chatGPTResponse) !!}
+
+            <div >
+                <h2 class="txt">Disclaimer:</h2>
+            </div>
+
+            {!! nl2br($disclaimer) !!}
+            <br />
+
+            <div >
+                <h2 class="txt">Risk Factor:</h2>
+            </div>
+
+            {!! nl2br($risk_factor) !!}
+            <br />
+
+
+{{--            {!! nl2br($chatGPTResponse) !!}--}}
 
             <h2 class="mt-4 txt">Lead Times:</h2>
             <p>Expected lead time at the time of bidding is 2 - 3 weeks.</p>
@@ -123,7 +144,7 @@
 
         <h5 class="mt-4 txt">Payment Schedule:</h5>
         <p>{{ $payment_schedule }}</p>
-        <div class="bimage" style="  background-image:url('assets/image/55.png') ">
+        <div class="bimage" style="background-image:url('assets/image/55.png') ">
             <h5 class="mt-4 txt">Price Escalation Clause:</h5>
             <p>{{ $price_escalation_clause }}</p>
 

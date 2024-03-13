@@ -54,6 +54,17 @@ document.querySelectorAll('[data-kt-action="update_row"]').forEach(function (ele
     });
 });
 
+// document.querySelectorAll('[data-kt-action="close_modal"]').forEach(function (element) {
+//     element.addEventListener('click', function () {
+//         Livewire.emit('close_modal');
+//     });
+// });
+// document.querySelectorAll('[data-kt-action="open_modal"]').forEach(function (element) {
+//     element.addEventListener('click', function () {
+//         Livewire.emit('open_modal');
+//     });
+// });
+
 // Listen for 'success' event emitted by Livewire
 Livewire.on('success', (message) => {
     // Reload the users-table datatable

@@ -27,6 +27,7 @@ document.querySelectorAll('[data-kt-action="delete_row"]').forEach(function (ele
 // Add click event listener to update buttons
 document.querySelectorAll('[data-kt-action="update_row"]').forEach(function (element) {
     element.addEventListener('click', function () {
+        alert("ok");
         Livewire.emit('update_category', this.getAttribute('data-kt-category-id'));
     });
 });

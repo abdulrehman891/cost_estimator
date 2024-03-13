@@ -9,7 +9,7 @@
                     <h2>Create Quotation</h2>
                     <!--end::Modal title-->
                     <!--begin::Close-->
-                    <div class="btn btn-sm btn-icon btn-active-color-primary" data-bs-dismiss="modal">
+                    <div class="btn btn-sm btn-icon btn-active-color-primary" data-bs-dismiss="modal" data-kt-action="close_modal">
                         <i class="ki-duotone ki-cross fs-1">
                             <span class="path1"></span>
                             <span class="path2"></span>
@@ -31,20 +31,20 @@
                                     <div class="card">
                                         <div class="card-header bg-primary text-black"><h3 class="card-title text-white">STEP 1/5 - Project</h3></div>
                                         <div class="card-body">
-                                            <div class="fv-row mb-10" >
-                                                <!--begin::Label-->
-                                                <label class="fw-semibold fs-6 mb-2">Projects(Please select if already created)</label>
-                                                <!--end::Label-->
-                                                <div wire:ignore>
-                                                    <select wire:model="projects"  class="form-select" name="projects" id="projects" data-control="select2" data-dropdown-parent="#kt_modal_add_quotation" data-placeholder="Select an option" >
-                                                        <option></option>
-                                                        @foreach($this->project_list as $project)
-                                                            <option value="{{$project->id}}">{{$project->name}}</option>
-                                                        @endforeach
-                                                    </select>
+                                                <div class="fv-row mb-10" >
+                                                    <!--begin::Label-->
+                                                        <label class="fw-semibold fs-6 mb-2">Projects(Please select if already created)</label>
+                                                        <!--end::Label-->
+                                                        <div wire:ignore>
+                                                            <select wire:model="projects"  class="form-select" name="projects" id="projects" data-control="select2" data-dropdown-parent="#kt_modal_add_quotation" data-placeholder="Select an option">
+                                                                <option></option>
+                                                                @foreach($this->project_list as $project)
+                                                                    <option value="{{$project->id}}">{{$project->name}}</option>
+                                                                @endforeach
+                                                            </select>
+                                                        </div>
+    {{--                                                wire:model="projects"--}}
                                                 </div>
-{{--                                                wire:model="projects"--}}
-                                            </div>
                                             <!--begin::Input group-->
                                             <div class="fv-row mb-10">
                                                 <!--begin::Label-->
@@ -60,19 +60,20 @@
                                             <!--begin::Input group-->
                                             <div class="fv-row mb-10">
                                                 <!--begin::Label-->
-                                                <label class="fw-semibold fs-6 mb-2">Description</label>
+                                                <label class="fw-semibold fs-6 mb-2">Scope of Work</label>
                                                 <!--end::Label-->
                                                 <!--begin::Input-->
-                                                <input type="textarea" wire:model.defer="description" name="description" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Description"/>
+                                                <textarea name="compliance" wire:model.defer="scope_of_work"  class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Scope Of Work" rows="15" cols="50"> </textarea>
+{{--                                                <input type="textarea" wire:model.defer="description" name="description" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Description"/>--}}
                                                 <!--end::Input-->
                                             </div>
                                             <!--end::Input group-->
                                             <div class="fv-row mb-10">
                                                     <label for="image" class="fw-semibold fs-6 mb-2">Image</label>
-                                                    <input type="file" wire:model="project_image" accept="image/png,image/jpeg" class="form-control mb-3 mb-lg-0">
-                                                    @if($project_image)
-                                                    <img class="w-25 p-1" src="{{ asset('storage/'.$project_image) }}" alt="" />
-{{--                                                        <img src="data:image/png;base64,{{ $project_image }}" alt="Image">--}}
+                                                    <input type="file" wire:model.defer="projectImage" accept="image/png,image/jpeg" class="form-control mb-3 mb-lg-0">
+                                                    @if($projectImage)
+                                                    <img class="w-25 p-1" src="{{ asset('storage/'.$projectImage) }}" alt="" />
+{{--                                                        <img src="data:image/png;base64,{{ $projectImage }}" alt="Image">--}}
                                                     @endif
                                             </div>
 
@@ -117,7 +118,13 @@
                                             <!--begin::Input group-->
 
                                             <!--end::Input group-->
-
+                                            <script>
+                                                    $('#projects').select2();
+                                                    $('#projects').on('change', function (e) {
+                                                        var data = $('#projects').select2('val')
+                                                        @this.set('projects', data)
+                                                    });
+                                            </script>
                                         </div>
                                     </div>
                                 @endif
