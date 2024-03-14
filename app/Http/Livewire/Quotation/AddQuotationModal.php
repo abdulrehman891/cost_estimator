@@ -193,24 +193,24 @@ class AddQuotationModal extends Component
         $this->project_image_changed = true;
     }
     public function previewProposal(){
-        $this->isLoading = true;
+        $this->loadingPreviewProposal = true;
         $this->preview = true;
         if($this->chatGPT_res == ''){
             $this->chatGPT_res = $this->getProposalChatGPT();
         }
         $this->emit('responseGenerated');
-        $this->isLoading = false;
+        $this->loadingPreviewProposal = false;
 
     }
     public function regenerateProposal(){
-        $this->isLoading = true;
+        $this->loadingRegenerateProposal = true;
         $this->regenerate = true;
 
         if($this->chatGPT_res){
             $this->chatGPT_res = $this->getProposalChatGPT("regenerate and rephrase with given information");
         }
         $this->emit('responseGenerated');
-        $this->isLoading = false;
+        $this->loadingRegenerateProposal = false;
 
     }
 
@@ -719,45 +719,61 @@ class AddQuotationModal extends Component
         {
             $msg_data .= $prefix;
         }
-
-        if(isset($adminAiPrompts['pre_data'])){
-            $msg_data = $adminAiPrompts['pre_data'];
-
-        } else{
-            $msg_data = "I need you to work as an expert Construction Quotation Generator. You have the ability to analyze and create a Construction Project Proposal by using provided information. The complete project information of project is as follows:";
-        }
-        $msg_data .= "
-            <--Project Details Start-->";
-        $msg_data .= $formData['projectDetails'];
-        $msg_data .= "
-        <--Project Details End -->
-        <--Quotation Details Start-->";
-        $msg_data .= $formData['quotationDetails'];
-        $msg_data .= "
-        <--Quotation Details End-->
-        <--Quote Line Items Start-->";
-        $msg_data .= $formData['quoteLineItemsDetails'];
-        $msg_data .= "
-        <--Quote Line Items End-->.
-        Return response in the following parsable JSON format:
+        if($this->scope_of_work == '')
         {
-            'validity' : 'validity content',
-            'disclaimer' : 'Disclaimer Content',
-            'risk_factor' : 'Risk factor content',
-        }";
+            if(isset($adminAiPrompts['pre_data'])){
+                $msg_data = $adminAiPrompts['pre_data'];
 
-        if(isset($adminAiPrompts['post_data'])){
-            $msg_data = $adminAiPrompts['post_data'];
-        } else{
-//            $msg_data .= "I need you to add details in points using above information and along with that, modify and include the specific information in headings as per mentioned sections:
-//        Warranty, Inclusions, Payment Schedule, Compliance and Warranty Clause.
-//        Moreover, also mention Risk Factors, Validity, Disclaimers and calculate Total Quotable Price using total price of all Quote Line Items.";
+            } else{
+//                $msg_data = "I need you to work as an expert Construction Quotation Generator. You have the ability to analyze and create a Construction Project Proposal by using provided information. The complete project information of project is as follows:";
+            }
+            $msg_data .= "Project Details Start:";
+            $msg_data .= $formData['projectDetails'];
+            $msg_data .= "Quotation Details:";
+            $msg_data .= $formData['quotationDetails'];
+            $msg_data .= "Project Milestone Details:";
+            $msg_data .= $formData['projectMilestones'];
+            $msg_data .= "Quote Line Items:";
+            $msg_data .= $formData['quoteLineItemsDetails'];
+            $msg_data .= 'check above information and behave like a construction company and Return response in the following JSON format:
+            {
+                "steps_of_work" : "give me all steps to complete above construction project all steps should be in bullets array",
+                "milestones" : "make milestones of above project and show estimated cost of it should be bullets array",
+                "required_list_products" : "give me list of products name and costs should be single line consider above quote line items in array",
+                "total_cost" : "give me total cost here, estimate of all milestones cost and total project cost it should be some of milestone cost with title",
+                "validity" : "validity content it should be 3 line paragraph",
+                "disclaimer" : "Disclaimer Content it should be 3 line paragraph",
+                "risk_factor" : "Risk factor content it should be 3 line paragraph",
+            }';
+        }else{
+            $msg_data = $this->scope_of_work;
+            $msg_data .= 'check above information and behave like a construction company and Return response in the following JSON format:
+            {
+                "steps_of_work" : "give me all steps to complete above construction project all steps should be in bullets array",
+                "milestones" : "make milestones of above project and show estimated cost of it should be bullets array",
+                "required_list_products" : "give me list of products name and costs should be single line array",
+                "total_cost" : "give me total cost here, estimate of all milestones cost and total project cost it should be some of milestone cost with title",
+                "validity" : "validity content it should be 3 line paragraph",
+                "disclaimer" : "Disclaimer Content it should be 3 line paragraph",
+                "risk_factor" : "Risk factor content it should be 3 line paragraph",
+            }';
         }
-        if(isset($adminAiPrompts['final_remarks'])){
-            $msg_data = $adminAiPrompts['final_remarks'];
-        } else{
-            $msg_data .="check above details and give information with bold headings Validity, Risk Factors and Disclaimers.";
-        }
+
+
+
+//        if(isset($adminAiPrompts['post_data'])){
+//            $msg_data = $adminAiPrompts['post_data'];
+//        } else{
+////            $msg_data .= "I need you to add details in points using above information and along with that, modify and include the specific information in headings as per mentioned sections:
+////        Warranty, Inclusions, Payment Schedule, Compliance and Warranty Clause.
+////        Moreover, also mention Risk Factors, Validity, Disclaimers and calculate Total Quotable Price using total price of all Quote Line Items.";
+//        }
+//        if(isset($adminAiPrompts['final_remarks'])){
+//            $msg_data = $adminAiPrompts['final_remarks'];
+//        } else{
+//            $msg_data .="check above details and give information with bold headings Validity, Risk Factors and Disclaimers.";
+//        }
+
         info($msg_data);
         $this->chatGPT_res = $chat->createPurposalChatGPT($msg_data);
         $this->isLoading = false;
@@ -797,36 +813,102 @@ class AddQuotationModal extends Component
                 'milestone_cost' => $total_cost,
             ];
         }
-        $decode_response = json_decode($response);
-//        dd($decode_response->validity);
-        $data = [
-            'project_name' => $this->project_name,
-            'project_address' => $this->address,
-            'project_image' => $projectImage,
-            'company_name' => $company_name,
-            'company_email' => $company_email,
-            'year_architect_shingles' => $year_architect_shingles,
-            'mil_tpo' => $mil_tpo,
-            'company_address' => $company_address,
-            'company_phone' => $company_phone,
-            'company_website' => $company_website,
-            'company_logo' => $company_logo,
-            'project_manager' => $project_manager_name,
-            'prepared_date' => $this->prepared_date,
-            'inclusion' => $this->inclusions,
-            'exclusions' => $this->exclusions,
-            'payment_schedule' => $this->payment_schedule,
-            'price_escalation_clause' => $this->price_escalation_clause,
-            'alterations' => $this->alterations,
-            'compliance' => $this->compliance,
-            'timeline' => $this->timelines,
-            'warranty_clause' => $this->warranty_clause,
-            'chatGPTResponse' => $response,
-            'validity' => $decode_response->validity,
-            'disclaimer' => $decode_response->disclaimer,
-            'risk_factor' => $decode_response->risk_factor,
-            'mileStoneData' => $milestone_array,
-        ];
+        $decode_response = json_decode( $response );
+//        dd($decode_response);
+        if($decode_response != null){
+            if(is_array($decode_response->steps_of_work))
+            {
+                $work_steps = '';
+                foreach ($decode_response->steps_of_work as $steps)
+                {
+                    $work_steps .= '<li>'.$steps. '</li>';
+                }
+            }
+            if(is_array($decode_response->milestones))
+            {
+                $project_milestones = '';
+                foreach ($decode_response->milestones as $pro_milestone)
+                {
+                    $project_milestones .= '<li>'.$pro_milestone. '</li>';
+                }
+            }
+            if(is_array($decode_response->required_list_products))
+            {
+                $product_list = '';
+                foreach ($decode_response->required_list_products as $productList)
+                {
+                    $product_list .= '<li>'.$productList. '</li>';
+                }
+            }
+            $data = [
+                'project_name' => $this->project_name,
+                'project_address' => $this->address,
+                'project_image' => $projectImage,
+                'company_name' => $company_name,
+                'company_email' => $company_email,
+                'year_architect_shingles' => $year_architect_shingles,
+                'mil_tpo' => $mil_tpo,
+                'company_address' => $company_address,
+                'company_phone' => $company_phone,
+                'company_website' => $company_website,
+                'company_logo' => $company_logo,
+                'project_manager' => $project_manager_name,
+                'prepared_date' => $this->prepared_date,
+                'inclusion' => $this->inclusions,
+                'exclusions' => $this->exclusions,
+                'payment_schedule' => $this->payment_schedule,
+                'price_escalation_clause' => $this->price_escalation_clause,
+                'alterations' => $this->alterations,
+                'compliance' => $this->compliance,
+                'timeline' => $this->timelines,
+                'warranty_clause' => $this->warranty_clause,
+                'chatGPTResponse' => $response,
+                'validity' => $decode_response->validity,
+                'disclaimer' => $decode_response->disclaimer,
+                'risk_factor' => $decode_response->risk_factor,
+                'steps_of_work' => $work_steps,
+                'milestones' => $project_milestones,
+                'required_list_products' => $product_list,
+                'total_cost' => $decode_response->total_cost,
+                'mileStoneData' => $milestone_array,
+            ];
+        }else{
+            dd('Open AI not responding');
+
+        }
+//else{
+//
+//            $data = [
+//                'project_name' => $this->project_name,
+//                'project_address' => $this->address,
+//                'project_image' => $projectImage,
+//                'company_name' => $company_name,
+//                'company_email' => $company_email,
+//                'year_architect_shingles' => $year_architect_shingles,
+//                'mil_tpo' => $mil_tpo,
+//                'company_address' => $company_address,
+//                'company_phone' => $company_phone,
+//                'company_website' => $company_website,
+//                'company_logo' => $company_logo,
+//                'project_manager' => $project_manager_name,
+//                'prepared_date' => $this->prepared_date,
+//                'inclusion' => $this->inclusions,
+//                'exclusions' => $this->exclusions,
+//                'payment_schedule' => $this->payment_schedule,
+//                'price_escalation_clause' => $this->price_escalation_clause,
+//                'alterations' => $this->alterations,
+//                'compliance' => $this->compliance,
+//                'timeline' => $this->timelines,
+//                'warranty_clause' => $this->warranty_clause,
+//                'chatGPTResponse' => $response,
+//                'validity' => $decode_response->validity,
+//                'disclaimer' => $decode_response->disclaimer,
+//                'risk_factor' => $decode_response->risk_factor,
+//                'mileStoneData' => $milestone_array,
+//            ];
+//
+//        }
+
         try {
             $pdf = PDF::loadView('pdf-template.proposal',$data)->save("uploads/$quote_id.pdf",'public');
             if($pdf && is_file("uploads/$quote_id.pdf")){

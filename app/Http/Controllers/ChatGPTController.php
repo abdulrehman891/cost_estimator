@@ -39,6 +39,7 @@ class ChatGPTController extends Controller
             ],
             "max_tokens" => 4096
         ])->body();
+
         $data = json_decode($response, true);
         //dd($data);
         $content = $data['choices'][0]['message']['content'];

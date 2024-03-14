@@ -119,11 +119,11 @@
 
                                             <!--end::Input group-->
                                             <script>
-                                                    $('#projects').select2();
-                                                    $('#projects').on('change', function (e) {
-                                                        var data = $('#projects').select2('val')
-                                                        @this.set('projects', data)
-                                                    });
+                                                    // $('#projects').select2();
+                                                    // $('#projects').on('change', function (e) {
+                                                    //     var data = $('#projects').select2('val')
+                                                    //     @this.set('projects', data)
+                                                    // });
                                             </script>
                                         </div>
                                     </div>

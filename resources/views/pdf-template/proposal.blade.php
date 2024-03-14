@@ -75,15 +75,14 @@
     </div>
     <!-- section-three -->
 
-    <h2 class="container d-flex align-left  text-start mt-2">30-Year Architectural Shingles (Certainteed
-        Landmark):</h2>
+    <h2 class="container d-flex align-left  text-start mt-2">Steps of Project Completion:</h2>
 
 
     <div class="container mt-2 d-flex text-start">
 
 
         <ul>
-            {!! nl2br($year_architect_shingles) !!}
+            {!! nl2br($steps_of_work) !!}
         </ul>
     </div>
     <h2 class="container d-flex align-left  text-start mt-2">60 Mil TPO (Mule-Hide):</h2>
@@ -97,7 +96,7 @@
     <!-- section-four-->
     <div class="  container mt-2 text-start">
         <div class="bimage3" style=" background-image:url('assets/image/77.png') ">
-            <div >
+            <div>
                 <h2 class="txt">Exclusions:</h2>
             </div>
 
@@ -129,8 +128,21 @@
 
 {{--            {!! nl2br($chatGPTResponse) !!}--}}
 
+
+            <h2 class="mt-4 txt">List of Products:</h2>
+            <ul>
+                {!! nl2br($required_list_products) !!}
+            </ul>
+
             <h2 class="mt-4 txt">Lead Times:</h2>
             <p>Expected lead time at the time of bidding is 2 - 3 weeks.</p>
+
+            <h2 class="mt-4 txt">Project Milestones:</h2>
+            <ul>
+                {!! nl2br($milestones) !!}
+            </ul>
+            <h2 class="mt-4 txt">Total Cost:</h2>
+            {!! nl2br($total_cost) !!}
 
             @foreach($mileStoneData as $milestone)
                 <p><strong><u>{{ $milestone['milestone_name'] }}:</u></strong> {{ $milestone['milestone_description']  }} </p>
