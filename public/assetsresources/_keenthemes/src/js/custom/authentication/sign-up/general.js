@@ -240,7 +240,6 @@ var KTSignupGeneral = function () {
         submitButton.addEventListener('click', function (e) {
             e.preventDefault();
 
-
             validator.revalidateField('password');
 
             validator.validate().then(function (status) {
@@ -251,9 +250,6 @@ var KTSignupGeneral = function () {
                     // Disable button to avoid multiple click
                     submitButton.disabled = true;
 
-                    console.log("Before Axios request");
-                    console.log(submitButton.closest('form').getAttribute('action'));
-                    console.log("after Axios request");
 
                     // Check axios library docs: https://axios-http.com/docs/intro
                     axios.post(submitButton.closest('form').getAttribute('action'), new FormData(form)).then(function (response) {
@@ -279,7 +275,7 @@ var KTSignupGeneral = function () {
                         }
                     }).catch(function (error) {
                         Swal.fire({
-                            text: "Sorry, looks like there are some errors detected, please try again later.",
+                            text: "Sorry, looks like there are some errors detected, please try again.",
                             icon: "error",
                             buttonsStyling: false,
                             confirmButtonText: "Ok, got it!",
