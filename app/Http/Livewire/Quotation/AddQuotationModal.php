@@ -123,10 +123,10 @@ class AddQuotationModal extends Component
 
 
     public $messages = [
-        'products.0' => 'The Product field is required.',
-        'unit_price.0' => 'The Product Unit Price field is required.',
-        'quantity.0' => 'The Product Quantity field is required.',
-        'total_price.0' => 'The Total Price field is required.',
+//        'products.0' => 'The Product field is required.',
+//        'unit_price.0' => 'The Product Unit Price field is required.',
+//        'quantity.0' => 'The Product Quantity field is required.',
+//        'total_price.0' => 'The Total Price field is required.',
 
 //        'project_milestone.0' => 'The Project Milestone field is required.',
     ];
@@ -143,29 +143,29 @@ class AddQuotationModal extends Component
 //            "project_milestone.0" => 'required',
         ],
         3 => [
-            'prepared_date' => 'required',
-            'assembly_type' => 'required',
-            'manufacturer' => 'required',
-            'sq_walls' => 'required',
-            'sq_field' => 'required',
-            'warranty' => 'required',
-            'parapet_length' => 'required',
-            'building_height' => 'required',
-            'deck_type' => 'required',
-            'inclusions' => 'required',
-            'exclusions' => 'required',
-            'payment_schedule' => 'required',
-            'price_escalation_clause' => 'required',
-            'alterations' => 'required',
-            'compliance' => 'required',
-            'timelines' => 'required',
-            'warranty_clause' => 'required',
+//            'prepared_date' => 'required',
+//            'assembly_type' => 'required',
+//            'manufacturer' => 'required',
+//            'sq_walls' => 'required',
+//            'sq_field' => 'required',
+//            'warranty' => 'required',
+//            'parapet_length' => 'required',
+//            'building_height' => 'required',
+//            'deck_type' => 'required',
+//            'inclusions' => 'required',
+//            'exclusions' => 'required',
+//            'payment_schedule' => 'required',
+//            'price_escalation_clause' => 'required',
+//            'alterations' => 'required',
+//            'compliance' => 'required',
+//            'timelines' => 'required',
+//            'warranty_clause' => 'required',
         ],
         4 =>[
-            "products.0" => 'required',
-            "unit_price.0" => 'required',
-            "quantity.0" => 'required',
-            "total_price.0" => 'required'
+//            "products.0" => 'required',
+//            "unit_price.0" => 'required',
+//            "quantity.0" => 'required',
+//            "total_price.0" => 'required'
         ]
 
     ];
@@ -268,7 +268,7 @@ class AddQuotationModal extends Component
 
     public function increaseStep()
     {
-        if($this->currentStep != 2){
+        if($this->currentStep != 2 && $this->currentStep != 3 && $this->currentStep != 4){
             $this->validate($this->validationRules[$this->currentStep]);
         }
         $this->currentStep++;

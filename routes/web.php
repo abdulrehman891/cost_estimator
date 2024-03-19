@@ -42,6 +42,7 @@ Route::middleware(['auth', 'twofactor'])->group(function () {
     Route::resource('verify', TwoFactorController::class)->only(['index', 'store']);
 });
 
+
 Route::post('/stripre_hook_handler', [StripeResponseHookHandler::class, 'handleWebhook']);
 Route::post('/signnow_hook_handler', [JLSignnowHelpersController::class, 'handleWebhook']);
 

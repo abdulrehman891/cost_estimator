@@ -109,6 +109,7 @@
                                                     <label class="required fw-semibold fs-6 mb-2">Project Type</label>
                                                     <select class="form-select" wire:model.defer="project_type" name="project_type" id="project_type" data-placeholder="Select an option">
                                                         <option>Select an option</option>
+                                                        <option value="residential">Residential</option>
                                                         <option value="commercial">Commercial</option>
                                                         <option value="industrial">Industrial</option>
                                                     </select>
@@ -198,21 +199,18 @@
                                         </div>                                    <!--begin::Input group-->
                                         <div class="row">
                                             <div class="col-md-6 mb-4">
-                                                <label class="required fw-semibold fs-6 mb-2">Prepared Date</label>
+                                                <label class="fw-semibold fs-6 mb-2">Prepared Date</label>
                                                 <input class="form-control form-control-solid"  wire:model.defer="prepared_date" placeholder="Pick a date" name="prepared_date" id="prepared_date"/>
-                                                @error('prepared_date') <span class="text-danger">{{ $message }}</span> @enderror
                                             </div>
                                             <div class="col-md-6 mb-4">
-                                                <label class="required fw-semibold fs-6 mb-2">Assembly Type</label>
+                                                <label class="fw-semibold fs-6 mb-2">Assembly Type</label>
                                                 <input type="textarea" wire:model.defer="assembly_type" name="assembly_type" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Assembly Type"/>
-                                                @error('assembly_type') <span class="text-danger">{{ $message }}</span> @enderror
                                             </div>
                                         </div>
                                         <div class="row">
                                             <div class="col-md-12 mb-4">
-                                                <label class="required fw-semibold fs-6 mb-2">Manufacturer</label>
+                                                <label class="fw-semibold fs-6 mb-2">Manufacturer</label>
                                                 <input type="text" wire:model.defer="manufacturer" name="manufacturer" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Manufacturer"/>
-                                                @error('manufacturer') <span class="text-danger">{{ $message }}</span> @enderror
                                             </div>
                                             {{-- <div class="col-md-6 mb-4">
                                                 <label class="required fw-semibold fs-6 mb-2">Assembly Type</label>
@@ -221,98 +219,84 @@
                                         </div>
                                         <div class="row">
                                             <div class="col-md-6 mb-4">
-                                                <label class="required fw-semibold fs-6 mb-2">SQ Walls</label>
+                                                <label class="fw-semibold fs-6 mb-2">SQ Walls</label>
                                                 <input type="text" wire:model.defer="sq_walls" name="sq_walls" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="SQ Walls"/>
-                                                @error('sq_walls') <span class="text-danger">{{ $message }}</span> @enderror
                                             </div>
                                             <div class="col-md-6 mb-4">
-                                                <label class="required fw-semibold fs-6 mb-2">SQ Field</label>
+                                                <label class="fw-semibold fs-6 mb-2">SQ Field</label>
                                                 <input type="text" wire:model.defer="sq_field" name="sq_field" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="SQ Field"/>
-                                                @error('sq_field') <span class="text-danger">{{ $message }}</span> @enderror
                                             </div>
                                         </div>
 
                                         <div class="row">
                                             <div class="col-md-6 mb-4">
-                                                <label class="required fw-semibold fs-6 mb-2">Warranty</label>
+                                                <label class="fw-semibold fs-6 mb-2">Warranty</label>
                                                 <input type="text" wire:model.defer="warranty" name="warranty" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Warranty"/>
-                                                @error('warranty') <span class="text-danger">{{ $message }}</span> @enderror
                                                 </div>
                                             <div class="col-md-6 mb-4">
-                                                <label class="required fw-semibold fs-6 mb-2">Parapet Length</label>
+                                                <label class="fw-semibold fs-6 mb-2">Parapet Length</label>
                                                 <input type="text" wire:model.defer="parapet_length" name="parapet_length" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Parapet Length"/>
-                                                @error('parapet_length') <span class="text-danger">{{ $message }}</span> @enderror
                                             </div>
                                         </div>
 
                                         <div class="row">
                                             <div class="col-md-6 mb-4">
-                                                <label class="required fw-semibold fs-6 mb-2">Building Height</label>
+                                                <label class="fw-semibold fs-6 mb-2">Building Height</label>
                                                 <input type="text" wire:model.defer="building_height" name="building_height" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Building Height"/>
-                                                @error('building_height') <span class="text-danger">{{ $message }}</span> @enderror
                                             </div>
                                             <div class="col-md-6 mb-4">
-                                                <label class="required fw-semibold fs-6 mb-2">Deck Type</label>
+                                                <label class="fw-semibold fs-6 mb-2">Deck Type</label>
                                                 <input wire:model.defer="deck_type"  type="text" name="deck_type" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Deck Type"/>
-                                                @error('deck_type') <span class="text-danger">{{ $message }}</span> @enderror
                                             </div>
                                         </div>
 
                                         <div class="row">
                                             <div class="col-md-12 mb-4">
-                                                <label class="required fw-semibold fs-6 mb-2">Inclusions</label>
+                                                <label class="fw-semibold fs-6 mb-2">Inclusions</label>
                                                 <textarea wire:model.defer="inclusions" name="inclusions"  class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Inclusions"> </textarea>
-                                                @error('inclusions') <span class="text-danger">{{ $message }}</span> @enderror
                                             </div>
                                         </div>
                                         <div class="row">
                                             <div class="col-md-12 mb-4">
-                                                <label class="required fw-semibold fs-6 mb-2">Exclusions</label>
+                                                <label class="fw-semibold fs-6 mb-2">Exclusions</label>
                                                 <textarea name="exclusions" wire:model.defer="exclusions" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Exclusions"> </textarea>
-                                                @error('exclusions') <span class="text-danger">{{ $message }}</span> @enderror
                                             </div>
                                         </div>
                                         <div class="row">
                                             <div class="col-md-12 mb-4">
-                                                <label class="required fw-semibold fs-6 mb-2">Payment Schedule</label>
+                                                <label class="fw-semibold fs-6 mb-2">Payment Schedule</label>
                                                 <textarea name="payment_schedule" wire:model.defer="payment_schedule" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Payment Schedule"> </textarea>
-                                                @error('payment_schedule') <span class="text-danger">{{ $message }}</span> @enderror
                                             </div>
                                         </div>
                                         <div class="row">
                                             <div class="col-md-12 mb-4">
-                                                <label class="required fw-semibold fs-6 mb-2">Price Escalation Clause</label>
+                                                <label class="fw-semibold fs-6 mb-2">Price Escalation Clause</label>
                                                 <textarea name="price_escalation_clause" wire:model.defer="price_escalation_clause"  class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Price Escalation Clause"> </textarea>
-                                                @error('price_escalation_clause') <span class="text-danger">{{ $message }}</span> @enderror
                                             </div>
                                         </div>
                                         <div class="row">
                                             <div class="col-md-12 mb-4">
-                                                <label class="required fw-semibold fs-6 mb-2">Alterations</label>
+                                                <label class="fw-semibold fs-6 mb-2">Alterations</label>
                                                 <textarea name="alterations" wire:model.defer="alterations"  class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Alterations"> </textarea>
-                                                @error('alterations') <span class="text-danger">{{ $message }}</span> @enderror
                                             </div>
                                         </div>
 
                                         <div class="row">
                                             <div class="col-md-12 mb-10">
-                                                <label class="required fw-semibold fs-6 mb-2">Compliance</label>
+                                                <label class="fw-semibold fs-6 mb-2">Compliance</label>
                                                 <textarea name="compliance" wire:model.defer="compliance"  class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Compliance"> </textarea>
-                                                @error('compliance') <span class="text-danger">{{ $message }}</span> @enderror
                                             </div>
                                         </div>
                                             <div class="row">
                                                 <div class="col-md-12 mb-10">
-                                                    <label class="required fw-semibold fs-6 mb-2">Timelines</label>
+                                                    <label class="fw-semibold fs-6 mb-2">Timelines</label>
                                                     <textarea name="timelines" wire:model.defer="timelines"  class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Timelines"> </textarea>
-                                                    @error('timelines') <span class="text-danger">{{ $message }}</span> @enderror
                                                 </div>
                                             </div>
                                         <div class="row">
                                             <div class="col-md-12 mb-10">
-                                                <label class="required fw-semibold fs-6 mb-2">Warranty Clause</label>
+                                                <label class="fw-semibold fs-6 mb-2">Warranty Clause</label>
                                                 <textarea wire:model.defer="warranty_clause" name="warranty_clause" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Warranty Clause"> </textarea>
-                                                @error('warranty_clause') <span class="text-danger">{{ $message }}</span> @enderror
                                             </div>
                                         </div>
                                     </div>
@@ -359,7 +343,7 @@
                                                             <!--begin::Input group-->
                                                             <div class="fv-row m-5" >
                                                                 @if(count($this->project_milestone) > 0)
-                                                                    <label class="required fw-semibold fs-6 mb-2">Project Milestones</label>
+                                                                    <label class="fw-semibold fs-6 mb-2">Project Milestones</label>
                                                                     <select wire:model="milestone_quote.{{$index}}" class="form-select" name="milestone_quote" id="milestone_quote" data-placeholder="Select an option">
                                                                         <option>--Please Select--</option>
                                                                         @for($x = 0; $x < count($this->project_milestone); $x++)
@@ -368,7 +352,7 @@
                                                                     </select>
                                                                 @endif
                                                                 <!--begin::Label-->
-                                                                <label class="required fw-semibold fs-6 mb-2">Product</label>
+                                                                <label class="fw-semibold fs-6 mb-2">Product</label>
                                                                 <!--end::Label-->
                                                                 <select wire:model="products.{{$index}}" class="form-select" name="product" id="product" data-placeholder="Select an option">
                                                                     <option></option>
@@ -376,14 +360,12 @@
                                                                         <option value="{{$product->id}}"  data-unitprice="{{$product->price}}">{{$product->product_name}}</option>
                                                                     @endforeach
                                                                 </select>
-                                                                @error('products.'.$index) <span class="text-danger">{{ $message }}</span> @enderror
                                                             </div>
                                                             <!--end::Input group-->
                                                             <div class="form-group row m-5">
                                                                 <div class="col-md-6 mb-4">
-                                                                    <label class="required fw-semibold fs-6 mb-2">Unit Price</label>
+                                                                    <label class="fw-semibold fs-6 mb-2">Unit Price</label>
                                                                     <input wire:model="unit_price.{{$index}}" type="text" name="unit_price" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Unit Price"/>
-                                                                    @error('unit_price.'.$index) <span class="text-danger">{{ $message }}</span> @enderror
                                                                 </div>
                                                                 <div class="col-md-6 mb-4">
                                                                     <label class="fw-semibold fs-6 mb-2">Discount Price (On Total Price)</label>
@@ -391,15 +373,13 @@
                                                                 </div>
 
                                                                 <div class="col-md-6 mb-4">
-                                                                    <label class="required fw-semibold fs-6 mb-2">Quantity</label>
+                                                                    <label class="fw-semibold fs-6 mb-2">Quantity</label>
                                                                     <input wire:model="quantity.{{$index}}" type="text" name="quantity" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Quantity"/>
-                                                                    @error('quantity.'.$index) <span class="text-danger">{{ $message }}</span> @enderror
                                                                 </div>
 
                                                                 <div class="col-md-6 mb-4">
-                                                                    <label class="required fw-semibold fs-6 mb-2">Total Price</label>
+                                                                    <label class="fw-semibold fs-6 mb-2">Total Price</label>
                                                                     <input wire:model.defer="total_price.{{$index}}" type="text" name="total_price" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Total Price" readonly/>
-                                                                    @error('total_price.'.$index) <span class="text-danger">{{ $message }}</span> @enderror
                                                                 </div>
                                                             </div>
                                                             <div class="form-group row mb-5">

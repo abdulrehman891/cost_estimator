@@ -42,8 +42,10 @@ class AuthenticatedSessionController extends Controller
             'last_login_ip' => $request->getClientIp()
         ]);
 
-        $request->user()->generateTwoFactorCode();
-        $request->user()->notify(new SendTwoFactorCode());
+        if(env('TWO_FACTOR_AUTHENTICATION')){
+            $request->user()->generateTwoFactorCode();
+            $request->user()->notify(new SendTwoFactorCode());
+        }
 
         return redirect()->intended(RouteServiceProvider::HOME);
     }
